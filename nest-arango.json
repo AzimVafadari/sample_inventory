@@ -1,0 +1,17 @@
+{
+  "database": {
+    "url": "http://localhost:8529",
+    "databaseName": "arangodb_pishgaman",
+    "auth": {
+      "username": "Azim",
+      "password": "azim1383"
+    },
+    "agentOptions": {
+      "rejectUnauthorized": "true"
+    }
+  },
+  "migrationsCollection": "Migrations",
+  "cli": {
+    "migrationsDir": "migrations"
+  }
+}
