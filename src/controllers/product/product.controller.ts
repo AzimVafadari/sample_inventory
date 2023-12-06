@@ -37,10 +37,28 @@ export class ProductController {
           type: 'number',
         },
         priceScale: {
-          type: 'number',
+          type: 'string',
+        },
+        image: {
+          type: 'string',
+          format: 'binary',
         },
         categoriesId: {
-          type: 'string[]',
+          type: 'string',
+          format: 'array',
+        },
+        initial_balance: {
+          type: 'number',
+        },
+        current_balance: {
+          type: 'number',
+        },
+        expiry_date: {
+          type: 'date',
+        },
+        comments: {
+          type: 'date',
+          format: 'array',
         },
       },
     },
