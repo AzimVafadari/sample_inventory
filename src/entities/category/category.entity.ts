@@ -23,5 +23,5 @@ export class CategoryEntity extends ArangoDocument {
   @ApiProperty({
     description: 'category image',
   })
-  image: Buffer;
+  imageId: number;
 }

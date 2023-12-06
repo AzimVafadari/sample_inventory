@@ -5,6 +5,8 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UserEntity extends ArangoDocument {
   @ApiProperty({ description: 'username', example: 'john_doe' })
   username: string;
+  @ApiProperty({ description: 'password', example: 'john_doe' })
+  password: string;
   @ApiProperty({ description: 'email', example: 'example@gmail.com' })
   email?: string;
   @ApiProperty({

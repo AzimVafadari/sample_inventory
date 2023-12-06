@@ -8,16 +8,21 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { ArangoNewOldResult, ResultList } from 'nest-arango';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { CategoryService } from '../../services/category/category.service';
 import { CategoryEntity } from '../../entities/category/category.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { AuthGuard } from '../../auth/auth.guard';
 @Controller('Category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-  @Post('upload')
+  @Post()
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -40,13 +45,18 @@ export class CategoryController {
       },
     },
   })
-  async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() categoryData: CategoryEntity,
+  async createCategory(
+    @UploadedFile() image: Express.Multer.File,
+    @Body() category: CategoryEntity,
   ) {
-    console.log('Uploaded File:', file);
-    console.log('Category Data:', categoryData);
+    category.imageId = uuidv4();
+    const folderPath: string = './images/';
+    const imageBuffer = image.buffer;
+    const imagePath = path.join(folderPath, `${category.imageId}.jpg`);
+    await fs.writeFile(imagePath, imageBuffer);
+    return await this.categoryService.create(category);
   }
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'دریافت تمام محصولات',
@@ -54,7 +64,6 @@ export class CategoryController {
   async findAll(): Promise<ResultList<CategoryEntity>> {
     return await this.categoryService.findAll();
   }
-
   @Get(':categoryName')
   @ApiOperation({
     summary: 'دریافت دسته بندی با نام ',
@@ -78,7 +87,6 @@ export class CategoryController {
   }
 
   @Delete(':categoryName')
-  @Put(':categoryName')
   @ApiOperation({
     summary: 'حذف دسته بندی',
   })
