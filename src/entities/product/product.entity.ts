@@ -3,10 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Collection('Products')
 export class ProductEntity extends ArangoDocument {
-  @ApiProperty({ description: 'name', example: 'موز' })
-  productName?: string;
+  @ApiProperty({ description: 'نام محصول', example: 'موز' })
+  name?: string;
   @ApiProperty({
-    description: 'product description',
+    description: 'توضیحات محصول',
     example: 'موز به انبار اضافه شد',
   })
   description?: string;

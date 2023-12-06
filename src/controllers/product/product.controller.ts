@@ -29,15 +29,23 @@ export class ProductController {
       properties: {
         name: {
           type: 'string',
+          description: 'نام محصول',
+          example: 'موز',
         },
         description: {
           type: 'string',
+          description: 'توضیحات محصول',
+          example: 'موز به انبار اضافه شد',
         },
         price: {
           type: 'number',
+          description: 'قیمت',
+          example: '1000',
         },
         priceScale: {
           type: 'string',
+          description: 'مقیاس قیمت',
+          example: 'کیلوگرم',
         },
         image: {
           type: 'string',
@@ -46,19 +54,51 @@ export class ProductController {
         categoriesId: {
           type: 'string',
           format: 'array',
+          description: 'آیدی دسته بندی ها',
+          example: '[1, 2, 3]',
         },
         initial_balance: {
           type: 'number',
+          description: 'موجودی اولیه',
+          example: '20',
         },
         current_balance: {
           type: 'number',
+          description: 'موجودی فعلی',
+          example: '10',
         },
         expiry_date: {
           type: 'date',
+          description: 'تاریخ انقضا محصول',
+          example: '2024/12/03',
         },
         comments: {
           type: 'date',
           format: 'array',
+          description: 'نظرات',
+          example: '["این محصول برای فصل زمستان هست"]',
+        },
+        product_code: {
+          type: 'string',
+          description: 'کد محصول',
+          example: 'GFD58LIBGDX2DS5V',
+        },
+        related_products: {
+          type: 'string',
+          format: 'array',
+          description: 'محصولات مرتبط',
+          example: '[پرتقال ,ماهی]',
+        },
+        brand: {
+          type: 'string',
+          description: 'برند محصول',
+          example: 'چی توز',
+        },
+        alternative_products: {
+          type: 'string',
+          format: 'array',
+          description: 'محصولات جایگزین',
+          example: '[انار ,سیب]',
         },
       },
     },
