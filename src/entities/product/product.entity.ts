@@ -5,6 +5,11 @@ import { ApiProperty } from '@nestjs/swagger';
 export class ProductEntity extends ArangoDocument {
   @ApiProperty({ description: 'name', example: 'موز' })
   productName?: string;
+  @ApiProperty({
+    description: 'product description',
+    example: 'موز به انبار اضافه شد',
+  })
+  description?: string;
   @ApiProperty({ description: 'price', example: '1000' })
   price?: number;
   @ApiProperty({
@@ -12,11 +17,6 @@ export class ProductEntity extends ArangoDocument {
     example: '1',
   })
   categoriesId?: number[];
-  @ApiProperty({
-    description: 'product description',
-    example: 'موز به انبار اضافه شد',
-  })
-  description?: string;
   created_at?: Date;
   updated_at?: Date;
 
