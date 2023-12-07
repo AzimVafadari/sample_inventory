@@ -29,7 +29,7 @@ export class CategoryController {
     schema: {
       type: 'object',
       properties: {
-        categoryName: {
+        name: {
           type: 'string',
         },
         parentId: {
@@ -64,33 +64,31 @@ export class CategoryController {
   async findAll(): Promise<ResultList<CategoryEntity>> {
     return await this.categoryService.findAll();
   }
-  @Get(':categoryName')
+  @Get(':name')
   @ApiOperation({
     summary: 'دریافت دسته بندی با نام ',
   })
-  async findOne(
-    @Param('categoryName') categoryName: string,
-  ): Promise<CategoryEntity | null> {
-    return await this.categoryService.findOne(categoryName);
+  async findOne(@Param('name') name: string): Promise<CategoryEntity | null> {
+    return await this.categoryService.findOne(name);
   }
 
-  @Put(':categoryName')
+  @Put(':name')
   @ApiOperation({
     summary: 'ویرایش دسته بندی',
     requestBody: { description: 'string', content: null, required: true },
   })
   async update(
-    @Param('categoryName') categoryName: string,
+    @Param('name') name: string,
     @Body() Category: CategoryEntity,
   ): Promise<ArangoNewOldResult<any>> {
-    return await this.categoryService.update(categoryName, Category);
+    return await this.categoryService.update(name, Category);
   }
 
-  @Delete(':categoryName')
+  @Delete(':name')
   @ApiOperation({
     summary: 'حذف دسته بندی',
   })
-  async remove(@Param('categoryName') categoryName: string): Promise<void> {
-    return await this.categoryService.remove(categoryName);
+  async remove(@Param('name') name: string): Promise<void> {
+    return await this.categoryService.remove(name);
   }
 }

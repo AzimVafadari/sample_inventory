@@ -9,7 +9,7 @@ export class CategoryEntity extends ArangoDocument {
     description: 'category name',
     example: 'صیفی جات',
   })
-  categoryName?: string;
+  name?: string;
   @ApiProperty({
     description: 'category parent id',
     example: '1',
