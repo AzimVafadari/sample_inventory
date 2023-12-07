@@ -4,22 +4,25 @@ import { ApiProperty } from '@nestjs/swagger';
 @Collection('Products')
 export class ProductEntity extends ArangoDocument {
   @ApiProperty({ description: 'نام محصول', example: 'موز' })
-  name?: string;
+  product_name?: string;
+
   @ApiProperty({
     description: 'توضیحات محصول',
     example: 'موز به انبار اضافه شد',
   })
   description?: string;
+
   @ApiProperty({ description: 'قیمت', example: '1000' })
   price?: number;
-  @ApiProperty({ description: 'مقیاس قیمت', example: 'کیلوگرم' })
-  priceScale?: string;
-  imageId?: number;
+
+  image_id?: number;
+
   @ApiProperty({
-    description: 'آیدی دسته بندی ها',
+    description: 'آیدی دسته بندی ',
     example: '[1, 2, 3]',
   })
-  categoriesId?: string[];
+  category_id?: string[];
+
   @ApiProperty({ description: 'موجودی اولیه', example: '20' })
   initial_balance?: number;
   @ApiProperty({ description: 'موجودی فعلی', example: '10' })
