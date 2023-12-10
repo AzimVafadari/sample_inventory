@@ -4,21 +4,25 @@ import { ApiProperty } from '@nestjs/swagger';
 @Collection('Categories')
 export class CategoryEntity extends ArangoDocument {
   @ApiProperty({ description: 'category id', example: '1' })
-  id?: string;
+  category_id?: string;
+
   @ApiProperty({
     description: 'category name',
     example: 'صیفی جات',
   })
-  name?: string;
-  @ApiProperty({
-    description: 'category parent id',
-    example: '1',
-  })
-  parentId?: string;
+  category_name?: string;
+
+  image_id: number;
+
   @ApiProperty({
     description: 'category description',
     example: 'این دسته بندی دارای میوه ها است',
   })
   description?: string;
-  imageId: number;
+
+  @ApiProperty({
+    description: 'category parent id',
+    example: '1',
+  })
+  parent_id?: string;
 }
