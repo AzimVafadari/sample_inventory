@@ -13,7 +13,7 @@
             "state": {
               "type": "image",
               "state": {
-                "file": "Untitled Diagram 1.svg"
+                "file": "inventory.svg"
               }
             },
             "group": "b24a1262e7e12d1d"
@@ -30,7 +30,7 @@
             "state": {
               "type": "localgraph",
               "state": {
-                "file": "Untitled Diagram 1.svg",
+                "file": "inventory.svg",
                 "options": {
                   "collapse-filter": true,
                   "search": "",
@@ -43,7 +43,7 @@
                   "hideUnresolved": false,
                   "collapse-color-groups": true,
                   "colorGroups": [],
-                  "collapse-display": true,
+                  "collapse-display": false,
                   "showArrow": false,
                   "textFadeMultiplier": 0,
                   "nodeSizeMultiplier": 1,
@@ -126,7 +126,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Untitled Diagram 1.svg",
+                "file": "inventory.svg",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -143,7 +143,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Untitled Diagram 1.svg",
+                "file": "inventory.svg",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -166,7 +166,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Untitled Diagram 1.svg"
+                "file": "inventory.svg"
               }
             }
           }
@@ -187,12 +187,13 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "c8d36165cdf58dc4",
+  "active": "80ff764b34f0b7dd",
   "lastOpenFiles": [
-    "Untitled 2.canvas",
-    "Untitled Diagram 1.svg",
     "Untitled.canvas",
+    "Untitled 2.canvas",
     "Untitled 1.canvas",
-    "2023-12-07.md"
+    "2023-12-07.md",
+    "inventory.svg",
+    "Untitled Diagram 1.svg"
   ]
 }
