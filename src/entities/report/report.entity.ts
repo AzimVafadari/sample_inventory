@@ -4,35 +4,41 @@ import { ApiProperty } from '@nestjs/swagger';
 @Collection('Reports')
 export class ReportEntity extends ArangoDocument {
   @ApiProperty({ description: 'شماره گزارش', example: '1' })
-  report_number?: string;
+  report_id?: string;
+
   @ApiProperty({
     description: 'عنوان گزارش',
     example: 'این گزارش ... است',
   })
   title?: string;
+
   @ApiProperty({
     description: 'توضیحات گزارش',
     example: 'این گزارش ...',
   })
   description?: string;
+
   @ApiProperty({
     description: 'تاریخ گزارش',
-    example: '2023/04/15',
+    example: new Date('1398/12/07'),
   })
   date?: Date;
+
   @ApiProperty({
     description: 'نوع گزارش',
     example: 'فروش',
   })
   type?: string;
+
   @ApiProperty({
     description: 'category description',
     example: 'این دسته بندی دارای میوه ها است',
   })
   product_id?: string;
+
   @ApiProperty({
     description: 'تعداد محصول',
-    example: '100',
+    example: '100 کیلو گرم',
   })
-  amount?: number;
+  amount?: string;
 }

@@ -4,13 +4,13 @@ import { ApiProperty } from '@nestjs/swagger';
 @Collection('Products')
 export class ProductEntity extends ArangoDocument {
   @ApiProperty({ description: 'product pk', example: '1' })
-  product_id?: number;
+  product_id?: string;
 
   @ApiProperty({ description: 'نام محصول', example: 'موز' })
   product_name?: string;
 
   @ApiProperty({ description: 'ایدی تامین کننده محصول', example: '2' })
-  supplier_id?: number;
+  supplier_id?: string;
 
   @ApiProperty({
     description: 'مقدار باقی مانده محصول در انبار',
@@ -20,7 +20,7 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'آیدی دسته بندی ',
-    example: '[1, 2, 3]',
+    example: '1',
   })
   category_id?: string;
 
@@ -32,10 +32,13 @@ export class ProductEntity extends ArangoDocument {
   })
   description?: string;
 
-  @ApiProperty({ description: 'قیمت', example: '1000' })
+  @ApiProperty({ description: 'قیمت', example: 1000 })
   price?: number;
 
-  @ApiProperty({ description: 'تاریخ انقضا محصول', example: '2024/12/03' })
+  @ApiProperty({
+    description: 'تاریخ انقضا محصول',
+    example: new Date('1398/12/07'),
+  })
   expiry_date?: Date;
 
   @ApiProperty({ description: 'برند محصول', example: 'چی توز' })
