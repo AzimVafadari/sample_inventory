@@ -16,14 +16,14 @@ export class Buy_orderEntity extends ArangoDocument {
   supplier_id?: string;
 
   @ApiProperty({
-    description: 'وضعیت سفاارش',
+    description: 'وضعیت سفارش',
     example: 'finished',
   })
   status?: string;
 
   @ApiProperty({
     description: 'مقدار خرید',
-    example: '500 کیلو گرم',
+    example: '500 کیلوگرم',
   })
   amount?: string;
 }

@@ -1442,7 +1442,7 @@ append-field@^1.0.0:
 
 arangojs@^8.6.0:
   version "8.6.0"
-  resolved "https://registry.npmjs.org/arangojs/-/arangojs-8.6.0.tgz"
+  resolved "https://registry.yarnpkg.com/arangojs/-/arangojs-8.6.0.tgz#bd3ae5a3cccbdd973d25d46a12f25aa5c5721225"
   integrity sha512-w5pNwYBmzFuOEt6Z1/D7frWpcuq/35UJ2Vpx7pQM2ERAQx44nd/OADfKfR09+hE7onC4czJiFSefd4Rup6ldJQ==
   dependencies:
     "@types/node" ">=14"
