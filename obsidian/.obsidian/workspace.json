@@ -15,50 +15,7 @@
               "state": {
                 "file": "inventory.svg"
               }
-            },
-            "group": "b24a1262e7e12d1d"
-          }
-        ]
-      },
-      {
-        "id": "645329bc1635e1ac",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "80ff764b34f0b7dd",
-            "type": "leaf",
-            "state": {
-              "type": "localgraph",
-              "state": {
-                "file": "inventory.svg",
-                "options": {
-                  "collapse-filter": true,
-                  "search": "",
-                  "localJumps": 1,
-                  "localBacklinks": true,
-                  "localForelinks": true,
-                  "localInterlinks": false,
-                  "showTags": false,
-                  "showAttachments": false,
-                  "hideUnresolved": false,
-                  "collapse-color-groups": true,
-                  "colorGroups": [],
-                  "collapse-display": false,
-                  "showArrow": false,
-                  "textFadeMultiplier": 0,
-                  "nodeSizeMultiplier": 1,
-                  "lineSizeMultiplier": 1,
-                  "collapse-forces": true,
-                  "centerStrength": 0.518713248970312,
-                  "repelStrength": 10,
-                  "linkStrength": 1,
-                  "linkDistance": 250,
-                  "scale": 1,
-                  "close": false
-                }
-              }
-            },
-            "group": "b24a1262e7e12d1d"
+            }
           }
         ]
       }
@@ -187,7 +144,7 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "80ff764b34f0b7dd",
+  "active": "c8d36165cdf58dc4",
   "lastOpenFiles": [
     "Untitled.canvas",
     "Untitled 2.canvas",
