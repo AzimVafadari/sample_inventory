@@ -15,7 +15,7 @@ export class CustomerEntity extends ArangoDocument {
   name?: string;
   @ApiProperty({
     description: ' (0 برای فروش 1 برای خرید)آیدی سفارشات',
-    example: '["11", "02"]',
+    example: ['11', '02'],
   })
   orders_id?: string[];
   @ApiProperty({
