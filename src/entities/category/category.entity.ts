@@ -1,6 +1,5 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-
 @Collection('Categories')
 export class CategoryEntity extends ArangoDocument {
   @ApiProperty({ description: 'آیدی دسته بندی', example: '1' })
