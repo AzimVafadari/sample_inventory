@@ -25,4 +25,10 @@ export class CategoryEntity extends ArangoDocument {
     example: '1',
   })
   parent_id?: string;
+
+  @ApiProperty({
+    description: 'مسیر تا رسیدن به ریشه',
+    example: '1.2.4',
+  })
+  path_to_root?: string;
 }
