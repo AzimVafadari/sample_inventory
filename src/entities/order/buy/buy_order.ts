@@ -4,6 +4,12 @@ import { ArangoDocument, Collection } from 'nest-arango';
 @Collection('buy_orders')
 export class Buy_orderEntity extends ArangoDocument {
   @ApiProperty({
+    description: 'ایدی سفارش',
+    example: '1',
+  })
+  buy_order_id?: string;
+
+  @ApiProperty({
     description: 'ایدی محصول',
     example: '1',
   })
