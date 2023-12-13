@@ -67,7 +67,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "a626b87c62f75485",
@@ -144,7 +144,7 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "c8d36165cdf58dc4",
+  "active": "6ac4fd2811dfa1fe",
   "lastOpenFiles": [
     "Untitled.canvas",
     "Untitled 2.canvas",
