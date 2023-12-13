@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 @Collection('Inventories')
 export class InventoryEntity extends ArangoDocument {
   @ApiProperty({
-    description: 'آیدی مشتری',
+    description: 'آیدی انبار',
     example: '1',
   })
   inventory_id?: string;
