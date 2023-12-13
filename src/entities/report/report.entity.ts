@@ -32,7 +32,7 @@ export class ReportEntity extends ArangoDocument {
   product_id?: string;
   @ApiProperty({
     description: 'تعداد محصول',
-    example: '100',
+    example: '100 عدد',
   })
-  amount?: number;
+  amount?: string;
 }
