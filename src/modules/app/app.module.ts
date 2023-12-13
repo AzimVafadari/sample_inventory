@@ -12,6 +12,9 @@ import { CategoryEntity } from '../../entities/category/category.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../../auth/constants';
 import { AuthService } from '../../auth/auth.service';
+import { ReportEntity } from 'src/entities/report/report.entity';
+import { InventoryEntity } from 'src/entities/inventory/inventory.entity';
+import { CustomerEntity } from 'src/entities/customer/customer.entity';
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -21,7 +24,14 @@ import { AuthService } from '../../auth/auth.service';
         auth: { username: 'root', password: 'azim1383' },
       },
     }),
-    ArangoModule.forFeature([UserEntity, ProductEntity, CategoryEntity]),
+    ArangoModule.forFeature([
+      UserEntity,
+      ProductEntity,
+      CategoryEntity,
+      ReportEntity,
+      InventoryEntity,
+      CustomerEntity,
+    ]),
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
