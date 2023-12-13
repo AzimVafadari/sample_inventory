@@ -5,63 +5,63 @@ import {
   ResultList,
   ArangoNewOldResult,
 } from 'nest-arango';
-import { ProductEntity } from '../../entities/product/product.entity';
+import { SupplierEntity } from '../../entities/supplier/supplier.entity';
 import { MyDatabase } from '../../../database/database';
 import { aql } from 'arangojs';
 @Injectable()
-export class ProductService {
+export class SupplierService {
   constructor(
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: ArangoRepository<ProductEntity>,
+    @InjectRepository(SupplierEntity)
+    private readonly SupplierRepository: ArangoRepository<SupplierEntity>,
   ) {}
 
-  async create(product: ProductEntity): Promise<ProductEntity> {
-    return await this.productRepository.save(product);
+  async create(Supplier: SupplierEntity): Promise<SupplierEntity> {
+    return await this.SupplierRepository.save(Supplier);
   }
 
   async filter() {
-    return await MyDatabase.db.query(aql`
+    return await MyDatabase.getDb().query(aql`
       FOR supplier IN Suppliers
       FILTER supplier.type == "fire"
       RETURN supplier
     `);
   }
 
-  async findAll(): Promise<ResultList<ProductEntity>> {
-    return await this.productRepository.findAll();
+  async findAll(): Promise<ResultList<SupplierEntity>> {
+    return await this.SupplierRepository.findAll();
   }
 
-  async findOne(productName: string): Promise<ProductEntity | null> {
-    return await this.productRepository.findOneBy({ productName });
+  async findOne(SupplierName: string): Promise<SupplierEntity | null> {
+    return await this.SupplierRepository.findOneBy({ SupplierName });
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update(
-    productName: string,
-    updatedproduct: Partial<ProductEntity>,
+    SupplierName: string,
+    updatedSupplier: Partial<SupplierEntity>,
   ): Promise<ArangoNewOldResult<any>> {
-    // Find the existing product
-    const existingProduct = await this.productRepository.findOneBy({
-      productName,
+    // Find the existing Supplier
+    const existingSupplier = await this.SupplierRepository.findManyBy({
+      SupplierName,
     });
 
-    if (!existingProduct) {
+    if (!existingSupplier) {
       throw new NotFoundException(
-        `product with productName ${productName} not found`,
+        `Supplier with SupplierName ${SupplierName} not found`,
       );
     }
 
-    // Update the product fields
-    Object.assign(existingProduct, updatedproduct);
+    // Update the Supplier fields
+    Object.assign(existingSupplier, updatedSupplier);
 
     // Use the `update` method to persist changes
     const updatedDocument =
-      await this.productRepository.update(existingProduct);
+      await this.SupplierRepository.update(existingSupplier);
 
-    // Return the updated product
+    // Return the updated Supplier
     return updatedDocument ? updatedDocument : null;
   }
 
-  async remove(productName: string): Promise<void> {
-    await this.productRepository.removeBy({ productName });
+  async remove(SupplierName: string): Promise<void> {
+    await this.SupplierRepository.removeBy({ SupplierName });
   }
 }
