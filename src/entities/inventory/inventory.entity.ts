@@ -15,12 +15,12 @@ export class InventoryEntity extends ArangoDocument {
   name?: string;
   @ApiProperty({
     description: 'فعال بودن انبار',
-    example: 'true',
+    example: true,
   })
   is_enable?: boolean;
   @ApiProperty({
     description: 'لیست آیدی محصولات',
-    example: '["15", "12"]',
+    example: ['15', '12'],
   })
   products_id?: string[];
   @ApiProperty({

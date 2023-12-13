@@ -2,7 +2,7 @@ import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Collection('Reports')
-export class ReportEntityEntity extends ArangoDocument {
+export class ReportEntity extends ArangoDocument {
   @ApiProperty({ description: 'شماره گزارش', example: '1' })
   report_number?: string;
   @ApiProperty({
