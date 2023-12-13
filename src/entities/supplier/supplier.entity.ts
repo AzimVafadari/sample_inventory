@@ -19,5 +19,5 @@ export class SupplierEntity extends ArangoDocument {
     description: 'شماره همراه تامین کننده',
     example: '09132345632',
   })
-  supplier_telephon_number?: string;
+  supplier_telephone_number?: string;
 }
