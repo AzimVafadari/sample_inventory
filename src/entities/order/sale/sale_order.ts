@@ -31,4 +31,10 @@ export class Sale_orderEntity extends ArangoDocument {
     example: '500 کیلو گرم',
   })
   amount?: string;
+
+  @ApiProperty({
+    description: 'مسیر تا رسیدن به ریشه',
+    example: '1.2.4',
+  })
+  path_to_root?: string;
 }
