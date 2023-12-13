@@ -13,7 +13,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../../auth/constants';
 import { AuthService } from '../../auth/auth.service';
 import { ReportEntity } from 'src/entities/report/report.entity';
-import { InventoryEntity } from 'src/entities/inventory/inventory.entity';
 import { CustomerEntity } from 'src/entities/customer/customer.entity';
 @Module({
   imports: [
@@ -29,7 +28,6 @@ import { CustomerEntity } from 'src/entities/customer/customer.entity';
       ProductEntity,
       CategoryEntity,
       ReportEntity,
-      InventoryEntity,
       CustomerEntity,
     ]),
     JwtModule.register({
