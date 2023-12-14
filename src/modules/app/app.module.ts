@@ -14,6 +14,9 @@ import { jwtConstants } from '../../auth/constants';
 import { AuthService } from '../../auth/auth.service';
 import { ReportEntity } from 'src/entities/report/report.entity';
 import { CustomerEntity } from 'src/entities/customer/customer.entity';
+import { SupplierController } from 'src/controllers/supplier/supplier.controller';
+import { SupplierService } from 'src/services/supplier/supplier.service';
+import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -29,6 +32,7 @@ import { CustomerEntity } from 'src/entities/customer/customer.entity';
       CategoryEntity,
       ReportEntity,
       CustomerEntity,
+      SupplierEntity,
     ]),
     JwtModule.register({
       global: true,
@@ -36,7 +40,18 @@ import { CustomerEntity } from 'src/entities/customer/customer.entity';
       signOptions: { expiresIn: '600s' },
     }),
   ],
-  controllers: [UserController, ProductController, CategoryController],
-  providers: [UserService, ProductService, CategoryService, AuthService],
+  controllers: [
+    UserController,
+    ProductController,
+    CategoryController,
+    SupplierController,
+  ],
+  providers: [
+    UserService,
+    ProductService,
+    CategoryService,
+    AuthService,
+    SupplierService,
+  ],
 })
 export class AppModule {}

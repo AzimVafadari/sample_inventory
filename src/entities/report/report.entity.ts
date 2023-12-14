@@ -38,11 +38,7 @@ export class ReportEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'تعداد محصول',
-<<<<<<< HEAD
-    example: '100 کیلو گرم',
-=======
     example: '100 عدد',
->>>>>>> 0c80e1523ab020e0521da450bdeb0fe93ad19ed8
   })
   amount?: string;
 }

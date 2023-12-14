@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArangoDocument, Collection } from 'nest-arango';
 
-@Collection('suppliers')
+@Collection('Suppliers')
 export class SupplierEntity extends ArangoDocument {
   @ApiProperty({
     description: 'ایدی تامین کننده',
