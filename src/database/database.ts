@@ -1,8 +1,8 @@
 import { Database } from 'arangojs';
 export class MyDatabase {
   private static db = new Database({
-    url: 'http://127.0.0.1:8529',
-    databaseName: '_SYSTEM',
+    url: 'http://localhost:8529',
+    databaseName: '_system',
     auth: { username: 'root', password: 'azim1383' },
   });
   getCollection(collection_name: string) {
