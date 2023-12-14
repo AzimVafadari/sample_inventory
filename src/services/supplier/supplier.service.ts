@@ -18,10 +18,10 @@ export class SupplierService {
   `);
     const isExist = cursor.all();
     if ((await isExist).length > 0) {
-      return await { eror: 'user already exist' };
+      return { erorr: 'user already exist' };
     } else {
       await this.supplierRepository.save(supplier);
-      return await { result: 'the supplier is created' };
+      return { result: 'the supplier is created' };
     }
   }
   async findAll(): Promise<ResultList<SupplierEntity>> {
