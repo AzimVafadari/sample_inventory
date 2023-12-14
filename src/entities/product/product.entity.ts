@@ -9,8 +9,8 @@ export class ProductEntity extends ArangoDocument {
   @ApiProperty({ description: 'نام محصول', example: 'موز' })
   product_name?: string;
 
-  @ApiProperty({ description: 'ایدی تامین کننده محصول', example: 2 })
-  supplier_id?: number;
+  @ApiProperty({ description: 'ایدی تامین کننده محصول', example: '2' })
+  supplier_id?: string;
 
   @ApiProperty({
     description: 'مقدار باقی مانده محصول در انبار',
@@ -20,7 +20,7 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'آیدی دسته بندی ',
-    example: '5',
+    example: '1',
   })
   category_id?: string;
 
