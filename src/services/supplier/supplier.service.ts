@@ -1,67 +1,58 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  InjectRepository,
-  ArangoRepository,
-  ResultList,
-  ArangoNewOldResult,
-} from 'nest-arango';
-import { SupplierEntity } from '../../entities/supplier/supplier.entity';
-import { MyDatabase } from '../../database/database';
+import { Injectable } from '@nestjs/common';
 import { aql } from 'arangojs';
+import { ArangoRepository, InjectRepository, ResultList } from 'nest-arango';
+import { MyDatabase } from 'src/database/database';
+import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
+
 @Injectable()
 export class SupplierService {
   constructor(
     @InjectRepository(SupplierEntity)
-    private readonly SupplierRepository: ArangoRepository<SupplierEntity>,
+    private readonly supplierRepository: ArangoRepository<SupplierEntity>,
   ) {}
-
-  async create(Supplier: SupplierEntity): Promise<SupplierEntity> {
-    return await this.SupplierRepository.save(Supplier);
-  }
-
-  async filter() {
-    return await MyDatabase.getDb().query(aql`
-      FOR supplier IN Suppliers
-      FILTER supplier.type == "fire"
-      RETURN supplier
-    `);
-  }
-
-  async findAll(): Promise<ResultList<SupplierEntity>> {
-    return await this.SupplierRepository.findAll();
-  }
-
-  async findOne(SupplierName: string): Promise<SupplierEntity | null> {
-    return await this.SupplierRepository.findOneBy({ SupplierName });
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async update(
-    SupplierName: string,
-    updatedSupplier: Partial<SupplierEntity>,
-  ): Promise<ArangoNewOldResult<any>> {
-    // Find the existing Supplier
-    const existingSupplier = await this.SupplierRepository.findManyBy({
-      SupplierName,
-    });
-
-    if (!existingSupplier) {
-      throw new NotFoundException(
-        `Supplier with SupplierName ${SupplierName} not found`,
-      );
+  async create(supplier: SupplierEntity): Promise<object> {
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR supplier IN Suppliers
+    FILTER supplier.supplier_id == ${supplier.supplier_id}
+    RETURN supplier
+  `);
+    const isExist = cursor.all();
+    if ((await isExist).length > 0) {
+      return await { eror: 'user already exist' };
+    } else {
+      await this.supplierRepository.save(supplier);
+      return await { result: 'the supplier is created' };
     }
-
-    // Update the Supplier fields
-    Object.assign(existingSupplier, updatedSupplier);
-
-    // Use the `update` method to persist changes
-    const updatedDocument =
-      await this.SupplierRepository.update(existingSupplier);
-
-    // Return the updated Supplier
-    return updatedDocument ? updatedDocument : null;
+  }
+  async findAll(): Promise<ResultList<SupplierEntity>> {
+    return await this.supplierRepository.findAll();
+  }
+  async update(
+    supplierName: string,
+    updatedSupplier: Partial<SupplierEntity>,
+  ): Promise<object> {
+    const existingSupplier = await this.supplierRepository.findOneBy({
+      supplierName,
+    });
+    if (!existingSupplier) {
+      return { error: 'user not found' };
+    } else {
+      Object.assign(existingSupplier, updatedSupplier);
+      await this.supplierRepository.update(existingSupplier);
+      return { result: 'this user updated' };
+    }
+  }
+  async remove(supplier_id: string): Promise<SupplierEntity> {
+    const document = await this.supplierRepository.removeBy({ supplier_id });
+    return document as SupplierEntity;
   }
 
-  async remove(SupplierName: string): Promise<void> {
-    await this.SupplierRepository.removeBy({ SupplierName });
+  async findOne(productName: string): Promise<SupplierEntity | object> {
+    const is_deleted = await this.supplierRepository.findOneBy({ productName });
+    if (is_deleted === undefined) {
+      return { error: 'this user  doesnt exist' };
+    } else {
+      return is_deleted as SupplierEntity;
+    }
   }
 }
