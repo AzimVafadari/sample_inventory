@@ -49,10 +49,10 @@ export class CategoryController {
     @UploadedFile() image: Express.Multer.File,
     @Body() category: CategoryEntity,
   ) {
-    category.imageId = uuidv4();
+    category.image_id = uuidv4();
     const folderPath: string = './images/';
     const imageBuffer = image.buffer;
-    const imagePath = path.join(folderPath, `${category.imageId}.jpg`);
+    const imagePath = path.join(folderPath, `${category.image_id}.jpg`);
     await fs.writeFile(imagePath, imageBuffer);
     return await this.categoryService.create(category);
   }

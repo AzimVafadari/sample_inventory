@@ -6,7 +6,7 @@ import {
   ArangoNewOldResult,
 } from 'nest-arango';
 import { SupplierEntity } from '../../entities/supplier/supplier.entity';
-import { MyDatabase } from '../../../database/database';
+import { MyDatabase } from '../../database/database';
 import { aql } from 'arangojs';
 @Injectable()
 export class SupplierService {

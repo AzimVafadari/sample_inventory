@@ -14,7 +14,7 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'مقدار باقی مانده محصول در انبار',
-    example: '5 کیلو گرم',
+    example: '5 کیلوگرم',
   })
   balance?: string;
 
@@ -37,7 +37,7 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'تاریخ انقضا محصول',
-    example: new Date('1398/12/07'),
+    example: new Date('2023-12-31'),
   })
   expiry_date?: Date;
 
