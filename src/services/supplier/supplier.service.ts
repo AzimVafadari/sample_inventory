@@ -18,7 +18,7 @@ export class SupplierService {
   `);
     const isExist = cursor.all();
     if ((await isExist).length > 0) {
-      return { erorr: 'user already exist' };
+      return { error: 'user already exist' };
     } else {
       await this.supplierRepository.save(supplier);
       return { result: 'the supplier is created' };
@@ -27,32 +27,42 @@ export class SupplierService {
   async findAll(): Promise<ResultList<SupplierEntity>> {
     return await this.supplierRepository.findAll();
   }
-  async update(
-    supplierName: string,
-    updatedSupplier: Partial<SupplierEntity>,
-  ): Promise<object> {
-    const existingSupplier = await this.supplierRepository.findOneBy({
-      supplierName,
-    });
-    if (!existingSupplier) {
-      return { error: 'user not found' };
+  async update(updatedSupplier: SupplierEntity): Promise<object> {
+    //This query is better that be updated later...
+    const updatedDocument = await MyDatabase.getDb().query(aql`
+        FOR sup IN Suppliers 
+        FILTER sup.supplier_id == ${updatedSupplier.supplier_id}
+        UPDATE sup._key WITH ${updatedSupplier} IN Suppliers
+        RETURN OLD
+    `);
+    const isUpdated = await updatedDocument.next();
+    if (isUpdated) {
+      return { message: 'The supplier is successfully updated.' };
     } else {
-      Object.assign(existingSupplier, updatedSupplier);
-      await this.supplierRepository.update(existingSupplier);
-      return { result: 'this user updated' };
+      return { error: 'Supplier not found' };
     }
-  }
-  async remove(supplier_id: string): Promise<SupplierEntity> {
-    const document = await this.supplierRepository.removeBy({ supplier_id });
-    return document as SupplierEntity;
   }
 
-  async findOne(productName: string): Promise<SupplierEntity | object> {
-    const is_deleted = await this.supplierRepository.findOneBy({ productName });
-    if (is_deleted === undefined) {
+  async remove(supplierId: string): Promise<object> {
+    const stringSI = supplierId;
+    console.log(`${stringSI} + 1`);
+    const deletedDocument = await MyDatabase.getDb().query(aql`
+    FOR sup IN Suppliers 
+    FILTER sup.supplier_id == "2"
+    REMOVE sup IN Suppliers
+    RETURN OLD
+    `);
+    const isDeleted = deletedDocument.next();
+    // console.log(isDeleted);
+    if (!isDeleted) {
       return { error: 'this user  doesnt exist' };
     } else {
-      return is_deleted as SupplierEntity;
+      return isDeleted;
     }
+  }
+
+  async findOne(supplierName: string): Promise<SupplierEntity | object> {
+    const document = await this.supplierRepository.findOneBy({ supplierName });
+    return document;
   }
 }
