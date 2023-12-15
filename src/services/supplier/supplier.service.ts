@@ -42,22 +42,19 @@ export class SupplierService {
       return { error: 'Supplier not found' };
     }
   }
-
   async remove(supplierId: string): Promise<object> {
-    const stringSI = supplierId;
-    console.log(`${stringSI} + 1`);
+    //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
-    FOR sup IN Suppliers 
-    FILTER sup.supplier_id == "2"
+    FOR sup IN Suppliers
+    FILTER sup.supplier_id == ${supplierId}
     REMOVE sup IN Suppliers
     RETURN OLD
     `);
     const isDeleted = deletedDocument.next();
-    // console.log(isDeleted);
-    if (!isDeleted) {
+    if (isDeleted != undefined) {
       return { error: 'this user  doesnt exist' };
     } else {
-      return isDeleted;
+      return { result: 'supplier successfully deleted' };
     }
   }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiOperation } from '@nestjs/swagger';
 import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
 import { SupplierService } from 'src/services/supplier/supplier.service';
@@ -31,11 +31,11 @@ export class SupplierController {
     return await this.supplierService.update(updatedSupplier);
   }
   //This method remove the supplier if it does exist and returns an object
-  @Delete()
+  @Delete(':supplier_id')
   @ApiOperation({
     summary: 'حذف تامین کننده به وسیله آیدی آن',
   })
-  async deleteSupplier(@Body() supplier_id: string) {
+  async deleteSupplier(@Param('supplier_id') supplier_id: string) {
     return await this.supplierService.remove(supplier_id);
   }
 }
