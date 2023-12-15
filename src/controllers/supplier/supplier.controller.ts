@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
 import { SupplierService } from 'src/services/supplier/supplier.service';
@@ -37,5 +45,12 @@ export class SupplierController {
   })
   async deleteSupplier(@Param('supplier_id') supplier_id: string) {
     return await this.supplierService.remove(supplier_id);
+  }
+  @Get(':supplierName')
+  @ApiOperation({
+    summary: 'دریافت یک تامین کننده به وسیله نام آن',
+  })
+  async findSupplier(@Param('supplierName') supplierName: string) {
+    return await this.supplierService.findOne(supplierName);
   }
 }

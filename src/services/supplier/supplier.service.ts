@@ -58,8 +58,19 @@ export class SupplierService {
     }
   }
 
-  async findOne(supplierName: string): Promise<SupplierEntity | object> {
-    const document = await this.supplierRepository.findOneBy({ supplierName });
-    return document;
+  async findOne(supplierName: string): Promise<object> {
+    //This query search all suppliers that their name starts with supplierName
+    //ChatGPT did this query
+    const supplier = await MyDatabase.getDb().query(aql`
+    FOR supplier IN Suppliers
+    FILTER LIKE(supplier.supplier_name, CONCAT(${supplierName}, '%'))
+    RETURN supplier
+    `);
+    const isExist = supplier.all();
+    if ((await isExist).length > 0 && supplierName !== '.') {
+      return isExist;
+    } else {
+      return { error: 'supplier not found' };
+    }
   }
 }
