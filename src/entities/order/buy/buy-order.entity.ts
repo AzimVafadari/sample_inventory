@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ArangoDocument, Collection } from 'nest-arango';
 
 @Collection('buy_orders')
-export class Buy_orderEntity extends ArangoDocument {
+export class BuyOrderEntity extends ArangoDocument {
   @ApiProperty({
     description: 'ایدی سفارش',
     example: '1',
