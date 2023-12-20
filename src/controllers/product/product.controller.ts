@@ -17,7 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import path from 'path';
 import fs from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
-@Controller('products')
+@Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
   @Post()
@@ -27,10 +27,34 @@ export class ProductController {
     schema: {
       type: 'object',
       properties: {
-        name: {
+        product_id: {
+          type: 'string',
+          description: 'product pk',
+          example: '1',
+        },
+        product_name: {
           type: 'string',
           description: 'نام محصول',
           example: 'موز',
+        },
+        supplier_id: {
+          type: 'string',
+          description: 'ایدی تامین کننده محصول',
+          example: '2',
+        },
+        balance: {
+          type: 'string',
+          description: 'مقدار باقی مانده محصول در انبار',
+          example: '5 کیلوگرم',
+        },
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+        category_id: {
+          type: 'string',
+          description: 'آیدی دسته بندی',
+          example: '1',
         },
         description: {
           type: 'string',
@@ -40,70 +64,22 @@ export class ProductController {
         price: {
           type: 'number',
           description: 'قیمت',
-          example: '1000',
-        },
-        priceScale: {
-          type: 'string',
-          description: 'مقیاس قیمت',
-          example: 'کیلوگرم',
-        },
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-        categoriesId: {
-          type: 'string',
-          format: 'array',
-          description: 'آیدی دسته بندی ها',
-          example: '[1, 2, 3]',
-        },
-        initial_balance: {
-          type: 'number',
-          description: 'موجودی اولیه',
-          example: '20',
-        },
-        current_balance: {
-          type: 'number',
-          description: 'موجودی فعلی',
-          example: '10',
+          example: 1000,
         },
         expiry_date: {
           type: 'date',
           description: 'تاریخ انقضا محصول',
-          example: '2024/12/03',
-        },
-        comments: {
-          type: 'date',
-          format: 'array',
-          description: 'نظرات',
-          example: '["این محصول برای فصل زمستان هست"]',
-        },
-        product_code: {
-          type: 'string',
-          description: 'کد محصول',
-          example: 'GFD58LIBGDX2DS5V',
-        },
-        related_products: {
-          type: 'string',
-          format: 'array',
-          description: 'محصولات مرتبط',
-          example: '[پرتقال ,ماهی]',
+          example: new Date('2023-12-31'),
         },
         brand: {
           type: 'string',
           description: 'برند محصول',
           example: 'چی توز',
         },
-        alternative_products: {
-          type: 'string',
-          format: 'array',
-          description: 'محصولات جایگزین',
-          example: '[انار ,سیب]',
-        },
       },
     },
   })
-  async createCategory(
+  async createProduct(
     @UploadedFile() image: Express.Multer.File,
     @Body() product: ProductEntity,
   ) {

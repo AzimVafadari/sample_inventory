@@ -19,7 +19,7 @@ export class ProductEntity extends ArangoDocument {
   balance?: string;
 
   @ApiProperty({
-    description: 'آیدی دسته بندی ',
+    description: 'آیدی دسته بندی',
     example: '1',
   })
   category_id?: string;

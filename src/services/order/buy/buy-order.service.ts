@@ -4,6 +4,7 @@ import { ArangoRepository, InjectRepository, ResultList } from 'nest-arango';
 import { MyDatabase } from 'src/database/database';
 import { BuyOrderEntity } from '../../../entities/order/buy/buy-order.entity';
 import { ProductEntity } from '../../../entities/product/product.entity';
+
 @Injectable()
 export class BuyOrderService {
   constructor(
@@ -13,20 +14,15 @@ export class BuyOrderService {
   //This method create a buy order if it doesn't exist
   async create(buyOrder: BuyOrderEntity): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
-    FOR buyOrder IN BuyOrders
-    FILTER buyOrder.buyOrder_id == ${buyOrder.buy_order_id}
-    RETURN buyOrder
+    FOR bo IN BuyOrders
+    FILTER bo.buy_order_id == ${buyOrder.buy_order_id}
+    RETURN bo
   `);
     const isExist = cursor.all();
     if ((await isExist).length > 0) {
       return { error: 'buyOrder already exist' };
     } else {
-      const productIsExist = await MyDatabase.isExist(
-        'Products',
-        'product_id',
-        buyOrder.product_id,
-      );
-      if (productIsExist) {
+      if (await MyDatabase.productIsExist(buyOrder.product_id)) {
         //Update product by new balance
         const product = await MyDatabase.getDb().query(aql`
         FOR product in Products
@@ -36,8 +32,7 @@ export class BuyOrderService {
         const p: ProductEntity = await product.next();
         const scale: string[] = p.balance.split(' ');
         const newBalance = parseInt(p.balance) + parseInt(buyOrder.amount);
-        const nb = `${newBalance} ${scale[0]}`;
-        p.balance = nb;
+        p.balance = `${newBalance} ${scale[1]}`;
         await MyDatabase.getDb().query(aql`
         FOR p IN Products 
         FILTER p.product_id == ${p.product_id}

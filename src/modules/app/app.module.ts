@@ -35,6 +35,8 @@ import { ReportService } from 'src/services/report/report.service';
       ReportEntity,
       CustomerEntity,
       SupplierEntity,
+      BuyOrderEntity,
+      SaleOrderEntity,
     ]),
     JwtModule.register({
       global: true,
