@@ -50,11 +50,11 @@ export class SupplierService {
     REMOVE sup IN Suppliers
     RETURN OLD
     `);
-    const isDeleted = deletedDocument.next();
-    if (isDeleted != undefined) {
-      return { error: 'this user  doesnt exist' };
+    const isDeleted = await deletedDocument.all();
+    if (isDeleted.length > 0) {
+      return { message: 'supplier successfully deleted' };
     } else {
-      return { result: 'supplier successfully deleted' };
+      return { error: 'supplier not found' };
     }
   }
 
