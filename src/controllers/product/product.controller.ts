@@ -14,8 +14,8 @@ import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { ProductService } from '../../services/product/product.service';
 import { ProductEntity } from '../../entities/product/product.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
-import path from 'path';
-import fs from 'fs/promises';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 @Controller('product')
 export class ProductController {

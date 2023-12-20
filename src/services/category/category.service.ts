@@ -34,7 +34,7 @@ export class CategoryService {
     //ChatGPT did this query
     const category = await MyDatabase.getDb().query(aql`
     FOR category IN Categories
-    FILTER LIKE(category.name, CONCAT(${categoryName}, '%'))
+    FILTER LIKE(category.category_name, CONCAT(${categoryName}, '%'))
     RETURN category
     `);
     const isExist = category.all();
@@ -61,6 +61,12 @@ export class CategoryService {
   }
 
   async remove(categoryId: string): Promise<object> {
+    //Find category
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR cat IN Categories
+    FILTER cat.category_id == ${categoryId}
+    RETURN cat
+    `);
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
@@ -69,8 +75,36 @@ export class CategoryService {
     RETURN OLD
     `);
     const isDeleted = await deletedDocument.all();
+    const category: CategoryEntity = await cursor.next();
     if (isDeleted.length > 0) {
-      return { message: 'category successfully deleted' };
+      //Get children of the category
+      const cursor = await MyDatabase.getDb().query(aql`
+       FOR category IN Categories
+       FILTER LIKE(category.path_to_root, CONCAT(${category.path_to_root}, '%'))
+       RETURN category
+      `);
+      const categories = await cursor.all();
+      for (const c of categories) {
+        //Delete all products of category children
+        await MyDatabase.getDb().query(aql`
+        FOR p IN Products
+        FILTER p.category_id == ${c.category_id}
+        REMOVE p IN Products
+        `);
+      }
+      //Delete all children of the category
+      await MyDatabase.getDb().query(aql`
+       FOR category IN Categories
+       FILTER LIKE(category.path_to_root, CONCAT(${category.path_to_root}, '%'))
+       REMOVE category IN Categories
+      `);
+      //Delete the products of category
+      await MyDatabase.getDb().query(aql`
+        FOR p IN Products
+        FILTER p.category_id == ${category.category_id}
+        REMOVE p IN Products
+        `);
+      return { message: 'category and its products successfully deleted' };
     } else {
       return { error: 'category not found' };
     }
