@@ -45,14 +45,50 @@ export class ReportService {
     }
   }
 
-  async findBasedOnType(type: string) {
+  async findBasedOnType(type: string): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
     FOR report IN Reports
     FILTER report.type == ${type}
     RETURN report
     `);
-    return cursor.all();
+    const reports = cursor.all();
+    if ((await reports).length > 0) {
+      return reports;
+    } else {
+      return { error: 'no report found' };
+    }
   }
-
-  
+  async findBasedOnDate(startDate: Date, endDate: Date): Promise<object> {
+    const cursor = await MyDatabase.getDb().query(aql`
+        FOR report in Reports
+        FILTER DATE_TIMESTAMP(report.date) >= ${startDate}
+        FILTER DATE_TIMESTAMP(report.date) <= ${endDate}
+        RETURN report
+    `);
+    const reports = cursor.all();
+    if ((await reports).length > 0) {
+      return reports;
+    } else {
+      return { error: 'no report found' };
+    }
+  }
+  async findBasedOnDateAndType(
+    startDate: Date,
+    endDate: Date,
+    type: string,
+  ): Promise<object> {
+    const cursor = await MyDatabase.getDb().query(aql`
+        FOR report in Reports
+        FILTER DATE_TIMESTAMP(report.date) >= ${startDate}
+        FILTER DATE_TIMESTAMP(report.date) <= ${endDate}
+        FILTER report.type == ${type}
+        RETURN report
+    `);
+    const reports = cursor.all();
+    if ((await reports).length > 0) {
+      return reports;
+    } else {
+      return { error: 'no report found' };
+    }
+  }
 }
