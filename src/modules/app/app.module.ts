@@ -21,6 +21,8 @@ import { BuyOrderEntity } from '../../entities/order/buy/buy-order.entity';
 import { SaleOrderEntity } from '../../entities/order/sale/sale-order.entity';
 import { BuyOrderController } from '../../controllers/order/buy-order/buy-order.controller';
 import { BuyOrderService } from '../../services/order/buy/buy-order.service';
+import { ReportController } from 'src/controllers/report/report.controller';
+import { ReportService } from 'src/services/report/report.service';
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -51,7 +53,7 @@ import { BuyOrderService } from '../../services/order/buy/buy-order.service';
     ProductController,
     CategoryController,
     SupplierController,
-    BuyOrderController,
+    ReportController,
   ],
   providers: [
     UserService,
@@ -59,7 +61,7 @@ import { BuyOrderService } from '../../services/order/buy/buy-order.service';
     CategoryService,
     AuthService,
     SupplierService,
-    BuyOrderService,
+    ReportService,
   ],
 })
 export class AppModule {}
