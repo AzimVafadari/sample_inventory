@@ -26,23 +26,23 @@ export class ReportService {
     }
   }
 
-  async findAll(): Promise<ResultList<ReportEntity>> {
-    return await this.reportRepository.findAll();
-  }
-
   async remove(report_id: string): Promise<object> {
     const deletedDocument = await MyDatabase.getDb().query(aql`
-    FOR report IN Reports
-    FILTER report.report_id == ${report_id}
-    REMOVE report IN Reports
-    RETURN OLD
-    `);
+      FOR report IN Reports
+      FILTER report.report_id == ${report_id}
+      REMOVE report IN Reports
+      RETURN OLD
+      `);
     const Deleted = deletedDocument.all();
     if ((await Deleted).length > 0) {
       return Deleted;
     } else {
       return { error: 'report doesnt exist' };
     }
+  }
+
+  async findAll(): Promise<ResultList<ReportEntity>> {
+    return await this.reportRepository.findAll();
   }
 
   async findBasedOnType(type: string): Promise<object> {
@@ -97,6 +97,26 @@ export class ReportService {
     FOR report IN Reports
     FILTER report.product_id == ${product_id}
     RETURN report
+    `);
+    const reports = cursor.all();
+    if ((await reports).length > 0) {
+      return reports;
+    } else {
+      return { error: 'no report found' };
+    }
+  }
+
+  async findBasedOnProductIdAndDate(
+    startDate: Date,
+    endDate: Date,
+    product_id: string,
+  ): Promise<object> {
+    const cursor = await MyDatabase.getDb().query(aql`
+        FOR report in Reports
+        FILTER DATE_TIMESTAMP(report.date) >= ${startDate}
+        FILTER DATE_TIMESTAMP(report.date) <= ${endDate}
+        FILTER report.type == ${product_id}
+        RETURN report
     `);
     const reports = cursor.all();
     if ((await reports).length > 0) {
