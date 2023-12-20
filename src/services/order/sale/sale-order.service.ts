@@ -43,8 +43,9 @@ export class SaleOrderService {
           FILTER p.product_id == ${p.product_id}
           UPDATE p._key WITH ${p} IN Products
           `);
-          const sizeOfReportCollection =
-            MyDatabase.getDb().collection('Reports').properties.length;
+          const sizeOfReportCollection = await MyDatabase.getDb()
+            .collection('Reports')
+            .count();
           //Find customer
           const customer = await MyDatabase.getDb().query(aql`
           FOR c IN Customers
@@ -52,9 +53,10 @@ export class SaleOrderService {
           RETURN c
           `);
           const c: CustomerEntity = await customer.next();
+          if (c === undefined) return { result: 'customer does not exist' };
           const report: ReportEntity = {
-            report_id: `${sizeOfReportCollection + 1}`,
-            title: 'سفارش فروش به' + c.name,
+            report_id: `${sizeOfReportCollection.count + 1}`,
+            title: 'سفارش فروش به ' + c.name,
             description: 'این سفارش مربوط به فروش است',
             date: new Date('2023-11-29'),
             type: 'فروش',
