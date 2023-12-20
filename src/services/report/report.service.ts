@@ -25,8 +25,34 @@ export class ReportService {
       return { result: 'the report is created' };
     }
   }
+
   async findAll(): Promise<ResultList<ReportEntity>> {
     return await this.reportRepository.findAll();
   }
+
+  async remove(report_id: string): Promise<object> {
+    const deletedDocument = await MyDatabase.getDb().query(aql`
+    FOR report IN Reports
+    FILTER report.report_id == ${report_id}
+    REMOVE report IN Reports
+    RETURN OLD
+    `);
+    const Deleted = deletedDocument.all();
+    if ((await Deleted).length > 0) {
+      return Deleted;
+    } else {
+      return { error: 'report doesnt exist' };
+    }
+  }
+
+  async findBasedOnStatus(type: string) {
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR report IN Reports
+    FILTER report.type == ${type}
+    RETURN report
+    `);
+    return cursor.all();
+  }
+
   
 }
