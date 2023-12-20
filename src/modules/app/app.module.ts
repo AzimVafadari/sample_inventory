@@ -17,6 +17,8 @@ import { CustomerEntity } from 'src/entities/customer/customer.entity';
 import { SupplierController } from 'src/controllers/supplier/supplier.controller';
 import { SupplierService } from 'src/services/supplier/supplier.service';
 import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
+import { ReportController } from 'src/controllers/report/report.controller';
+import { ReportService } from 'src/services/report/report.service';
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -45,6 +47,7 @@ import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
     ProductController,
     CategoryController,
     SupplierController,
+    ReportController,
   ],
   providers: [
     UserService,
@@ -52,6 +55,7 @@ import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
     CategoryService,
     AuthService,
     SupplierService,
+    ReportService,
   ],
 })
 export class AppModule {}
