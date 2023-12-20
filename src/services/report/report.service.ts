@@ -91,4 +91,18 @@ export class ReportService {
       return { error: 'no report found' };
     }
   }
+
+  async findBasedOnProductId(product_id: string): Promise<object> {
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR report IN Reports
+    FILTER report.product_id == ${product_id}
+    RETURN report
+    `);
+    const reports = cursor.all();
+    if ((await reports).length > 0) {
+      return reports;
+    } else {
+      return { error: 'no report found' };
+    }
+  }
 }
