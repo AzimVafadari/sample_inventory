@@ -11,21 +11,13 @@ export class MyDatabase {
   static getDb() {
     return MyDatabase.db;
   }
-  static async isExist(
-    collectionName: string,
-    property: string,
-    value: string,
-  ): Promise<boolean> {
+  static async productIsExist(value: string): Promise<boolean> {
     const cursor = await this.getDb().query(aql`
-    FOR e IN ${collectionName}
-    FILTER e.${property} == e.${value}
-    RETURN e
+    FOR p IN Products
+    FILTER p.product_id == ${value}
+    RETURN p
   `);
     const isExist = cursor.all();
-    if ((await isExist).length > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return (await isExist).length > 0;
   }
 }

@@ -17,6 +17,10 @@ import { CustomerEntity } from 'src/entities/customer/customer.entity';
 import { SupplierController } from 'src/controllers/supplier/supplier.controller';
 import { SupplierService } from 'src/services/supplier/supplier.service';
 import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
+import { BuyOrderEntity } from '../../entities/order/buy/buy-order.entity';
+import { SaleOrderEntity } from '../../entities/order/sale/sale-order.entity';
+import { BuyOrderController } from '../../controllers/order/buy-order/buy-order.controller';
+import { BuyOrderService } from '../../services/order/buy/buy-order.service';
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -33,6 +37,8 @@ import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
       ReportEntity,
       CustomerEntity,
       SupplierEntity,
+      BuyOrderEntity,
+      SaleOrderEntity,
     ]),
     JwtModule.register({
       global: true,
@@ -45,6 +51,7 @@ import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
     ProductController,
     CategoryController,
     SupplierController,
+    BuyOrderController,
   ],
   providers: [
     UserService,
@@ -52,6 +59,7 @@ import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
     CategoryService,
     AuthService,
     SupplierService,
+    BuyOrderService,
   ],
 })
 export class AppModule {}

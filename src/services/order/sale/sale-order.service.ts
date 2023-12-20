@@ -22,12 +22,7 @@ export class saleOrderService {
     if ((await isExist).length > 0) {
       return { error: 'saleOrder already exist' };
     } else {
-      const productIsExist = await MyDatabase.isExist(
-        'Products',
-        'product_id',
-        saleOrder.product_id,
-      );
-      if (productIsExist) {
+      if (await MyDatabase.productIsExist(saleOrder.product_id)) {
         //Update product by new balance
         const product = await MyDatabase.getDb().query(aql`
         FOR product in Products
@@ -38,8 +33,7 @@ export class saleOrderService {
         if (parseInt(p.balance) >= parseInt(saleOrder.amount)) {
           const newBalance = parseInt(p.balance) - parseInt(saleOrder.amount);
           const scale: string[] = p.balance.split(' ');
-          const nb = `${newBalance} ${scale[0]}`;
-          p.balance = nb;
+          p.balance = `${newBalance} ${scale[1]}`;
           await MyDatabase.getDb().query(aql`
           FOR p IN Products 
           FILTER p.product_id == ${p.product_id}
