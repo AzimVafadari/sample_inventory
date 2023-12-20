@@ -56,7 +56,7 @@ export class SaleOrderController {
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله آیدی محصول آن',
   })
-  async findsaleOrderByProductId(@Param('productId') productId: string) {
+  async findSaleOrderByProductId(@Param('productId') productId: string) {
     return await this.saleOrderService.findManyByProductId(productId);
   }
   @Get(':customerId')

@@ -17,7 +17,7 @@ export class BuyOrderController {
   //This method creates buyOrder if it doesn't exist and returns an object that says the status of creation
   @Post()
   @ApiOperation({
-    summary: 'ایجاد تامین کننده',
+    summary: 'ایجاد سفارش خرید',
   })
   async createBuyOrder(@Body() buyOrder: BuyOrderEntity) {
     return await this.buyOrderService.create(buyOrder);
@@ -25,7 +25,7 @@ export class BuyOrderController {
   //This method is created to receive all buyOrders
   @Get()
   @ApiOperation({
-    summary: 'دریافت تمامی تامین کنندگان',
+    summary: 'دریافت تمامی سفارش های خرید',
   })
   async getAllBuyOrders() {
     return await this.buyOrderService.findAll();
@@ -33,36 +33,36 @@ export class BuyOrderController {
   //This method update the buyOrder by its updated form and returns an object that says the update status
   @Put()
   @ApiOperation({
-    summary: 'ویرایش یک تامین کننده به وسیله نام آن',
+    summary: 'ویرایش یک سفارش خرید',
   })
-  async updatebuyOrder(@Body() updatedbuyOrder: BuyOrderEntity) {
-    return await this.buyOrderService.update(updatedbuyOrder);
+  async updateBuyOrder(@Body() updatedBuyOrder: BuyOrderEntity) {
+    return await this.buyOrderService.update(updatedBuyOrder);
   }
   //This method remove the buyOrder if it does exist and returns an object
   @Delete(':buyOrder_id')
   @ApiOperation({
-    summary: 'حذف تامین کننده به وسیله آیدی آن',
+    summary: 'حذف سفارش خرید',
   })
   async deleteBuyOrder(@Param('buyOrder_id') buyOrder_id: string) {
     return await this.buyOrderService.remove(buyOrder_id);
   }
   @Get(':status')
   @ApiOperation({
-    summary: 'دریافت یک تامین کننده به وسیله نام آن',
+    summary: 'دریافت یک سفارش خرید به وسیله وضعیت آن',
   })
   async findBuyOrderByStatus(@Param('status') status: string) {
     return await this.buyOrderService.findManyByStatus(status);
   }
   @Get(':productId')
   @ApiOperation({
-    summary: 'دریافت یک تامین کننده به وسیله نام آن',
+    summary: 'دریافت یک سفارش خرید به وسیله آیدی محصول آن',
   })
   async findBuyOrderByProductId(@Param('productId') productId: string) {
     return await this.buyOrderService.findManyByProductId(productId);
   }
   @Get(':supplierId')
   @ApiOperation({
-    summary: 'دریافت یک تامین کننده به وسیله نام آن',
+    summary: 'دریافت یک سفارش خرید کننده به وسیله آیدی تامین کننده آن',
   })
   async findBuyOrderBySupplierId(@Param('supplierId') supplierId: string) {
     return await this.buyOrderService.findManyBySupplierId(supplierId);
