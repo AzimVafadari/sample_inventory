@@ -4,12 +4,16 @@ import { ArangoRepository, InjectRepository, ResultList } from 'nest-arango';
 import { MyDatabase } from 'src/database/database';
 import { BuyOrderEntity } from '../../../entities/order/buy/buy-order.entity';
 import { ProductEntity } from '../../../entities/product/product.entity';
+import { ReportEntity } from '../../../entities/report/report.entity';
+import { SupplierEntity } from '../../../entities/supplier/supplier.entity';
+import { ReportService } from '../../report/report.service';
 
 @Injectable()
 export class BuyOrderService {
   constructor(
     @InjectRepository(BuyOrderEntity)
     private readonly buyOrderRepository: ArangoRepository<BuyOrderEntity>,
+    private readonly reportService: ReportService,
   ) {}
   //This method create a buy order if it doesn't exist
   async create(buyOrder: BuyOrderEntity): Promise<object> {
@@ -41,6 +45,26 @@ export class BuyOrderService {
       } else {
         return { result: 'Please first create the product' };
       }
+      const sizeOfReportCollection =
+        MyDatabase.getDb().collection('Reports').properties.length;
+      //Find customer
+      const supplier = await MyDatabase.getDb().query(aql`
+          FOR s IN Suppliers
+          FILTER s.supplier_id == ${buyOrder.supplier_id}
+          RETURN s
+          `);
+      const s: SupplierEntity = await supplier.next();
+      const report: ReportEntity = {
+        report_id: `${sizeOfReportCollection + 1}`,
+        title: 'سفارش خرید از' + s.supplier_name,
+        description: 'این سفارش مربوط به خرید است',
+        date: new Date('2023-11-29'),
+        type: 'خرید',
+        product_id: buyOrder.product_id,
+        amount: buyOrder.amount,
+      };
+      //Create report
+      await this.reportService.create(report);
       await this.buyOrderRepository.save(buyOrder);
       return { result: 'the buyOrder is created' };
     }
