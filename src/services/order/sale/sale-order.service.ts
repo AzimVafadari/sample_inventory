@@ -6,7 +6,7 @@ import { SaleOrderEntity } from '../../../entities/order/sale/sale-order.entity'
 import { ProductEntity } from '../../../entities/product/product.entity';
 
 @Injectable()
-export class saleOrderService {
+export class SaleOrderService {
   constructor(
     @InjectRepository(SaleOrderEntity)
     private readonly saleOrderRepository: ArangoRepository<SaleOrderEntity>,
