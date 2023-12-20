@@ -5,12 +5,11 @@ import {
   Body,
   Param,
   Delete,
-  Put,
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Put,
 } from '@nestjs/common';
-import { ArangoNewOldResult, ResultList } from 'nest-arango';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { CategoryService } from '../../services/category/category.service';
 import { CategoryEntity } from '../../entities/category/category.entity';
@@ -19,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { AuthGuard } from '../../auth/auth.guard';
-@Controller('Category')
+@Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
   @Post()
@@ -29,18 +28,29 @@ export class CategoryController {
     schema: {
       type: 'object',
       properties: {
-        name: {
+        category_id: {
           type: 'string',
+          example: '2',
         },
-        parentId: {
-          type: 'integer',
-        },
-        description: {
+        category_name: {
           type: 'string',
+          example: 'صیفی جات',
         },
         image: {
           type: 'string',
           format: 'binary',
+        },
+        description: {
+          type: 'string',
+          example: 'این دسته بندی دارای میوه ها است',
+        },
+        parent_id: {
+          type: 'string',
+          example: '1',
+        },
+        path_to_root: {
+          type: 'string',
+          example: '1.2',
         },
       },
     },
@@ -50,7 +60,7 @@ export class CategoryController {
     @Body() category: CategoryEntity,
   ) {
     category.image_id = uuidv4();
-    const folderPath: string = './images/';
+    const folderPath: string = './images/categories';
     const imageBuffer = image.buffer;
     const imagePath = path.join(folderPath, `${category.image_id}.jpg`);
     await fs.writeFile(imagePath, imageBuffer);
@@ -59,36 +69,34 @@ export class CategoryController {
   @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
-    summary: 'دریافت تمام محصولات',
+    summary: 'دریافت تمام دسته بندی ها',
   })
-  async findAll(): Promise<ResultList<CategoryEntity>> {
+  async findAllCategory() {
     return await this.categoryService.findAll();
   }
-  @Get(':name')
+  @Get(':categoryName')
   @ApiOperation({
     summary: 'دریافت دسته بندی با نام ',
   })
-  async findOne(@Param('name') name: string): Promise<CategoryEntity | null> {
-    return await this.categoryService.findOne(name);
+  async findCategoriesByName(@Param('categoryName') categoryName: string) {
+    return await this.categoryService.findOne(categoryName);
   }
 
-  @Put(':name')
+  @Put()
   @ApiOperation({
     summary: 'ویرایش دسته بندی',
-    requestBody: { description: 'string', content: null, required: true },
   })
-  async update(
-    @Param('name') name: string,
-    @Body() Category: CategoryEntity,
-  ): Promise<ArangoNewOldResult<any>> {
-    return await this.categoryService.update(name, Category);
+  async updateCategory(@Body() category: CategoryEntity) {
+    return await this.categoryService.update(category);
   }
 
-  @Delete(':name')
+  @Delete(':categoryId')
   @ApiOperation({
     summary: 'حذف دسته بندی',
   })
-  async remove(@Param('name') name: string): Promise<void> {
-    return await this.categoryService.remove(name);
+  async removeCategory(
+    @Param('categoryId') categoryId: string,
+  ): Promise<object> {
+    return await this.categoryService.remove(categoryId);
   }
 }

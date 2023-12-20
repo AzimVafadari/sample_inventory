@@ -26,6 +26,7 @@ import { ReportService } from 'src/services/report/report.service';
 import { SaleOrderService } from '../../services/order/sale/sale-order.service';
 import { SaleOrderController } from '../../controllers/order/sale-order/sale-order.controller';
 import { CustomerController } from '../../controllers/customer/customer.controller';
+import { CustomerService } from "../../services/customer/customer.service";
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -70,7 +71,7 @@ import { CustomerController } from '../../controllers/customer/customer.controll
     BuyOrderService,
     SaleOrderService,
     ReportService,
-    CustomerEntity,
+    CustomerService,
   ],
 })
 export class AppModule {}

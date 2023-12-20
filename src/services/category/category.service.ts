@@ -1,57 +1,78 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  InjectRepository,
-  ArangoRepository,
-  ResultList,
-  ArangoNewOldResult,
-} from 'nest-arango';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository, ArangoRepository } from 'nest-arango';
 import { CategoryEntity } from '../../entities/category/category.entity';
+import { MyDatabase } from '../../database/database';
+import { aql } from 'arangojs';
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(CategoryEntity)
-    private readonly CategoryRepository: ArangoRepository<CategoryEntity>,
+    private readonly categoryRepository: ArangoRepository<CategoryEntity>,
   ) {}
 
-  async create(Category: CategoryEntity): Promise<CategoryEntity> {
-    return await this.CategoryRepository.save(Category);
-  }
-
-  async findAll(): Promise<ResultList<CategoryEntity>> {
-    return await this.CategoryRepository.findAll();
-  }
-
-  async findOne(categoryName: string): Promise<CategoryEntity | null> {
-    return await this.CategoryRepository.findOneBy({ categoryName });
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async update(
-    categoryName: string,
-    updatedCategory: Partial<CategoryEntity>,
-  ): Promise<ArangoNewOldResult<any>> {
-    // Find the existing Category
-    const existingCategory = await this.CategoryRepository.findOneBy({
-      categoryName,
-    });
-
-    if (!existingCategory) {
-      throw new NotFoundException(
-        `Category with categoryName ${categoryName} not found`,
-      );
+  async create(category: CategoryEntity): Promise<object> {
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR category IN Categories
+    FILTER category.category_id == ${category.category_id}
+    RETURN category
+  `);
+    const isExist = cursor.all();
+    if ((await isExist).length > 0) {
+      return { error: 'category already exist' };
+    } else {
+      await this.categoryRepository.save(category);
+      return { result: 'the category is created' };
     }
-
-    // Update the Category fields
-    Object.assign(existingCategory, updatedCategory);
-
-    // Use the `update` method to persist changes
-    const updatedDocument =
-      await this.CategoryRepository.update(existingCategory);
-
-    // Return the updated Category
-    return updatedDocument ? updatedDocument : null;
   }
 
-  async remove(categoryName: string): Promise<void> {
-    await this.CategoryRepository.removeBy({ categoryName });
+  async findAll() {
+    return await this.categoryRepository.findAll();
+  }
+
+  async findOne(categoryName: string): Promise<object> {
+    //This query search all customers that their name starts with customerName
+    //ChatGPT did this query
+    const category = await MyDatabase.getDb().query(aql`
+    FOR category IN Categories
+    FILTER LIKE(category.name, CONCAT(${categoryName}, '%'))
+    RETURN category
+    `);
+    const isExist = category.all();
+    if ((await isExist).length > 0 && categoryName !== '.') {
+      return isExist;
+    } else {
+      return { error: 'category not found' };
+    }
+  }
+  async update(updatedCategory: CategoryEntity): Promise<object> {
+    //This query is better that be updated later...
+    const updatedDocument = await MyDatabase.getDb().query(aql`
+        FOR cat IN Categories 
+        FILTER cat.category_id == ${updatedCategory.category_id}
+        UPDATE cat._key WITH ${updatedCategory} IN Categories
+        RETURN OLD
+    `);
+    const isUpdated = await updatedDocument.next();
+    if (isUpdated) {
+      return { message: 'The category is successfully updated.' };
+    } else {
+      return { error: 'category not found' };
+    }
+  }
+
+  async remove(categoryId: string): Promise<object> {
+    //This query is better that be updated later...
+    const deletedDocument = await MyDatabase.getDb().query(aql`
+    FOR cat IN Categories
+    FILTER cat.category_id == ${categoryId}
+    REMOVE cat IN Categories
+    RETURN OLD
+    `);
+    const isDeleted = await deletedDocument.all();
+    if (isDeleted.length > 0) {
+      return { message: 'category successfully deleted' };
+    } else {
+      return { error: 'category not found' };
+    }
   }
 }
