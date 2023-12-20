@@ -118,7 +118,7 @@ export class SaleOrderService {
     }
   }
   //This method filter buy orders based on their customer id
-  async findManyBySupplierId(customerId: string): Promise<object> {
+  async findManyByCustomerId(customerId: string): Promise<object> {
     //This query search all saleOrders that their name starts with saleOrderName
     //ChatGPT did this query
     const saleOrder = await MyDatabase.getDb().query(aql`
