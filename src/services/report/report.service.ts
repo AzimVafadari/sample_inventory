@@ -45,7 +45,7 @@ export class ReportService {
     }
   }
 
-  async findBasedOnStatus(type: string) {
+  async findBasedOnType(type: string) {
     const cursor = await MyDatabase.getDb().query(aql`
     FOR report IN Reports
     FILTER report.type == ${type}
