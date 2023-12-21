@@ -20,7 +20,7 @@ export class ReportEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'تاریخ گزارش',
-    example: new Date('1398/12/07'),
+    example: new Date('2001-12-2'),
   })
   date?: Date;
 
