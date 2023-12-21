@@ -5,9 +5,6 @@ export class MyDatabase {
     databaseName: '_system',
     auth: { username: 'root', password: 'azim1383' },
   });
-  getCollection(collection_name: string) {
-    return MyDatabase.db.collection(collection_name);
-  }
   static getDb() {
     return MyDatabase.db;
   }
