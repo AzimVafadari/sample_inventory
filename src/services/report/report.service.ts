@@ -58,19 +58,28 @@ export class ReportService {
       return { error: 'no report found' };
     }
   }
-  async findBasedOnDate(startDate: Date, endDate: Date): Promise<object> {
+  async findBasedOnDate(startDate: string, endDate: string) {
+    console.log(new Date(startDate));
+    console.log(new Date(endDate));
     const cursor = await MyDatabase.getDb().query(aql`
+        LET startdate = DATE_TIMESTAMP(${startDate})
+        LET enddate = DATE_TIMESTAMP(${endDate})
+        LET startdateyear = DATE_YEAR(startdate)
+        LET enddateyear = DATE_YEAR(enddate)
         FOR report in Reports
-        FILTER DATE_TIMESTAMP(report.date) >= ${startDate}
-        FILTER DATE_TIMESTAMP(report.date) <= ${endDate}
+        FILTER DATE_YEAR(report.date) > startdateyear
+        FILTER DATE_YEAR(report.date) > enddateyear
         RETURN report
-    `);
-    const reports = cursor.all();
-    if ((await reports).length > 0) {
-      return reports;
-    } else {
-      return { error: 'no report found' };
-    }
+        `);
+    const test = await cursor.all();
+    console.log(test);
+    // const reports = await cursor.all();
+    // console.log(reports);
+    // if ((await reports).length > 0) {
+    //   return reports;
+    // } else {
+    //   return { error: 'no report found' };
+    // }
   }
   async findBasedOnDateAndType(
     startDate: Date,

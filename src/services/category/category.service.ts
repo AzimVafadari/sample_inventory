@@ -78,32 +78,17 @@ export class CategoryService {
     const category: CategoryEntity = await cursor.next();
     if (isDeleted.length > 0) {
       //Get children of the category
-      const cursor = await MyDatabase.getDb().query(aql`
+      await MyDatabase.getDb().query(aql`
        FOR category IN Categories
        FILTER LIKE(category.path_to_root, CONCAT(${category.path_to_root}, '%'))
        RETURN category
       `);
-      const categories = await cursor.all();
-      for (const c of categories) {
-        //Delete all products of category children
-        await MyDatabase.getDb().query(aql`
-        FOR p IN Products
-        FILTER p.category_id == ${c.category_id}
-        REMOVE p IN Products
-        `);
-      }
       //Delete all children of the category
       await MyDatabase.getDb().query(aql`
        FOR category IN Categories
        FILTER LIKE(category.path_to_root, CONCAT(${category.path_to_root}, '%'))
        REMOVE category IN Categories
       `);
-      //Delete the products of category
-      await MyDatabase.getDb().query(aql`
-        FOR p IN Products
-        FILTER p.category_id == ${category.category_id}
-        REMOVE p IN Products
-        `);
       return { message: 'category and its products successfully deleted' };
     } else {
       return { error: 'category not found' };
