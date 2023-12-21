@@ -32,7 +32,7 @@ export class ReportEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'category description',
-    example: 'این دسته بندی دارای میوه ها است',
+    example: '1',
   })
   product_id?: string;
 
