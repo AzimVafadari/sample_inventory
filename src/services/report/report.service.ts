@@ -58,7 +58,7 @@ export class ReportService {
       return { error: 'no report found' };
     }
   }
-  async findBasedOnDate(startDate: string, endDate: string) {
+  async findBasedOnDate(startDate: string, endDate: string): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
       LET startdate = DATE_TIMESTAMP(${startDate})
       LET enddate = DATE_TIMESTAMP(${endDate})
@@ -75,16 +75,18 @@ export class ReportService {
     }
   }
   async findBasedOnDateAndType(
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     type: string,
   ): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
-        FOR report in Reports
-        FILTER DATE_TIMESTAMP(report.date) >= ${startDate}
-        FILTER DATE_TIMESTAMP(report.date) <= ${endDate}
-        FILTER report.type == ${type}
-        RETURN report
+    LET startdate = DATE_TIMESTAMP(${startDate})
+    LET enddate = DATE_TIMESTAMP(${endDate})
+    FOR report in Reports
+    FILTER DATE_DIFF(report.date, startdate, "d") <= 0
+    FILTER DATE_DIFF(report.date, enddate, "d") >= 0
+    FILTER report.type == ${type}
+    RETURN report
     `);
     const reports = cursor.all();
     if ((await reports).length > 0) {
@@ -109,16 +111,18 @@ export class ReportService {
   }
 
   async findBasedOnProductIdAndDate(
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     product_id: string,
   ): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
-        FOR report in Reports
-        FILTER DATE_TIMESTAMP(report.date) >= ${startDate}
-        FILTER DATE_TIMESTAMP(report.date) <= ${endDate}
-        FILTER report.type == ${product_id}
-        RETURN report
+    LET startdate = DATE_TIMESTAMP(${startDate})
+    LET enddate = DATE_TIMESTAMP(${endDate})
+    FOR report in Reports
+    FILTER DATE_DIFF(report.date, startdate, "d") <= 0
+    FILTER DATE_DIFF(report.date, enddate, "d") >= 0
+    FILTER report.product_id == ${product_id}
+    RETURN report
     `);
     const reports = cursor.all();
     if ((await reports).length > 0) {

@@ -1,8 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { ReportEntity } from 'src/entities/report/report.entity';
 import { ReportService } from 'src/services/report/report.service';
-import { InputDate } from 'src/types/InputDate';
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
@@ -30,30 +37,102 @@ export class ReportController {
   async getAllReports() {
     return await this.reportService.findAll();
   }
+  @Get('find/type')
+  @ApiOperation({
+    summary: 'یافتن گزارشات بر اساس نوغ',
+  })
+  @ApiQuery({
+    name: 'type',
+    example: 'فروش',
+  })
+  async getBasedOnType(@Query('type') type: string) {
+    return await this.reportService.findBasedOnType(type);
+  }
 
-  @Post('find/Date')
+  @Get('find/Date')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس تاریخ',
   })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        startDate: {
-          type: 'string',
-          example: '2000-12-2',
-        },
-        endDate: {
-          type: 'string',
-          example: '2003-12-2',
-        },
-      },
-    },
+  @ApiQuery({
+    name: 'startdate',
+    example: '2000-12-02',
   })
-  async getBasedOnDate(@Body() inputDate: InputDate) {
-    return await this.reportService.findBasedOnDate(
-      inputDate.startDate,
-      inputDate.endDate,
+  @ApiQuery({
+    name: 'enddate',
+    example: '2003-12-02',
+  })
+  async getBasedOnDate(
+    @Query('startdate') startdate: string,
+    @Query('enddate') enddate: string,
+  ) {
+    return await this.reportService.findBasedOnDate(startdate, enddate);
+  }
+
+  @Get('find/DateAndType')
+  @ApiOperation({
+    summary: 'یافتن گزارشات بر اساس تاریخ و نوع',
+  })
+  @ApiQuery({
+    name: 'startdate',
+    example: '2000-12-02',
+  })
+  @ApiQuery({
+    name: 'enddate',
+    example: '2003-12-02',
+  })
+  @ApiQuery({
+    name: 'type',
+    example: 'فروش',
+  })
+  async getBasedOnDateAndType(
+    @Query('startdate') startdate: string,
+    @Query('enddate') enddate: string,
+    @Query('type') type: string,
+  ) {
+    return await this.reportService.findBasedOnDateAndType(
+      startdate,
+      enddate,
+      type,
+    );
+  }
+
+  @Get('find/product_id')
+  @ApiOperation({
+    summary: 'یافتن گزارشات بر اساس ایدی محصول',
+  })
+  @ApiQuery({
+    name: 'product_id',
+    example: '1',
+  })
+  async getBasedOnProductId(@Query('product_id') product_id: string) {
+    return await this.reportService.findBasedOnProductId(product_id);
+  }
+
+  @Get('find/DateAndProduct_id')
+  @ApiOperation({
+    summary: 'یافتن گزارشات بر اساس تاریخ و ایدی محصول',
+  })
+  @ApiQuery({
+    name: 'startdate',
+    example: '2000-12-02',
+  })
+  @ApiQuery({
+    name: 'enddate',
+    example: '2003-12-02',
+  })
+  @ApiQuery({
+    name: 'product_id',
+    example: '1',
+  })
+  async getBasedOnDateAndProductId(
+    @Query('startdate') startdate: string,
+    @Query('enddate') enddate: string,
+    @Query('product_id') product_id: string,
+  ) {
+    return await this.reportService.findBasedOnProductIdAndDate(
+      startdate,
+      enddate,
+      product_id,
     );
   }
 }
