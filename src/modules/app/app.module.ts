@@ -37,6 +37,7 @@ import { SaleOrderModule } from '../order/sale-order/sale-order.module';
 import { ReportModule } from '../report/report.module';
 @Module({
   imports: [
+    UserModule,
     ArangoModule.forRoot({
       config: {
         url: 'http://localhost:8529',
@@ -46,13 +47,13 @@ import { ReportModule } from '../report/report.module';
     }),
     ArangoModule.forFeature([
       UserEntity,
-      ProductEntity,
-      CategoryEntity,
-      ReportEntity,
-      CustomerEntity,
-      SupplierEntity,
-      BuyOrderEntity,
-      SaleOrderEntity,
+      // ProductEntity,
+      // CategoryEntity,
+      // ReportEntity,
+      // CustomerEntity,
+      // SupplierEntity,
+      // BuyOrderEntity,
+      // SaleOrderEntity,
     ]),
     JwtModule.register({
       global: true,
@@ -60,26 +61,26 @@ import { ReportModule } from '../report/report.module';
       signOptions: { expiresIn: '600s' },
     }),
   ],
-  controllers: [
-    UserController,
-    ProductController,
-    CategoryController,
-    SupplierController,
-    BuyOrderController,
-    SaleOrderController,
-    ReportController,
-    CustomerController,
-  ],
-  providers: [
-    UserService,
-    ProductService,
-    CategoryService,
-    AuthService,
-    SupplierService,
-    BuyOrderService,
-    SaleOrderService,
-    ReportService,
-    CustomerService,
-  ],
+  // controllers: [
+  //   UserController,
+  //   ProductController,
+  //   CategoryController,
+  //   SupplierController,
+  //   BuyOrderController,
+  //   SaleOrderController,
+  //   ReportController,
+  //   CustomerController,
+  // ],
+  // providers: [
+  //   UserService,
+  //   ProductService,
+  //   CategoryService,
+  //   AuthService,
+  //   SupplierService,
+  //   BuyOrderService,
+  //   SaleOrderService,
+  //   ReportService,
+  //   CustomerService,
+  // ],
 })
 export class AppModule {}
