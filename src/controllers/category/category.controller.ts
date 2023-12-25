@@ -60,10 +60,10 @@ export class CategoryController {
     @Body() category: CategoryEntity,
   ) {
     category.image_id = uuidv4();
-    const folderPath: string = './images/categories';
-    const imageBuffer = image.buffer;
-    const imagePath = path.join(folderPath, `${category.image_id}.jpg`);
-    await fs.writeFile(imagePath, imageBuffer);
+    // const folderPath: string = './images/categories';
+    // const imageBuffer = image.buffer;
+    // const imagePath = path.join(folderPath, `${category.image_id}.jpg`);
+    // await fs.writeFile(imagePath, imageBuffer);
     return await this.categoryService.create(category);
   }
   @UseGuards(AuthGuard)

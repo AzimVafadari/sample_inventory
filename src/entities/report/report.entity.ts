@@ -28,7 +28,7 @@ export class ReportEntity extends ArangoDocument {
     description: 'نوع گزارش',
     example: 'فروش',
   })
-  type?: string;
+  type: string;
 
   @ApiProperty({
     description: 'category description',
