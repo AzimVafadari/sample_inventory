@@ -13,6 +13,13 @@ import { ArangoModule } from 'nest-arango';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '6000s' },
     }),
+    ArangoModule.forRoot({
+      config: {
+        url: 'http://localhost:8529',
+        databaseName: '_system',
+        auth: { username: 'root', password: 'azim1383' },
+      },
+    }),
     ArangoModule.forFeature([UserEntity]),
   ],
   controllers: [UserController],

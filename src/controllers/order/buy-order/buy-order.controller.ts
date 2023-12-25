@@ -7,10 +7,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BuyOrderService } from '../../../services/order/buy/buy-order.service';
 import { BuyOrderEntity } from '../../../entities/order/buy/buy-order.entity';
-
+@ApiTags('buy-order')
 @Controller('buy-order')
 export class BuyOrderController {
   constructor(private readonly buyOrderService: BuyOrderService) {}

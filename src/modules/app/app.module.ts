@@ -1,13 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ArangoModule } from 'nest-arango';
-// import { UserEntity } from '../../entities/user/user.entity';
-// import { ProductEntity } from '../../entities/product/product.entity';
-// import { CategoryEntity } from '../../entities/category/category.entity';
-// import { ReportEntity } from 'src/entities/report/report.entity';
-// import { CustomerEntity } from 'src/entities/customer/customer.entity';
-// import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
-// import { BuyOrderEntity } from '../../entities/order/buy/buy-order.entity';
-// import { SaleOrderEntity } from '../../entities/order/sale/sale-order.entity';
 import { UserModule } from '../user/user.module';
 import { CategoryModule } from '../category/category.module';
 import { ProductModule } from '../product/product.module';

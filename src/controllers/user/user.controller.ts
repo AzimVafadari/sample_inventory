@@ -10,7 +10,8 @@ import {
 import { UserService } from '../../services/user/user.service';
 import { UserEntity } from '../../entities/user/user.entity';
 import { ArangoNewOldResult, ResultList } from 'nest-arango';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+@ApiTags('user')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
