@@ -109,12 +109,11 @@ export class ProductController {
     return await this.productService.updateProduct(product);
   }
 
-  // @Delete(':name')
-  // @Put(':name')
-  // @ApiOperation({
-  //   summary: 'حذف محصول',
-  // })
-  // async remove(@Param('name') name: string): Promise<void> {
-  //   return await this.productService.remove(name);
-  // }
+  @Delete(':product_id')
+  @ApiOperation({
+    summary: 'حذف محصول',
+  })
+  async remove(@Param('product_id') product_id: string): Promise<object> {
+    return await this.productService.removeProduct(product_id);
+  }
 }

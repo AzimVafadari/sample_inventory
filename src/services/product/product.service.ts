@@ -75,4 +75,19 @@ export class ProductService {
       return { error: 'the product doesnt exist' };
     }
   }
+
+  async removeProduct(product_id: string): Promise<object> {
+    const deletedProduct = await MyDatabase.getDb().query(aql`
+      FOR product IN Products
+      FILTER product.product_id == ${product_id}
+      REMOVE product IN Products
+      RETURN OLD
+    `);
+    const isDeleted = deletedProduct.all();
+    if ((await isDeleted).length > 0) {
+      return isDeleted;
+    } else {
+      return { error: 'the product doesnt exist' };
+    }
+  }
 }
