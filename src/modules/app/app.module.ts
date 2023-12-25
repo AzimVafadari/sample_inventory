@@ -1,31 +1,21 @@
 import { Module } from '@nestjs/common';
-import { UserController } from '../../controllers/user/user.controller';
 import { ArangoModule } from 'nest-arango';
-import { UserEntity } from '../../entities/user/user.entity';
-import { UserService } from '../../services/user/user.service';
-import { ProductController } from '../../controllers/product/product.controller';
-import { ProductService } from '../../services/product/product.service';
-import { ProductEntity } from '../../entities/product/product.entity';
-import { CategoryService } from '../../services/category/category.service';
-import { CategoryController } from '../../controllers/category/category.controller';
-import { CategoryEntity } from '../../entities/category/category.entity';
-import { AuthService } from '../../auth/auth.service';
-import { ReportEntity } from 'src/entities/report/report.entity';
-import { CustomerEntity } from 'src/entities/customer/customer.entity';
-import { SupplierController } from 'src/controllers/supplier/supplier.controller';
-import { SupplierService } from 'src/services/supplier/supplier.service';
-import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
-import { BuyOrderEntity } from '../../entities/order/buy/buy-order.entity';
-import { SaleOrderEntity } from '../../entities/order/sale/sale-order.entity';
-import { BuyOrderController } from '../../controllers/order/buy-order/buy-order.controller';
-import { BuyOrderService } from '../../services/order/buy/buy-order.service';
-import { ReportController } from 'src/controllers/report/report.controller';
-import { ReportService } from 'src/services/report/report.service';
-import { SaleOrderService } from '../../services/order/sale/sale-order.service';
-import { SaleOrderController } from '../../controllers/order/sale-order/sale-order.controller';
-import { CustomerController } from '../../controllers/customer/customer.controller';
-import { CustomerService } from '../../services/customer/customer.service';
-import { UserModule } from "../user/user.module";
+// import { UserEntity } from '../../entities/user/user.entity';
+// import { ProductEntity } from '../../entities/product/product.entity';
+// import { CategoryEntity } from '../../entities/category/category.entity';
+// import { ReportEntity } from 'src/entities/report/report.entity';
+// import { CustomerEntity } from 'src/entities/customer/customer.entity';
+// import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
+// import { BuyOrderEntity } from '../../entities/order/buy/buy-order.entity';
+// import { SaleOrderEntity } from '../../entities/order/sale/sale-order.entity';
+import { UserModule } from '../user/user.module';
+import { CategoryModule } from '../category/category.module';
+import { ProductModule } from '../product/product.module';
+import { BuyOrderModule } from '../order/buy-order/buy-order.module';
+import { SaleOrderModule } from '../order/sale-order/sale-order.module';
+import { ReportModule } from '../report/report.module';
+import { SupplierModule } from '../supplier/supplier.module';
+import { CustomerModule } from '../customer/customer.module';
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -35,38 +25,14 @@ import { UserModule } from "../user/user.module";
         auth: { username: 'root', password: 'azim1383' },
       },
     }),
-    ArangoModule.forFeature([
-      UserEntity,
-      // ProductEntity,
-      // CategoryEntity,
-      // ReportEntity,
-      // CustomerEntity,
-      // SupplierEntity,
-      // BuyOrderEntity,
-      // SaleOrderEntity,
-    ]),
     UserModule,
+    CategoryModule,
+    ProductModule,
+    BuyOrderModule,
+    SaleOrderModule,
+    ReportModule,
+    SupplierModule,
+    CustomerModule,
   ],
-  // controllers: [
-  //   UserController,
-  //   ProductController,
-  //   CategoryController,
-  //   SupplierController,
-  //   BuyOrderController,
-  //   SaleOrderController,
-  //   ReportController,
-  //   CustomerController,
-  // ],
-  // providers: [
-  //   UserService,
-  //   ProductService,
-  //   CategoryService,
-  //   AuthService,
-  //   SupplierService,
-  //   BuyOrderService,
-  //   SaleOrderService,
-  //   ReportService,
-  //   CustomerService,
-  // ],
 })
 export class AppModule {}
