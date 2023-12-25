@@ -8,6 +8,7 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { ArangoNewOldResult, ResultList } from 'nest-arango';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
@@ -84,40 +85,32 @@ export class ProductController {
     @Body() product: ProductEntity,
   ) {
     product.image_id = uuidv4();
-    const folderPath: string = './images/products';
-    const imageBuffer = image.buffer;
-    const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
-    await fs.writeFile(imagePath, imageBuffer);
+    // const folderPath: string = './images/products';
+    // const imageBuffer = image.buffer;
+    // const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
+    // await fs.writeFile(imagePath, imageBuffer);
     return await this.productService.create(product);
   }
 
-  // @Get()
-  // @ApiOperation({
-  //   summary: 'دریافت تمام محصولات',
-  // })
-  // async findAll(): Promise<ResultList<ProductEntity>> {
-  //   return await this.productService.findAll();
-  // }
+  @Get()
+  @ApiOperation({
+    summary: 'دریافت تمام محصولات',
+  })
+  async findAll(): Promise<ResultList<ProductEntity>> {
+    return await this.productService.findAll();
+  }
 
-  // @Get(':name')
-  // @ApiOperation({
-  //   summary: 'دریافت محصول با نام محصول',
-  // })
-  // async findOne(@Param('name') name: string): Promise<ProductEntity | null> {
-  //   return await this.productService.findOne(name);
-  // }
-
-  // @Put(':name')
-  // @ApiOperation({
-  //   summary: 'ویرایش محصول',
-  //   requestBody: { description: 'string', content: null, required: true },
-  // })
-  // async update(
-  //   @Param('name') name: string,
-  //   @Body() product: ProductEntity,
-  // ): Promise<ArangoNewOldResult<any>> {
-  //   return await this.productService.update(name, product);
-  // }
+  @Put()
+  @ApiOperation({
+    summary: 'ویرایش محصول',
+    requestBody: { description: 'string', content: null, required: true },
+  })
+  async update(
+    @Query('product_id') product_id: string,
+    @Body() product: ProductEntity,
+  ): Promise<object> {
+    return await this.productService.updateProduct(product_id, product);
+  }
 
   // @Delete(':name')
   // @Put(':name')

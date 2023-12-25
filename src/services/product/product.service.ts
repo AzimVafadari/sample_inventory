@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { aql } from 'arangojs';
-import { ArangoRepository, InjectRepository } from 'nest-arango';
+import { ArangoRepository, InjectRepository, ResultList } from 'nest-arango';
 import { MyDatabase } from 'src/database/database';
 import { ProductEntity } from 'src/entities/product/product.entity';
 import { ReportEntity } from 'src/entities/report/report.entity';
@@ -46,7 +46,7 @@ export class ProductService {
           await this.productRepository.save(product);
           return {
             result:
-              'the product with name  ' + product.product_name + 'created',
+              'the product with name  ' + product.product_name + ' created',
           };
         } else {
           return { error: 'the category doesnt exist' };
@@ -54,6 +54,28 @@ export class ProductService {
       } else {
         return { error: 'this supplier doesnt exist' };
       }
+    }
+  }
+
+  async findAll(): Promise<ResultList<ProductEntity>> {
+    return await this.productRepository.findAll();
+  }
+
+  async updateProduct(
+    oldProduct_id: string,
+    updatedProduct: ProductEntity,
+  ): Promise<object> {
+    const newProduct = await MyDatabase.getDb().query(aql`
+      FOR product IN Products
+      FILTER product.product_id == ${oldProduct_id}
+      UPDATE product._key WITH ${updatedProduct} IN Products
+      RETURN OLD
+    `);
+    const isUpdated = await newProduct.next();
+    if (isUpdated) {
+      return { result: 'the product is updated' };
+    } else {
+      return { error: 'the product doesnt exist' };
     }
   }
 }
