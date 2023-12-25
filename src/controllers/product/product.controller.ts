@@ -91,40 +91,40 @@ export class ProductController {
     return await this.productService.create(product);
   }
 
-  @Get()
-  @ApiOperation({
-    summary: 'دریافت تمام محصولات',
-  })
-  async findAll(): Promise<ResultList<ProductEntity>> {
-    return await this.productService.findAll();
-  }
+  // @Get()
+  // @ApiOperation({
+  //   summary: 'دریافت تمام محصولات',
+  // })
+  // async findAll(): Promise<ResultList<ProductEntity>> {
+  //   return await this.productService.findAll();
+  // }
 
-  @Get(':name')
-  @ApiOperation({
-    summary: 'دریافت محصول با نام محصول',
-  })
-  async findOne(@Param('name') name: string): Promise<ProductEntity | null> {
-    return await this.productService.findOne(name);
-  }
+  // @Get(':name')
+  // @ApiOperation({
+  //   summary: 'دریافت محصول با نام محصول',
+  // })
+  // async findOne(@Param('name') name: string): Promise<ProductEntity | null> {
+  //   return await this.productService.findOne(name);
+  // }
 
-  @Put(':name')
-  @ApiOperation({
-    summary: 'ویرایش محصول',
-    requestBody: { description: 'string', content: null, required: true },
-  })
-  async update(
-    @Param('name') name: string,
-    @Body() product: ProductEntity,
-  ): Promise<ArangoNewOldResult<any>> {
-    return await this.productService.update(name, product);
-  }
+  // @Put(':name')
+  // @ApiOperation({
+  //   summary: 'ویرایش محصول',
+  //   requestBody: { description: 'string', content: null, required: true },
+  // })
+  // async update(
+  //   @Param('name') name: string,
+  //   @Body() product: ProductEntity,
+  // ): Promise<ArangoNewOldResult<any>> {
+  //   return await this.productService.update(name, product);
+  // }
 
-  @Delete(':name')
-  @Put(':name')
-  @ApiOperation({
-    summary: 'حذف محصول',
-  })
-  async remove(@Param('name') name: string): Promise<void> {
-    return await this.productService.remove(name);
-  }
+  // @Delete(':name')
+  // @Put(':name')
+  // @ApiOperation({
+  //   summary: 'حذف محصول',
+  // })
+  // async remove(@Param('name') name: string): Promise<void> {
+  //   return await this.productService.remove(name);
+  // }
 }
