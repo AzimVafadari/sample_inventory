@@ -17,4 +17,22 @@ export class MyDatabase {
     const isExist = cursor.all();
     return (await isExist).length > 0;
   }
+  static async supplierIsExist(value: string): Promise<boolean> {
+    const cursor = await this.getDb().query(aql`
+    FOR s IN Suppliers
+    FILTER s.supplier_id == ${value}
+    RETURN s
+  `);
+    const isExist = cursor.all();
+    return (await isExist).length > 0;
+  }
+  static async categoryIsExist(value: string): Promise<boolean> {
+    const cursor = await this.getDb().query(aql`
+    FOR category IN Categories
+    FILTER category.category_id == ${value}
+    RETURN category
+  `);
+    const isExist = cursor.all();
+    return (await isExist).length > 0;
+  }
 }
