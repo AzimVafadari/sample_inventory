@@ -9,7 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { ArangoNewOldResult, ResultList } from 'nest-arango';
+import { ResultList } from 'nest-arango';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { ProductService } from '../../services/product/product.service';
 import { ProductEntity } from '../../entities/product/product.entity';
@@ -99,32 +99,20 @@ export class ProductController {
     return await this.productService.findAll();
   }
 
-  @Get(':name')
-  @ApiOperation({
-    summary: 'دریافت محصول با نام محصول',
-  })
-  async findOne(@Param('name') name: string): Promise<ProductEntity | null> {
-    return await this.productService.findOne(name);
-  }
-
-  @Put(':name')
+  @Put()
   @ApiOperation({
     summary: 'ویرایش محصول',
     requestBody: { description: 'string', content: null, required: true },
   })
-  async update(
-    @Param('name') name: string,
-    @Body() product: ProductEntity,
-  ): Promise<ArangoNewOldResult<any>> {
-    return await this.productService.update(name, product);
+  async update(@Body() product: ProductEntity): Promise<object> {
+    return await this.productService.updateProduct(product);
   }
 
-  @Delete(':name')
-  @Put(':name')
+  @Delete(':product_id')
   @ApiOperation({
     summary: 'حذف محصول',
   })
-  async remove(@Param('name') name: string): Promise<void> {
-    return await this.productService.remove(name);
+  async remove(@Param('product_id') product_id: string): Promise<object> {
+    return await this.productService.removeProduct(product_id);
   }
 }

@@ -1,57 +1,93 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  InjectRepository,
-  ArangoRepository,
-  ResultList,
-  ArangoNewOldResult,
-} from 'nest-arango';
-import { ProductEntity } from '../../entities/product/product.entity';
+import { Injectable } from '@nestjs/common';
+import { aql } from 'arangojs';
+import { ArangoRepository, InjectRepository, ResultList } from 'nest-arango';
+import { MyDatabase } from 'src/database/database';
+import { ProductEntity } from 'src/entities/product/product.entity';
+import { ReportEntity } from 'src/entities/report/report.entity';
+import { ReportService } from '../report/report.service';
+
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: ArangoRepository<ProductEntity>,
+    private readonly reportService: ReportService,
   ) {}
-
-  async create(product: ProductEntity): Promise<ProductEntity> {
-    return await this.productRepository.save(product);
+  async create(product: ProductEntity): Promise<object> {
+    const cursor = await MyDatabase.getDb().query(aql`
+      FOR product IN Products
+      FILTER product.product_id == ${product.product_id}
+      RETURN product
+    `);
+    const isExist = await cursor.all();
+    if (isExist.length > 0) {
+      return { error: 'the product already exist' };
+    } else {
+      if (await MyDatabase.supplierIsExist(product.supplier_id)) {
+        if (await MyDatabase.categoryIsExist(product.category_id)) {
+          const ReportCollectionSize = MyDatabase.getDb()
+            .collection('Reports')
+            .count();
+          const report: ReportEntity = {
+            report_id: `${(await ReportCollectionSize).count + 1}`,
+            title: 'ایجاد محصول با ایدی' + product.product_id,
+            description:
+              'محصول با ایدی ' +
+              product.product_id +
+              'به مقدار ' +
+              product.balance +
+              'ایجاد شد',
+            type: null,
+            date: new Date(),
+            product_id: product.product_id,
+            amount: product.balance,
+          };
+          await this.reportService.create(report);
+          await this.productRepository.save(product);
+          return {
+            result:
+              'the product with name  ' + product.product_name + ' created',
+          };
+        } else {
+          return { error: 'the category doesnt exist' };
+        }
+      } else {
+        return { error: 'this supplier doesnt exist' };
+      }
+    }
   }
 
   async findAll(): Promise<ResultList<ProductEntity>> {
     return await this.productRepository.findAll();
   }
 
-  async findOne(productName: string): Promise<ProductEntity | null> {
-    return await this.productRepository.findOneBy({ productName });
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async update(
-    productName: string,
-    updatedproduct: Partial<ProductEntity>,
-  ): Promise<ArangoNewOldResult<any>> {
-    // Find the existing product
-    const existingProduct = await this.productRepository.findOneBy({
-      productName,
-    });
-
-    if (!existingProduct) {
-      throw new NotFoundException(
-        `product with productName ${productName} not found`,
-      );
+  async updateProduct(updatedProduct: ProductEntity): Promise<object> {
+    const newProduct = await MyDatabase.getDb().query(aql`
+      FOR product IN Products
+      FILTER product.product_id == ${updatedProduct.product_id}
+      UPDATE product._key WITH ${updatedProduct} IN Products
+      RETURN OLD
+    `);
+    const isUpdated = await newProduct.next();
+    if (isUpdated) {
+      return { result: 'the product is updated' };
+    } else {
+      return { error: 'the product doesnt exist' };
     }
-
-    // Update the product fields
-    Object.assign(existingProduct, updatedproduct);
-
-    // Use the `update` method to persist changes
-    const updatedDocument =
-      await this.productRepository.update(existingProduct);
-
-    // Return the updated product
-    return updatedDocument ? updatedDocument : null;
   }
 
-  async remove(productName: string): Promise<void> {
-    await this.productRepository.removeBy({ productName });
+  async removeProduct(product_id: string): Promise<object> {
+    const deletedProduct = await MyDatabase.getDb().query(aql`
+      FOR product IN Products
+      FILTER product.product_id == ${product_id}
+      REMOVE product IN Products
+      RETURN OLD
+    `);
+    const isDeleted = deletedProduct.all();
+    if ((await isDeleted).length > 0) {
+      return isDeleted;
+    } else {
+      return { error: 'the product doesnt exist' };
+    }
   }
 }
