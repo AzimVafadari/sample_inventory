@@ -59,7 +59,7 @@ export class BuyOrderService {
       const report: ReportEntity = {
         report_id: `${sizeOfReportCollection.count + 1}`,
         title: 'سفارش خرید از ' + s.supplier_name,
-        description: 'این سفارش مربوط به خرید است',
+        content: ['این سفارش مربوط به خرید است'],
         date: new Date('2023-11-29'),
         type: 'خرید',
         product_id: buyOrder.product_id,

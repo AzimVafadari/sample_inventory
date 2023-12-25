@@ -105,7 +105,7 @@ export class ProductController {
     summary: 'ویرایش محصول',
     requestBody: { description: 'string', content: null, required: true },
   })
-  async update(@Body() product: ProductEntity): Promise<object> {
+  async updateProduct(@Body() product: ProductEntity): Promise<object> {
     return await this.productService.updateProduct(product);
   }
 
@@ -113,7 +113,9 @@ export class ProductController {
   @ApiOperation({
     summary: 'حذف محصول',
   })
-  async remove(@Param('product_id') product_id: string): Promise<object> {
+  async removeProduct(
+    @Param('product_id') product_id: string,
+  ): Promise<object> {
     return await this.productService.removeProduct(product_id);
   }
 }

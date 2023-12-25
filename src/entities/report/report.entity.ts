@@ -16,7 +16,7 @@ export class ReportEntity extends ArangoDocument {
     description: 'توضیحات گزارش',
     example: 'این گزارش ...',
   })
-  description?: string;
+  content?: string[];
 
   @ApiProperty({
     description: 'تاریخ گزارش',
