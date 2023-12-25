@@ -61,13 +61,10 @@ export class ProductService {
     return await this.productRepository.findAll();
   }
 
-  async updateProduct(
-    oldProduct_id: string,
-    updatedProduct: ProductEntity,
-  ): Promise<object> {
+  async updateProduct(updatedProduct: ProductEntity): Promise<object> {
     const newProduct = await MyDatabase.getDb().query(aql`
       FOR product IN Products
-      FILTER product.product_id == ${oldProduct_id}
+      FILTER product.product_id == ${updatedProduct.product_id}
       UPDATE product._key WITH ${updatedProduct} IN Products
       RETURN OLD
     `);

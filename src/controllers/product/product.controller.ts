@@ -105,11 +105,8 @@ export class ProductController {
     summary: 'ویرایش محصول',
     requestBody: { description: 'string', content: null, required: true },
   })
-  async update(
-    @Query('product_id') product_id: string,
-    @Body() product: ProductEntity,
-  ): Promise<object> {
-    return await this.productService.updateProduct(product_id, product);
+  async update(@Body() product: ProductEntity): Promise<object> {
+    return await this.productService.updateProduct(product);
   }
 
   // @Delete(':name')
