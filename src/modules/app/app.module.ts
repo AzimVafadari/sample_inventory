@@ -9,8 +9,6 @@ import { ProductEntity } from '../../entities/product/product.entity';
 import { CategoryService } from '../../services/category/category.service';
 import { CategoryController } from '../../controllers/category/category.controller';
 import { CategoryEntity } from '../../entities/category/category.entity';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../../auth/constants';
 import { AuthService } from '../../auth/auth.service';
 import { ReportEntity } from 'src/entities/report/report.entity';
 import { CustomerEntity } from 'src/entities/customer/customer.entity';
@@ -27,14 +25,7 @@ import { SaleOrderService } from '../../services/order/sale/sale-order.service';
 import { SaleOrderController } from '../../controllers/order/sale-order/sale-order.controller';
 import { CustomerController } from '../../controllers/customer/customer.controller';
 import { CustomerService } from '../../services/customer/customer.service';
-import { UserModule } from '../user/user.module';
-import { CustomerModule } from '../customer/customer.module';
-import { SupplierModule } from '../supplier/supplier.module';
-import { ProductModule } from '../product/product.module';
-import { CategoryModule } from '../category/category.module';
-import { BuyOrderModule } from '../order/buy-order/buy-order.module';
-import { SaleOrderModule } from '../order/sale-order/sale-order.module';
-import { ReportModule } from '../report/report.module';
+import { UserModule } from "../user/user.module";
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -46,40 +37,36 @@ import { ReportModule } from '../report/report.module';
     }),
     ArangoModule.forFeature([
       UserEntity,
-      ProductEntity,
-      CategoryEntity,
-      ReportEntity,
-      CustomerEntity,
-      SupplierEntity,
-      BuyOrderEntity,
-      SaleOrderEntity,
+      // ProductEntity,
+      // CategoryEntity,
+      // ReportEntity,
+      // CustomerEntity,
+      // SupplierEntity,
+      // BuyOrderEntity,
+      // SaleOrderEntity,
     ]),
-    JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '600s' },
-    }),
+    UserModule,
   ],
-  controllers: [
-    UserController,
-    ProductController,
-    CategoryController,
-    SupplierController,
-    BuyOrderController,
-    SaleOrderController,
-    ReportController,
-    CustomerController,
-  ],
-  providers: [
-    UserService,
-    ProductService,
-    CategoryService,
-    AuthService,
-    SupplierService,
-    BuyOrderService,
-    SaleOrderService,
-    ReportService,
-    CustomerService,
-  ],
+  // controllers: [
+  //   UserController,
+  //   ProductController,
+  //   CategoryController,
+  //   SupplierController,
+  //   BuyOrderController,
+  //   SaleOrderController,
+  //   ReportController,
+  //   CustomerController,
+  // ],
+  // providers: [
+  //   UserService,
+  //   ProductService,
+  //   CategoryService,
+  //   AuthService,
+  //   SupplierService,
+  //   BuyOrderService,
+  //   SaleOrderService,
+  //   ReportService,
+  //   CustomerService,
+  // ],
 })
 export class AppModule {}

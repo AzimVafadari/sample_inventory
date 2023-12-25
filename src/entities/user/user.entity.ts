@@ -9,6 +9,6 @@ export class UserEntity extends ArangoDocument {
   @ApiProperty({ description: 'username', example: 'john_doe' })
   username: string;
 
-  @ApiProperty({ description: 'password', example: 'john_doe' })
+  @ApiProperty({ description: 'password', example: '1234562' })
   password: string;
 }
