@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { Kafka, Partitioners } from 'kafkajs';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('data')
 @Controller('data')
 export class DataController {
   private kafka: Kafka;

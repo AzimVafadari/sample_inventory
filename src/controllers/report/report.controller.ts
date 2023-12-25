@@ -7,9 +7,10 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ReportEntity } from 'src/entities/report/report.entity';
 import { ReportService } from 'src/services/report/report.service';
+@ApiTags('report')
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}

@@ -10,7 +10,7 @@ import {
   UseGuards,
   Put,
 } from '@nestjs/common';
-import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoryService } from '../../services/category/category.service';
 import { CategoryEntity } from '../../entities/category/category.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { AuthGuard } from '../../auth/auth.guard';
+@ApiTags('category')
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}

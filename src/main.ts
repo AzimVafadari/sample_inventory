@@ -8,7 +8,6 @@ async function bootstrap() {
     .setTitle('Inventory API')
     .setDescription('This API is for a sample inventory')
     .setVersion('3.0')
-    .addTag('app')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
