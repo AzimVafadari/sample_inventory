@@ -57,7 +57,7 @@ export class SaleOrderService {
           const report: ReportEntity = {
             report_id: `${sizeOfReportCollection.count + 1}`,
             title: 'سفارش فروش به ' + c.name,
-            description: 'این سفارش مربوط به فروش است',
+            content: ['این سفارش مربوط به فروش است'],
             date: new Date(),
             type: 'فروش',
             product_id: saleOrder.product_id,
