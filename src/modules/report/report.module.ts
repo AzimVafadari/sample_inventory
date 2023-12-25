@@ -8,6 +8,5 @@ import { ArangoModule } from 'nest-arango';
   imports: [ArangoModule.forFeature([ReportEntity])],
   controllers: [ReportController],
   providers: [ReportService],
-  exports: [ReportService],
 })
 export class ReportModule {}

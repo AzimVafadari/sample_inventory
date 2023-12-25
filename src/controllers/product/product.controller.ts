@@ -8,7 +8,6 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
-  Query,
 } from '@nestjs/common';
 import { ArangoNewOldResult, ResultList } from 'nest-arango';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
@@ -85,10 +84,10 @@ export class ProductController {
     @Body() product: ProductEntity,
   ) {
     product.image_id = uuidv4();
-    // const folderPath: string = './images/products';
-    // const imageBuffer = image.buffer;
-    // const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
-    // await fs.writeFile(imagePath, imageBuffer);
+    const folderPath: string = './images/products';
+    const imageBuffer = image.buffer;
+    const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
+    await fs.writeFile(imagePath, imageBuffer);
     return await this.productService.create(product);
   }
 
@@ -100,20 +99,32 @@ export class ProductController {
     return await this.productService.findAll();
   }
 
-  @Put()
+  @Get(':name')
+  @ApiOperation({
+    summary: 'دریافت محصول با نام محصول',
+  })
+  async findOne(@Param('name') name: string): Promise<ProductEntity | null> {
+    return await this.productService.findOne(name);
+  }
+
+  @Put(':name')
   @ApiOperation({
     summary: 'ویرایش محصول',
     requestBody: { description: 'string', content: null, required: true },
   })
-  async update(@Body() product: ProductEntity): Promise<object> {
-    return await this.productService.updateProduct(product);
+  async update(
+    @Param('name') name: string,
+    @Body() product: ProductEntity,
+  ): Promise<ArangoNewOldResult<any>> {
+    return await this.productService.update(name, product);
   }
 
-  @Delete(':product_id')
+  @Delete(':name')
+  @Put(':name')
   @ApiOperation({
     summary: 'حذف محصول',
   })
-  async remove(@Param('product_id') product_id: string): Promise<object> {
-    return await this.productService.removeProduct(product_id);
+  async remove(@Param('name') name: string): Promise<void> {
+    return await this.productService.remove(name);
   }
 }

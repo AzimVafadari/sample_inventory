@@ -6,7 +6,6 @@ import { ArangoModule } from 'nest-arango';
 
 @Module({
   imports: [ArangoModule.forFeature([CategoryEntity])],
-  exports: [CategoryService],
   controllers: [CategoryController],
   providers: [CategoryService],
 })

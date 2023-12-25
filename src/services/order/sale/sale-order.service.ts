@@ -58,7 +58,7 @@ export class SaleOrderService {
             report_id: `${sizeOfReportCollection.count + 1}`,
             title: 'سفارش فروش به ' + c.name,
             description: 'این سفارش مربوط به فروش است',
-            date: new Date(),
+            date: new Date('2023-11-29'),
             type: 'فروش',
             product_id: saleOrder.product_id,
             amount: saleOrder.amount,
