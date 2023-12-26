@@ -8,6 +8,7 @@ import { SaleOrderModule } from '../order/sale-order/sale-order.module';
 import { ReportModule } from '../report/report.module';
 import { SupplierModule } from '../supplier/supplier.module';
 import { CustomerModule } from '../customer/customer.module';
+import { AuthModule } from '../auth/auth.module';
 @Module({
   imports: [
     ArangoModule.forRoot({
@@ -25,6 +26,7 @@ import { CustomerModule } from '../customer/customer.module';
     ReportModule,
     SupplierModule,
     CustomerModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

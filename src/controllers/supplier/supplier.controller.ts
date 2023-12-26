@@ -6,10 +6,12 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
 import { SupplierService } from 'src/services/supplier/supplier.service';
+import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('supplier')
 @Controller('supplier')
 export class SupplierController {
@@ -23,6 +25,7 @@ export class SupplierController {
     return await this.supplierService.create(supplier);
   }
   //This method is created to receive all suppliers
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'دریافت تمامی تامین کنندگان',
