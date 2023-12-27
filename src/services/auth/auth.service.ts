@@ -1,13 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-// import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { ArangoRepository } from 'nest-arango';
+import { ArangoRepository, InjectRepository } from 'nest-arango';
 import { UserEntity } from 'src/entities/user/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
-    // private usersService: UserService,
+    @InjectRepository(UserEntity)
     private readonly userRepository: ArangoRepository<UserEntity>,
     private jwtService: JwtService,
   ) {}
