@@ -41,9 +41,7 @@ export class SaleOrderService {
           const scale: string[] = p.balance.split(' ');
           p.balance = `${newBalance} ${scale[1]}`;
           await this.productService.updateProduct(p);
-          const sizeOfReportCollection = await MyDatabase.getDb()
-            .collection('Reports')
-            .count();
+
           //Find customer
           const customer = await MyDatabase.getDb().query(aql`
           FOR c IN Customers
@@ -53,7 +51,6 @@ export class SaleOrderService {
           const c: CustomerEntity = await customer.next();
           if (c === undefined) return { result: 'customer does not exist' };
           const report: ReportEntity = {
-            report_id: `${sizeOfReportCollection.count + 1}`,
             title: 'سفارش فروش به ' + c.name,
             content: ['این سفارش مربوط به فروش است'],
             date: new Date(),
