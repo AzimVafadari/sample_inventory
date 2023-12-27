@@ -11,18 +11,8 @@ export class SupplierService {
     private readonly supplierRepository: ArangoRepository<SupplierEntity>,
   ) {}
   async create(supplier: SupplierEntity): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR supplier IN Suppliers
-    FILTER supplier.supplier_id == ${supplier.supplier_id}
-    RETURN supplier
-  `);
-    const isExist = cursor.all();
-    if ((await isExist).length > 0) {
-      return { error: 'user already exist' };
-    } else {
-      await this.supplierRepository.save(supplier);
-      return { result: 'the supplier is created' };
-    }
+    await this.supplierRepository.save(supplier);
+    return { result: 'the supplier is created' };
   }
   async findAll(): Promise<ResultList<SupplierEntity>> {
     return await this.supplierRepository.findAll();
