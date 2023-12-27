@@ -11,18 +11,11 @@ export class CategoryService {
   ) {}
 
   async create(category: CategoryEntity): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR category IN Categories
-    FILTER category.category_id == ${category.category_id}
-    RETURN category
-  `);
-    const isExist = cursor.all();
-    if ((await isExist).length > 0) {
-      return { error: 'category already exist' };
-    } else {
-      await this.categoryRepository.save(category);
-      return { result: 'the category is created' };
-    }
+    const newCategory = await this.categoryRepository.save(category);
+    newCategory.path_to_root =
+      newCategory.path_to_root + '.' + newCategory._key;
+
+    return { result: 'the category is created' };
   }
 
   async findAll() {
@@ -48,7 +41,7 @@ export class CategoryService {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR cat IN Categories 
-        FILTER cat.category_id == ${updatedCategory.category_id}
+        FILTER cat._key == ${updatedCategory._key}
         UPDATE cat._key WITH ${updatedCategory} IN Categories
         RETURN OLD
     `);
@@ -60,17 +53,17 @@ export class CategoryService {
     }
   }
 
-  async remove(categoryId: string): Promise<object> {
+  async remove(categoryKey: string): Promise<object> {
     //Find category
     const cursor = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat.category_id == ${categoryId}
+    FILTER cat._key == ${categoryKey}
     RETURN cat
     `);
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat.category_id == ${categoryId}
+    FILTER cat._key == ${categoryKey}
     REMOVE cat IN Categories
     RETURN OLD
     `);

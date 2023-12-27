@@ -37,10 +37,6 @@ export class CategoryController {
     schema: {
       type: 'object',
       properties: {
-        category_id: {
-          type: 'string',
-          example: '2',
-        },
         category_name: {
           type: 'string',
           example: 'صیفی جات',
@@ -56,10 +52,6 @@ export class CategoryController {
         parent_id: {
           type: 'string',
           example: '1',
-        },
-        path_to_root: {
-          type: 'string',
-          example: '1.2',
         },
       },
     },

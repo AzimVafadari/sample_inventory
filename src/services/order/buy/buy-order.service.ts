@@ -46,7 +46,7 @@ export class BuyOrderService {
       const sizeOfReportCollection = await MyDatabase.getDb()
         .collection('Reports')
         .count();
-      //Find customer
+      //Find supplier
       const supplier = await MyDatabase.getDb().query(aql`
           FOR s IN Suppliers
           FILTER s.supplier_id == ${buyOrder.supplier_id}
