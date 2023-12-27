@@ -5,10 +5,14 @@ import { SaleOrderEntity } from '../../../entities/order/sale/sale-order.entity'
 import { ArangoModule } from 'nest-arango';
 import { ReportService } from '../../../services/report/report.service';
 import { ReportEntity } from '../../../entities/report/report.entity';
+import { ProductEntity } from '../../../entities/product/product.entity';
+import { ProductService } from '../../../services/product/product.service';
 
 @Module({
-  imports: [ArangoModule.forFeature([SaleOrderEntity, ReportEntity])],
+  imports: [
+    ArangoModule.forFeature([SaleOrderEntity, ReportEntity, ProductEntity]),
+  ],
   controllers: [SaleOrderController],
-  providers: [SaleOrderService, ReportService],
+  providers: [SaleOrderService, ReportService, ProductService],
 })
 export class SaleOrderModule {}
