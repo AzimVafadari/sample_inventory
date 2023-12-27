@@ -99,8 +99,6 @@ export class ProductService {
           RETURN s.supplier_name
         `);
         const NewSupplierName = await cursor2.next();
-        console.log(NewSupplierName)
-        console.log(oldSupplierName)
         content.push(`نام تامین کننده محصول از  ${oldSupplierName} به  ${NewSupplierName} تغییر کرد `);
       }
       if (diffrence.oldBalance !== diffrence.newBalance) {
