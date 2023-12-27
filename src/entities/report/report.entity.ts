@@ -28,25 +28,4 @@ export class ReportEntity extends ArangoDocument {
   })
   @IsDate()
   date?: Date;
-
-  @ApiProperty({
-    description: 'نوع گزارش',
-    example: 'فروش',
-  })
-  @IsString()
-  type?: string;
-
-  @ApiProperty({
-    description: 'category description',
-    example: '1',
-  })
-  @IsString()
-  product_id?: string;
-
-  @ApiProperty({
-    description: 'تعداد محصول',
-    example: '100 عدد',
-  })
-  @IsString()
-  amount?: string;
 }

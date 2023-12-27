@@ -22,7 +22,7 @@ import { AuthGuard } from '../../auth/auth.guard';
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
-
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({
     summary: 'ایجاد گزارش',
@@ -30,7 +30,7 @@ export class ReportController {
   async createReport(@Body() report: ReportEntity) {
     return await this.reportService.create(report);
   }
-
+  @UseGuards(AuthGuard)
   @Delete(':report_id')
   @ApiOperation({
     summary: 'حذف گزارش',
@@ -38,7 +38,6 @@ export class ReportController {
   async removeReport(@Param('report_id') report_id: string) {
     return await this.reportService.remove(report_id);
   }
-
   @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
@@ -47,6 +46,7 @@ export class ReportController {
   async getAllReports() {
     return await this.reportService.findAll();
   }
+  @UseGuards(AuthGuard)
   @Get('find/type')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس نوغ',
@@ -58,7 +58,7 @@ export class ReportController {
   async getBasedOnType(@Query('type') type: string) {
     return await this.reportService.findBasedOnType(type);
   }
-
+  @UseGuards(AuthGuard)
   @Get('find/Date')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس تاریخ',
@@ -77,7 +77,7 @@ export class ReportController {
   ) {
     return await this.reportService.findBasedOnDate(startdate, enddate);
   }
-
+  @UseGuards(AuthGuard)
   @Get('find/DateAndType')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس تاریخ و نوع',
@@ -105,7 +105,7 @@ export class ReportController {
       type,
     );
   }
-
+  @UseGuards(AuthGuard)
   @Get('find/product_id')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس ایدی محصول',
@@ -117,7 +117,7 @@ export class ReportController {
   async getBasedOnProductId(@Query('product_id') product_id: string) {
     return await this.reportService.findBasedOnProductId(product_id);
   }
-
+  @UseGuards(AuthGuard)
   @Get('find/DateAndProduct_id')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس تاریخ و ایدی محصول',

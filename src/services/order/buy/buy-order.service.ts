@@ -58,10 +58,7 @@ export class BuyOrderService {
         report_id: `${sizeOfReportCollection.count + 1}`,
         title: 'سفارش خرید از ' + s.supplier_name,
         content: ['این سفارش مربوط به خرید است'],
-        date: new Date('2023-11-29'),
-        type: 'خرید',
-        product_id: buyOrder.product_id,
-        amount: buyOrder.amount,
+        date: new Date(),
       };
       //Create report
       await this.reportService.create(report);

@@ -33,10 +33,7 @@ export class ProductService {
             report_id: `${(await ReportCollectionSize).count + 1}`,
             title: 'ایجاد محصول با ایدی' + product.product_id,
             content: ["محصول با ایدی ' + product.product_id + 'به مقدار ' + product.balance + 'ایجاد شد"],
-            type: null,
             date: new Date(),
-            product_id: product.product_id,
-            amount: product.balance,
           };
           await this.reportService.create(report);
           await this.productRepository.save(product);
@@ -110,10 +107,7 @@ export class ProductService {
         title:
           'محصول با ایدی  ' + updateOutput.oldProduct.product_id + ' تغییر کرد ',
         content: content,
-        type: null,
         date: new Date(),
-        product_id: updateOutput.oldProduct.product_id,
-        amount: null,
       };
       this.reportService.create(report);
       return { result: 'the product is updated' };
