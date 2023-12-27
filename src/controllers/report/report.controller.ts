@@ -6,11 +6,19 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ReportEntity } from 'src/entities/report/report.entity';
 import { ReportService } from 'src/services/report/report.service';
+import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('report')
+@ApiBearerAuth()
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
@@ -31,6 +39,7 @@ export class ReportController {
     return await this.reportService.remove(report_id);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'یافتن همه گزارشات',

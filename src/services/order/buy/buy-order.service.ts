@@ -7,6 +7,7 @@ import { ProductEntity } from '../../../entities/product/product.entity';
 import { ReportEntity } from '../../../entities/report/report.entity';
 import { SupplierEntity } from '../../../entities/supplier/supplier.entity';
 import { ReportService } from '../../report/report.service';
+import { ProductService } from '../../product/product.service';
 
 @Injectable()
 export class BuyOrderService {
@@ -14,6 +15,7 @@ export class BuyOrderService {
     @InjectRepository(BuyOrderEntity)
     private readonly buyOrderRepository: ArangoRepository<BuyOrderEntity>,
     private readonly reportService: ReportService,
+    private readonly productService: ProductService,
   ) {}
   //This method create a buy order if it doesn't exist
   async create(buyOrder: BuyOrderEntity): Promise<object> {
@@ -37,11 +39,7 @@ export class BuyOrderService {
         const scale: string[] = p.balance.split(' ');
         const newBalance = parseInt(p.balance) + parseInt(buyOrder.amount);
         p.balance = `${newBalance} ${scale[1]}`;
-        await MyDatabase.getDb().query(aql`
-        FOR p IN Products 
-        FILTER p.product_id == ${p.product_id}
-        UPDATE p._key WITH ${p} IN Products
-       `);
+        await this.productService.updateProduct(p);
       } else {
         return { result: 'Please first create the product' };
       }

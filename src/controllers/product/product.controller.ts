@@ -8,6 +8,7 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -17,10 +18,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('product')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+  @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
@@ -91,7 +94,7 @@ export class ProductController {
     await fs.writeFile(imagePath, imageBuffer);
     return await this.productService.create(product);
   }
-
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'دریافت تمام محصولات',
@@ -99,7 +102,7 @@ export class ProductController {
   async findAll(): Promise<ResultList<ProductEntity>> {
     return await this.productService.findAll();
   }
-
+  @UseGuards(AuthGuard)
   @Put()
   @ApiOperation({
     summary: 'ویرایش محصول',
@@ -108,7 +111,7 @@ export class ProductController {
   async updateProduct(@Body() product: ProductEntity): Promise<object> {
     return await this.productService.updateProduct(product);
   }
-
+  @UseGuards(AuthGuard)
   @Delete(':product_id')
   @ApiOperation({
     summary: 'حذف محصول',
