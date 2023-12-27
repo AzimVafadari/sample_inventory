@@ -19,48 +19,38 @@ export class BuyOrderService {
   ) {}
   //This method create a buy order if it doesn't exist
   async create(buyOrder: BuyOrderEntity): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR bo IN BuyOrders
-    FILTER bo.buy_order_id == ${buyOrder.buy_order_id}
-    RETURN bo
-  `);
-    const isExist = cursor.all();
-    if ((await isExist).length > 0) {
-      return { error: 'buyOrder already exist' };
-    } else {
-      if (await MyDatabase.productIsExist(buyOrder.product_id)) {
-        //Update product by new balance
-        const product = await MyDatabase.getDb().query(aql`
+    if (await MyDatabase.productIsExist(buyOrder.product_id)) {
+      //Update product by new balance
+      const product = await MyDatabase.getDb().query(aql`
         FOR product in Products
         FILTER product.product_id == ${buyOrder.product_id}
         RETURN product
         `);
-        const p: ProductEntity = await product.next();
-        const scale: string[] = p.balance.split(' ');
-        const newBalance = parseInt(p.balance) + parseInt(buyOrder.amount);
-        p.balance = `${newBalance} ${scale[1]}`;
-        await this.productService.updateProduct(p);
-      } else {
-        return { result: 'Please first create the product' };
-      }
-      //Find supplier
-      const supplier = await MyDatabase.getDb().query(aql`
-          FOR s IN Suppliers
-          FILTER s.supplier_id == ${buyOrder.supplier_id}
-          RETURN s
-          `);
-      const s: SupplierEntity = await supplier.next();
-      if (s === undefined) return { result: 'supplier does not exist' };
-      const report: ReportEntity = {
-        title: 'سفارش خرید از ' + s.supplier_name,
-        content: ['این سفارش مربوط به خرید است'],
-        date: new Date(),
-      };
-      //Create report
-      await this.reportService.create(report);
-      await this.buyOrderRepository.save(buyOrder);
-      return { result: 'the buyOrder is created' };
+      const p: ProductEntity = await product.next();
+      const scale: string[] = p.balance.split(' ');
+      const newBalance = parseInt(p.balance) + parseInt(buyOrder.amount);
+      p.balance = `${newBalance} ${scale[1]}`;
+      await this.productService.updateProduct(p);
+    } else {
+      return { result: 'Please first create the product' };
     }
+    //Find supplier
+    const supplier = await MyDatabase.getDb().query(aql`
+          FOR sup IN Suppliers
+          FILTER sup._key == ${buyOrder.supplier_id}
+          RETURN sup
+          `);
+    const s: SupplierEntity = await supplier.next();
+    if (s === undefined) return { result: 'supplier does not exist' };
+    const report: ReportEntity = {
+      title: 'سفارش خرید از ' + s.supplier_name,
+      content: ['این سفارش مربوط به خرید است'],
+      date: new Date(),
+    };
+    //Create report
+    await this.reportService.create(report);
+    await this.buyOrderRepository.save(buyOrder);
+    return { result: 'the buyOrder is created' };
   }
   //This method return all buy orders
   async findAll(): Promise<ResultList<BuyOrderEntity>> {
@@ -70,9 +60,9 @@ export class BuyOrderService {
   async update(updatedBuyOrder: BuyOrderEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
-        FOR sup IN BuyOrders 
-        FILTER sup.buyOrder_id == ${updatedBuyOrder.buy_order_id}
-        UPDATE sup._key WITH ${updatedBuyOrder} IN BuyOrders
+        FOR bo IN BuyOrders 
+        FILTER bo._key == ${updatedBuyOrder._key}
+        UPDATE bo._key WITH ${updatedBuyOrder} IN BuyOrders
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
@@ -83,12 +73,12 @@ export class BuyOrderService {
     }
   }
   //This method remove a buy order if it does exist
-  async remove(buyOrderId: string): Promise<object> {
+  async remove(buyOrderKey: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
-    FOR sup IN buyOrders
-    FILTER sup.buyOrder_id == ${buyOrderId}
-    REMOVE sup IN buyOrders
+    FOR bo IN buyOrders
+    FILTER bo._key == ${buyOrderKey}
+    REMOVE bo IN buyOrders
     RETURN OLD
     `);
     const isDeleted = await deletedDocument.all();

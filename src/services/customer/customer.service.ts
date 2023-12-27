@@ -11,18 +11,8 @@ export class CustomerService {
     private readonly customerRepository: ArangoRepository<CustomerEntity>,
   ) {}
   async create(customer: CustomerEntity): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR customer IN customers
-    FILTER customer.customer_id == ${customer.customer_id}
-    RETURN customer
-  `);
-    const isExist = cursor.all();
-    if ((await isExist).length > 0) {
-      return { error: 'user already exist' };
-    } else {
-      await this.customerRepository.save(customer);
-      return { result: 'the customer is created' };
-    }
+    await this.customerRepository.save(customer);
+    return { result: 'the customer is created' };
   }
   async findAll(): Promise<ResultList<CustomerEntity>> {
     return await this.customerRepository.findAll();
@@ -31,7 +21,7 @@ export class CustomerService {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR cus IN Customers 
-        FILTER cus.customer_id == ${updatedCustomer.customer_id}
+        FILTER cus._key == ${updatedCustomer._key}
         UPDATE cus._key WITH ${updatedCustomer} IN Customers
         RETURN OLD
     `);
@@ -42,11 +32,11 @@ export class CustomerService {
       return { error: 'customer not found' };
     }
   }
-  async remove(customerId: string): Promise<object> {
+  async remove(customerKey: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cus IN Customers
-    FILTER cus.customer_id == ${customerId}
+    FILTER cus._key == ${customerKey}
     REMOVE cus IN Customers
     RETURN OLD
     `);
