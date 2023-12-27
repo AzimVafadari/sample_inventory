@@ -35,19 +35,6 @@ export class ReportService {
     return await this.reportRepository.findAll();
   }
 
-  async findBasedOnType(type: string): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR report IN Reports
-    FILTER report.type == ${type}
-    RETURN report
-    `);
-    const reports = cursor.all();
-    if ((await reports).length > 0) {
-      return reports;
-    } else {
-      return { error: 'no report found' };
-    }
-  }
   async findBasedOnDate(startDate: string, endDate: string): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
       LET startdate = DATE_TIMESTAMP(${startDate})
@@ -64,61 +51,5 @@ export class ReportService {
       return { error: 'no report found' };
     }
   }
-  async findBasedOnDateAndType(
-    startDate: string,
-    endDate: string,
-    type: string,
-  ): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    LET startdate = DATE_TIMESTAMP(${startDate})
-    LET enddate = DATE_TIMESTAMP(${endDate})
-    FOR report in Reports
-    FILTER DATE_DIFF(report.date, startdate, "d") <= 0
-    FILTER DATE_DIFF(report.date, enddate, "d") >= 0
-    FILTER report.type == ${type}
-    RETURN report
-    `);
-    const reports = cursor.all();
-    if ((await reports).length > 0) {
-      return reports;
-    } else {
-      return { error: 'no report found' };
-    }
-  }
 
-  async findBasedOnProductId(product_id: string): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR report IN Reports
-    FILTER report.product_id == ${product_id}
-    RETURN report
-    `);
-    const reports = cursor.all();
-    if ((await reports).length > 0) {
-      return reports;
-    } else {
-      return { error: 'no report found' };
-    }
-  }
-
-  async findBasedOnProductIdAndDate(
-    startDate: string,
-    endDate: string,
-    product_id: string,
-  ): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    LET startdate = DATE_TIMESTAMP(${startDate})
-    LET enddate = DATE_TIMESTAMP(${endDate})
-    FOR report in Reports
-    FILTER DATE_DIFF(report.date, startdate, "d") <= 0
-    FILTER DATE_DIFF(report.date, enddate, "d") >= 0
-    FILTER report.product_id == ${product_id}
-    RETURN report
-    `);
-    const reports = cursor.all();
-    if ((await reports).length > 0) {
-      return reports;
-    } else {
-      return { error: 'no report found' };
-    }
-  }
 }
