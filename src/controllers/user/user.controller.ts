@@ -6,15 +6,19 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { UserEntity } from '../../entities/user/user.entity';
 import { ArangoNewOldResult, ResultList } from 'nest-arango';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('user')
+@ApiBearerAuth()
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({
     summary: 'ایجاد کاربر',
@@ -23,7 +27,7 @@ export class UserController {
   async create(@Body() user: UserEntity): Promise<UserEntity> {
     return await this.userService.create(user);
   }
-
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'دریافت تمام کاربران',
@@ -31,7 +35,7 @@ export class UserController {
   async findAll(): Promise<ResultList<UserEntity>> {
     return await this.userService.findAll();
   }
-
+  @UseGuards(AuthGuard)
   @Get(':username')
   @ApiOperation({
     summary: 'دریافت کاربر با نام کاربری',
@@ -41,7 +45,7 @@ export class UserController {
   ): Promise<UserEntity | null> {
     return await this.userService.findOne(username);
   }
-
+  @UseGuards(AuthGuard)
   @Put(':username')
   @ApiOperation({
     summary: 'ویرایش کاربر',
@@ -53,7 +57,7 @@ export class UserController {
   ): Promise<ArangoNewOldResult<any>> {
     return await this.userService.update(username, user);
   }
-
+  @UseGuards(AuthGuard)
   @Delete(':username')
   @Put(':username')
   @ApiOperation({

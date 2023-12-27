@@ -11,7 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
-import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ProductService } from '../../services/product/product.service';
 import { ProductEntity } from '../../entities/product/product.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -20,6 +26,7 @@ import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('product')
+@ApiBearerAuth()
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}

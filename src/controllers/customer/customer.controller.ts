@@ -8,11 +8,12 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CustomerService } from '../../services/customer/customer.service';
 import { CustomerEntity } from '../../entities/customer/customer.entity';
 import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('customer')
+@ApiBearerAuth()
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
