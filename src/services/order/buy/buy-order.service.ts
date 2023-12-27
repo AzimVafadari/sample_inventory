@@ -37,7 +37,7 @@ export class BuyOrderService {
     //Find supplier
     const supplier = await MyDatabase.getDb().query(aql`
           FOR sup IN Suppliers
-          FILTER sup._key == ${buyOrder.supplier_id}
+          FILTER sup._id == ${buyOrder.supplier_id}
           RETURN sup
           `);
     const s: SupplierEntity = await supplier.next();
@@ -61,8 +61,8 @@ export class BuyOrderService {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR bo IN BuyOrders 
-        FILTER bo._key == ${updatedBuyOrder._key}
-        UPDATE bo._key WITH ${updatedBuyOrder} IN BuyOrders
+        FILTER bo._id == ${updatedBuyOrder._id}
+        UPDATE bo._id WITH ${updatedBuyOrder} IN BuyOrders
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
@@ -73,11 +73,11 @@ export class BuyOrderService {
     }
   }
   //This method remove a buy order if it does exist
-  async remove(buyOrderKey: string): Promise<object> {
+  async remove(buyOrderId: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR bo IN buyOrders
-    FILTER bo._key == ${buyOrderKey}
+    FILTER bo._id == ${buyOrderId}
     REMOVE bo IN buyOrders
     RETURN OLD
     `);

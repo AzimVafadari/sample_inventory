@@ -36,7 +36,7 @@ export class SaleOrderService {
         //Find customer
         const customer = await MyDatabase.getDb().query(aql`
           FOR c IN Customers
-          FILTER c._key == ${saleOrder.customer_id}
+          FILTER c._id == ${saleOrder.customer_id}
           RETURN c
           `);
         const c: CustomerEntity = await customer.next();
@@ -66,8 +66,8 @@ export class SaleOrderService {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR so IN SaleOrders 
-        FILTER so._key == ${updatedSaleOrder._key}
-        UPDATE so._key WITH ${updatedSaleOrder} IN SaleOrders
+        FILTER so._id == ${updatedSaleOrder._id}
+        UPDATE so._id WITH ${updatedSaleOrder} IN SaleOrders
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
@@ -78,11 +78,11 @@ export class SaleOrderService {
     }
   }
   //This method remove a buy order if it does exist
-  async remove(saleOrderKey: string): Promise<object> {
+  async remove(saleOrderId: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR so IN SaleOrders
-    FILTER so._key == ${saleOrderKey}
+    FILTER so._id == ${saleOrderId}
     REMOVE so IN SaleOrders
     RETURN OLD
     `);

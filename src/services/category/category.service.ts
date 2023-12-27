@@ -13,7 +13,7 @@ export class CategoryService {
 
   async create(category: CategoryEntity): Promise<object> {
     const newCategory = await this.categoryRepository.save(category);
-    //If category collection size is one category path_to_root is its _key
+    //If category collection size is one category path_to_root is its _id
     if ((await MyDatabase.getCollectionSize('Categories')) == 1) {
       newCategory.path_to_root = newCategory._key;
     } else {
@@ -53,8 +53,8 @@ export class CategoryService {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR cat IN Categories 
-        FILTER cat._key == ${updatedCategory._key}
-        UPDATE cat._key WITH ${updatedCategory} IN Categories
+        FILTER cat._id == ${updatedCategory._id}
+        UPDATE cat._id WITH ${updatedCategory} IN Categories
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
@@ -65,17 +65,17 @@ export class CategoryService {
     }
   }
 
-  async remove(categoryKey: string): Promise<object> {
+  async remove(categoryId: string): Promise<object> {
     //Find category
     const cursor = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._key == ${categoryKey}
+    FILTER cat._id == ${categoryId}
     RETURN cat
     `);
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._key == ${categoryKey}
+    FILTER cat._id == ${categoryId}
     REMOVE cat IN Categories
     RETURN OLD
     `);

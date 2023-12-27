@@ -21,8 +21,8 @@ export class CustomerService {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR cus IN Customers 
-        FILTER cus._key == ${updatedCustomer._key}
-        UPDATE cus._key WITH ${updatedCustomer} IN Customers
+        FILTER cus._id == ${updatedCustomer._id}
+        UPDATE cus._id WITH ${updatedCustomer} IN Customers
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
@@ -32,11 +32,11 @@ export class CustomerService {
       return { error: 'customer not found' };
     }
   }
-  async remove(customerKey: string): Promise<object> {
+  async remove(customerId: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cus IN Customers
-    FILTER cus._key == ${customerKey}
+    FILTER cus._id == ${customerId}
     REMOVE cus IN Customers
     RETURN OLD
     `);
