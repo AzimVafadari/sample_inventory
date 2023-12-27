@@ -95,7 +95,7 @@ export class ProductController {
     @Body() product: ProductEntity,
   ) {
     product.image_id = uuidv4();
-    const folderPath: string = './images/products';
+    const folderPath: string = './images/products/';
     const imageBuffer = image.buffer;
     const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
     await fs.writeFile(imagePath, imageBuffer);

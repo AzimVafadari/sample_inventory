@@ -12,24 +12,14 @@ export class ReportService {
   ) {}
 
   async create(report: ReportEntity): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR report IN Reports
-    FILTER report.report_id == ${report.report_id}
-    RETURN report
-  `);
-    const isExist = cursor.all();
-    if ((await isExist).length > 0) {
-      return { error: 'report already exist' };
-    } else {
-      await this.reportRepository.save(report);
-      return { result: 'the report is created' };
-    }
+    await this.reportRepository.save(report);
+    return { result: 'the report is created' };
   }
 
   async remove(report_id: string): Promise<object> {
     const deletedDocument = await MyDatabase.getDb().query(aql`
       FOR report IN Reports
-      FILTER report.report_id == ${report_id}
+      FILTER report._id == ${report_id}
       REMOVE report IN Reports
       RETURN OLD
       `);
