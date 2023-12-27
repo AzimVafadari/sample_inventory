@@ -51,5 +51,4 @@ export class ReportService {
       return { error: 'no report found' };
     }
   }
-
 }

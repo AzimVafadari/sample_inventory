@@ -6,23 +6,23 @@ import {
   Param,
   Post,
   Query,
-  UseGuards,
+  // UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
+  // ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ReportEntity } from 'src/entities/report/report.entity';
 import { ReportService } from 'src/services/report/report.service';
-import { AuthGuard } from '../../auth/auth.guard';
+// import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('report')
-@ApiBearerAuth()
+// @ApiBearerAuth()
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({
     summary: 'ایجاد گزارش',
@@ -30,7 +30,7 @@ export class ReportController {
   async createReport(@Body() report: ReportEntity) {
     return await this.reportService.create(report);
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Delete(':report_id')
   @ApiOperation({
     summary: 'حذف گزارش',
@@ -38,7 +38,7 @@ export class ReportController {
   async removeReport(@Param('report_id') report_id: string) {
     return await this.reportService.remove(report_id);
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'یافتن همه گزارشات',
@@ -46,7 +46,7 @@ export class ReportController {
   async getAllReports() {
     return await this.reportService.findAll();
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get('find/Date')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس تاریخ',

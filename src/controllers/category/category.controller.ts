@@ -7,11 +7,11 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  UseGuards,
+  // UseGuards,
   Put,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
+  // ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -23,13 +23,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { AuthGuard } from '../../auth/auth.guard';
+// import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('category')
-@ApiBearerAuth()
+// @ApiBearerAuth()
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
@@ -72,7 +72,7 @@ export class CategoryController {
     category.path_to_root = '';
     return await this.categoryService.create(category);
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'دریافت تمام دسته بندی ها',
@@ -80,7 +80,7 @@ export class CategoryController {
   async findAllCategory() {
     return await this.categoryService.findAll();
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get(':categoryName')
   @ApiOperation({
     summary: 'دریافت دسته بندی با نام ',
@@ -88,7 +88,7 @@ export class CategoryController {
   async findCategoriesByName(@Param('categoryName') categoryName: string) {
     return await this.categoryService.findOne(categoryName);
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Put()
   @ApiOperation({
     summary: 'ویرایش دسته بندی',
@@ -96,7 +96,7 @@ export class CategoryController {
   async updateCategory(@Body() category: CategoryEntity) {
     return await this.categoryService.update(category);
   }
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Delete(':categoryId')
   @ApiOperation({
     summary: 'حذف دسته بندی',
