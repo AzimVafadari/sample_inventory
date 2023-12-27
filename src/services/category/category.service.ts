@@ -13,6 +13,7 @@ export class CategoryService {
 
   async create(category: CategoryEntity): Promise<object> {
     const newCategory = await this.categoryRepository.save(category);
+    //If category collection size is one category path_to_root is its _key
     if ((await MyDatabase.getCollectionSize('Categories')) == 1) {
       newCategory.path_to_root = newCategory._key;
     } else {
