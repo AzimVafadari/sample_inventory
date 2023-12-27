@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   // UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -41,8 +42,11 @@ export class SupplierController {
   @ApiOperation({
     summary: 'ویرایش یک تامین کننده به وسیله نام آن',
   })
-  async updateSupplier(@Body() updatedSupplier: SupplierEntity) {
-    return await this.supplierService.update(updatedSupplier);
+  async updateSupplier(
+    @Body() updatedSupplier: SupplierEntity,
+    @Query('supplierID') supplierID: string,
+  ) {
+    return await this.supplierService.update(updatedSupplier, supplierID);
   }
   //This method remove the supplier if it does exist and returns an object
   // @UseGuards(AuthGuard)

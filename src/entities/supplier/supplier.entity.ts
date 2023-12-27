@@ -5,13 +5,6 @@ import { IsString } from 'class-validator';
 @Collection('Suppliers')
 export class SupplierEntity extends ArangoDocument {
   @ApiProperty({
-    description: 'ایدی تامین کننده',
-    example: '1',
-  })
-  @IsString()
-  supplier_id?: string;
-
-  @ApiProperty({
     description: 'نام تامین کننده',
     example: 'شرکت فولاد',
   })
