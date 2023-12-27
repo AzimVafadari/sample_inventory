@@ -17,11 +17,14 @@ export class SupplierService {
   async findAll(): Promise<ResultList<SupplierEntity>> {
     return await this.supplierRepository.findAll();
   }
-  async update(updatedSupplier: SupplierEntity): Promise<object> {
+  async update(
+    updatedSupplier: SupplierEntity,
+    supplierID: string,
+  ): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR sup IN Suppliers 
-        FILTER sup.supplier_id == ${updatedSupplier.supplier_id}
+        FILTER sup._id == ${supplierID}
         UPDATE sup._key WITH ${updatedSupplier} IN Suppliers
         RETURN OLD
     `);
@@ -36,7 +39,7 @@ export class SupplierService {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR sup IN Suppliers
-    FILTER sup.supplier_id == ${supplierId}
+    FILTER sup._id == ${supplierId}
     REMOVE sup IN Suppliers
     RETURN OLD
     `);
