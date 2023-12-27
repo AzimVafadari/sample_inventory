@@ -19,42 +19,52 @@ export class SaleOrderService {
   ) {}
   //This method create a sale order if it doesn't exist
   async create(saleOrder: SaleOrderEntity): Promise<object> {
-    if (await MyDatabase.productIsExist(saleOrder.product_id)) {
-      //Update product by new balance
-      const product = await MyDatabase.getDb().query(aql`
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR saleOrder IN SaleOrders
+    FILTER saleOrder.saleOrder_id == ${saleOrder.sale_order_id}
+    RETURN saleOrder
+  `);
+    const isExist = cursor.all();
+    if ((await isExist).length > 0) {
+      return { error: 'saleOrder already exist' };
+    } else {
+      if (await MyDatabase.productIsExist(saleOrder.product_id)) {
+        //Update product by new balance
+        const product = await MyDatabase.getDb().query(aql`
         FOR product in Products
         FILTER product.product_id == ${saleOrder.product_id}
         RETURN product
         `);
-      const p: ProductEntity = await product.next();
-      if (parseInt(p.balance) >= parseInt(saleOrder.amount)) {
-        const newBalance = parseInt(p.balance) - parseInt(saleOrder.amount);
-        const scale: string[] = p.balance.split(' ');
-        p.balance = `${newBalance} ${scale[1]}`;
-        await this.productService.updateProduct(p);
+        const p: ProductEntity = await product.next();
+        if (parseInt(p.balance) >= parseInt(saleOrder.amount)) {
+          const newBalance = parseInt(p.balance) - parseInt(saleOrder.amount);
+          const scale: string[] = p.balance.split(' ');
+          p.balance = `${newBalance} ${scale[1]}`;
+          await this.productService.updateProduct(p);
 
-        //Find customer
-        const customer = await MyDatabase.getDb().query(aql`
+          //Find customer
+          const customer = await MyDatabase.getDb().query(aql`
           FOR c IN Customers
-          FILTER c._id == ${saleOrder.customer_id}
+          FILTER c.customer_id == ${saleOrder.customer_id}
           RETURN c
           `);
-        const c: CustomerEntity = await customer.next();
-        if (c === undefined) return { result: 'customer does not exist' };
-        const report: ReportEntity = {
-          title: 'سفارش فروش به ' + c.name,
-          content: ['این سفارش مربوط به فروش است'],
-          date: new Date(),
-        };
-        //Create report
-        await this.reportService.create(report);
-        await this.saleOrderRepository.save(saleOrder);
-        return { result: 'the saleOrder is created' };
+          const c: CustomerEntity = await customer.next();
+          if (c === undefined) return { result: 'customer does not exist' };
+          const report: ReportEntity = {
+            title: 'سفارش فروش به ' + c.name,
+            content: ['این سفارش مربوط به فروش است'],
+            date: new Date(),
+          };
+          //Create report
+          await this.reportService.create(report);
+          await this.saleOrderRepository.save(saleOrder);
+          return { result: 'the saleOrder is created' };
+        } else {
+          return { result: 'Balance of this product is not enough' };
+        }
       } else {
-        return { result: 'Balance of this product is not enough' };
+        return { result: 'Please first create the product' };
       }
-    } else {
-      return { result: 'Please first create the product' };
     }
   }
   //This method return all buy orders
@@ -66,8 +76,8 @@ export class SaleOrderService {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR so IN SaleOrders 
-        FILTER so._id == ${updatedSaleOrder._id}
-        UPDATE so._id WITH ${updatedSaleOrder} IN SaleOrders
+        FILTER so.saleOrder_id == ${updatedSaleOrder.sale_order_id}
+        UPDATE so._key WITH ${updatedSaleOrder} IN SaleOrders
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
@@ -82,7 +92,7 @@ export class SaleOrderService {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR so IN SaleOrders
-    FILTER so._id == ${saleOrderId}
+    FILTER so.saleOrder_id == ${saleOrderId}
     REMOVE so IN SaleOrders
     RETURN OLD
     `);

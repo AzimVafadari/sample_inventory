@@ -3,6 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 @Collection('Categories')
 export class CategoryEntity extends ArangoDocument {
+  @ApiProperty({ description: 'آیدی دسته بندی', example: '1' })
+  @IsString()
+  category_id?: string;
+
   @ApiProperty({
     description: 'نام دسته بندی',
     example: 'صیفی جات',

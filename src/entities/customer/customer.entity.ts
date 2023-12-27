@@ -5,6 +5,13 @@ import { IsString } from 'class-validator';
 @Collection('Customers')
 export class CustomerEntity extends ArangoDocument {
   @ApiProperty({
+    description: 'آیدی مشتری',
+    example: '1',
+  })
+  @IsString()
+  customer_id?: string;
+
+  @ApiProperty({
     description: 'نام مشتری',
     example: 'علی حسینی',
   })

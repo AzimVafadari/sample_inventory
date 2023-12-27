@@ -3,7 +3,6 @@ import { InjectRepository, ArangoRepository } from 'nest-arango';
 import { CategoryEntity } from '../../entities/category/category.entity';
 import { MyDatabase } from '../../database/database';
 import { aql } from 'arangojs';
-
 @Injectable()
 export class CategoryService {
   constructor(
@@ -12,21 +11,18 @@ export class CategoryService {
   ) {}
 
   async create(category: CategoryEntity): Promise<object> {
-    const newCategory = await this.categoryRepository.save(category);
-    //If category collection size is one category path_to_root is its _id
-    if ((await MyDatabase.getCollectionSize('Categories')) == 1) {
-      newCategory.path_to_root = newCategory._key;
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR category IN Categories
+    FILTER category.category_id == ${category.category_id}
+    RETURN category
+  `);
+    const isExist = cursor.all();
+    if ((await isExist).length > 0) {
+      return { error: 'category already exist' };
     } else {
-      const parentCategory = await MyDatabase.getDb().query(aql`
-      FOR category IN Categories
-      FILTER category._key == ${newCategory.parent_id}
-      RETURN category
-    `);
-      const pc: CategoryEntity = await parentCategory.next();
-      newCategory.path_to_root = pc.path_to_root + '.' + newCategory._key;
+      await this.categoryRepository.save(category);
+      return { result: 'the category is created' };
     }
-    await this.update(newCategory);
-    return { result: 'the category is created' };
   }
 
   async findAll() {
@@ -48,13 +44,12 @@ export class CategoryService {
       return { error: 'category not found' };
     }
   }
-
   async update(updatedCategory: CategoryEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR cat IN Categories 
-        FILTER cat._id == ${updatedCategory._id}
-        UPDATE cat._id WITH ${updatedCategory} IN Categories
+        FILTER cat.category_id == ${updatedCategory.category_id}
+        UPDATE cat._key WITH ${updatedCategory} IN Categories
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
@@ -69,13 +64,13 @@ export class CategoryService {
     //Find category
     const cursor = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._id == ${categoryId}
+    FILTER cat.category_id == ${categoryId}
     RETURN cat
     `);
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._id == ${categoryId}
+    FILTER cat.category_id == ${categoryId}
     REMOVE cat IN Categories
     RETURN OLD
     `);
