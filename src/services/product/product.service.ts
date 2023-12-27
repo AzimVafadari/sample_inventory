@@ -26,15 +26,12 @@ export class ProductService {
     } else {
       if (await MyDatabase.supplierIsExist(product.supplier_id)) {
         if (await MyDatabase.categoryIsExist(product.category_id)) {
-          const ReportCollectionSize = MyDatabase.getDb()
-            .collection('Reports')
-            .count();
           const report: ReportEntity = {
-            report_id: `${(await ReportCollectionSize).count + 1}`,
-            title: 'ایجاد محصول با ایدی' + product.product_id,
-            content: ["محصول با ایدی ' + product.product_id + 'به مقدار ' + product.balance + 'ایجاد شد"],
+            title: `ایجاد محصول با ایدی  ${product.product_id}`,
+            content: [`محصول با ایدی ${product.product_id}  به مقدار  ${product.balance} ایچاد شد`],
             date: new Date(),
           };
+          console.log(report);
           await this.reportService.create(report);
           await this.productRepository.save(product);
           return {
@@ -67,9 +64,7 @@ export class ProductService {
     const updateOutput = await newAndOldProduct.next();
     if (updateOutput) {
       // console.log(isUpdated.oldProduct.balance);
-      const ReportCollectionSize = MyDatabase.getDb()
-        .collection('Reports')
-        .count();
+
       const diffrence = {
         oldPrice: updateOutput.oldProduct.price,
         newPrice: updateOutput.newProduct.price,
@@ -81,7 +76,9 @@ export class ProductService {
       // eslint-disable-next-line prefer-const
       let content: string[] = [];
       if (diffrence.oldPrice !== diffrence.newPrice) {
-        content.push(`قیمت محصول از  ${diffrence.oldPrice}  به  ${diffrence.newPrice}  تغییر کرد `);
+        content.push(
+          `قیمت محصول از  ${diffrence.oldPrice}  به  ${diffrence.newPrice}  تغییر کرد `,
+        );
       }
       if (diffrence.oldSupplierId !== diffrence.newSupplierId) {
         const cursor = await MyDatabase.getDb().query(aql`
@@ -96,16 +93,21 @@ export class ProductService {
           RETURN s.supplier_name
         `);
         const NewSupplierName = await cursor2.next();
-        content.push(`نام تامین کننده محصول از  ${oldSupplierName} به  ${NewSupplierName} تغییر کرد `);
+        content.push(
+          `نام تامین کننده محصول از  ${oldSupplierName} به  ${NewSupplierName} تغییر کرد `,
+        );
       }
       if (diffrence.oldBalance !== diffrence.newBalance) {
-        content.push(`موجودی محصول از ${diffrence.oldBalance} به  ${diffrence.newBalance} تغییر کرد`);
+        content.push(
+          `موجودی محصول از ${diffrence.oldBalance} به  ${diffrence.newBalance} تغییر کرد`,
+        );
       }
 
       const report: ReportEntity = {
-        report_id: `${(await ReportCollectionSize).count + 1}`,
         title:
-          'محصول با ایدی  ' + updateOutput.oldProduct.product_id + ' تغییر کرد ',
+          'محصول با ایدی  ' +
+          updateOutput.oldProduct.product_id +
+          ' تغییر کرد ',
         content: content,
         date: new Date(),
       };
@@ -123,8 +125,17 @@ export class ProductService {
       REMOVE product IN Products
       RETURN OLD
     `);
-    const isDeleted = deletedProduct.all();
-    if ((await isDeleted).length > 0) {
+    const isDeleted = await deletedProduct.all();
+    if (isDeleted.length > 0) {
+      const report: ReportEntity = {
+        title: 'delete product',
+        content: [
+          `the product with name ${isDeleted[0].product_name} is deleted say Good bye`,
+        ],
+        date: new Date(),
+      };
+      console.log(report)
+      await this.reportService.create(report);
       return isDeleted;
     } else {
       return { error: 'the product doesnt exist' };

@@ -43,9 +43,6 @@ export class BuyOrderService {
       } else {
         return { result: 'Please first create the product' };
       }
-      const sizeOfReportCollection = await MyDatabase.getDb()
-        .collection('Reports')
-        .count();
       //Find supplier
       const supplier = await MyDatabase.getDb().query(aql`
           FOR s IN Suppliers
@@ -55,7 +52,6 @@ export class BuyOrderService {
       const s: SupplierEntity = await supplier.next();
       if (s === undefined) return { result: 'supplier does not exist' };
       const report: ReportEntity = {
-        report_id: `${sizeOfReportCollection.count + 1}`,
         title: 'سفارش خرید از ' + s.supplier_name,
         content: ['این سفارش مربوط به خرید است'],
         date: new Date(),

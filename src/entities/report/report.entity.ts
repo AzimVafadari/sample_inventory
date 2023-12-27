@@ -4,10 +4,6 @@ import { IsArray, IsDate, IsString } from 'class-validator';
 
 @Collection('Reports')
 export class ReportEntity extends ArangoDocument {
-  @ApiProperty({ description: 'شماره گزارش', example: '1' })
-  @IsString()
-  report_id?: string;
-
   @ApiProperty({
     description: 'عنوان گزارش',
     example: 'این گزارش ... است',
