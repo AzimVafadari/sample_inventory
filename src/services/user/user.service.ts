@@ -1,52 +1,40 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  InjectRepository,
-  ArangoRepository,
-  ResultList,
-  ArangoNewOldResult,
-} from 'nest-arango';
-import { UserEntity } from '../../entities/user/user.entity';
-@Injectable()
-export class UserService {
-  constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: ArangoRepository<UserEntity>,
-  ) {}
+// import { Injectable, NotFoundException } from '@nestjs/common';
+// import {
+//   InjectRepository,
+//   ArangoRepository,
+//   ResultList,
+//   ArangoNewOldResult,
+// } from 'nest-arango';
+// import { UserEntity } from '../../entities/user/user.entity';
+// @Injectable()
+// export class UserService {
+//   constructor(
+//     @InjectRepository(UserEntity)
+//     private readonly userRepository: ArangoRepository<UserEntity>,
+//   ) {}
 
-  async create(user: UserEntity): Promise<UserEntity> {
-    return await this.userRepository.save(user);
-  }
+//   async update(
+//     username: string,
+//     updatedUser: Partial<UserEntity>,
+//   ): Promise<ArangoNewOldResult<any>> {
+//     // Find the existing user
+//     const existingUser = await this.userRepository.findOneBy({ username });
 
-  async findAll(): Promise<ResultList<UserEntity>> {
-    return await this.userRepository.findAll();
-  }
+//     if (!existingUser) {
+//       throw new NotFoundException(`User with username ${username} not found`);
+//     }
 
-  async findOne(username: string): Promise<UserEntity | null> {
-    return await this.userRepository.findOneBy({ username });
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async update(
-    username: string,
-    updatedUser: Partial<UserEntity>,
-  ): Promise<ArangoNewOldResult<any>> {
-    // Find the existing user
-    const existingUser = await this.userRepository.findOneBy({ username });
+//     // Update the user fields
+//     Object.assign(existingUser, updatedUser);
 
-    if (!existingUser) {
-      throw new NotFoundException(`User with username ${username} not found`);
-    }
+//     // Use the `update` method to persist changes
+//     const updatedDocument = await this.userRepository.update(existingUser);
 
-    // Update the user fields
-    Object.assign(existingUser, updatedUser);
+//     // Return the updated user
+//     return updatedDocument ? updatedDocument : null;
+//   }
 
-    // Use the `update` method to persist changes
-    const updatedDocument = await this.userRepository.update(existingUser);
-
-    // Return the updated user
-    return updatedDocument ? updatedDocument : null;
-  }
-
-  async remove(username: string): Promise<void> {
-    await this.userRepository.removeBy({ username });
-  }
-}
+//   async remove(username: string): Promise<void> {
+//     await this.userRepository.removeBy({ username });
+//   }
+// }
