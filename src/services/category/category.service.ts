@@ -3,6 +3,7 @@ import { InjectRepository, ArangoRepository } from 'nest-arango';
 import { CategoryEntity } from '../../entities/category/category.entity';
 import { MyDatabase } from '../../database/database';
 import { aql } from 'arangojs';
+
 @Injectable()
 export class CategoryService {
   constructor(
@@ -12,9 +13,18 @@ export class CategoryService {
 
   async create(category: CategoryEntity): Promise<object> {
     const newCategory = await this.categoryRepository.save(category);
-    newCategory.path_to_root =
-      newCategory.path_to_root + '.' + newCategory._key;
-
+    if ((await MyDatabase.getCollectionSize('Categories')) == 1) {
+      newCategory.path_to_root = newCategory._key;
+    } else {
+      const parentCategory = await MyDatabase.getDb().query(aql`
+      FOR category IN Categories
+      FILTER category._key == ${newCategory.parent_id}
+      RETURN category
+    `);
+      const pc: CategoryEntity = await parentCategory.next();
+      newCategory.path_to_root = pc.path_to_root + '.' + newCategory._key;
+    }
+    await this.update(newCategory);
     return { result: 'the category is created' };
   }
 
@@ -37,6 +47,7 @@ export class CategoryService {
       return { error: 'category not found' };
     }
   }
+
   async update(updatedCategory: CategoryEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`

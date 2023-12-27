@@ -47,18 +47,6 @@ export class ReportController {
     return await this.reportService.findAll();
   }
   @UseGuards(AuthGuard)
-  @Get('find/type')
-  @ApiOperation({
-    summary: 'یافتن گزارشات بر اساس نوغ',
-  })
-  @ApiQuery({
-    name: 'type',
-    example: 'فروش',
-  })
-  async getBasedOnType(@Query('type') type: string) {
-    return await this.reportService.findBasedOnType(type);
-  }
-  @UseGuards(AuthGuard)
   @Get('find/Date')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس تاریخ',
@@ -76,73 +64,5 @@ export class ReportController {
     @Query('enddate') enddate: string,
   ) {
     return await this.reportService.findBasedOnDate(startdate, enddate);
-  }
-  @UseGuards(AuthGuard)
-  @Get('find/DateAndType')
-  @ApiOperation({
-    summary: 'یافتن گزارشات بر اساس تاریخ و نوع',
-  })
-  @ApiQuery({
-    name: 'startdate',
-    example: '2000-12-02',
-  })
-  @ApiQuery({
-    name: 'enddate',
-    example: '2003-12-02',
-  })
-  @ApiQuery({
-    name: 'type',
-    example: 'فروش',
-  })
-  async getBasedOnDateAndType(
-    @Query('startdate') startdate: string,
-    @Query('enddate') enddate: string,
-    @Query('type') type: string,
-  ) {
-    return await this.reportService.findBasedOnDateAndType(
-      startdate,
-      enddate,
-      type,
-    );
-  }
-  @UseGuards(AuthGuard)
-  @Get('find/product_id')
-  @ApiOperation({
-    summary: 'یافتن گزارشات بر اساس ایدی محصول',
-  })
-  @ApiQuery({
-    name: 'product_id',
-    example: '1',
-  })
-  async getBasedOnProductId(@Query('product_id') product_id: string) {
-    return await this.reportService.findBasedOnProductId(product_id);
-  }
-  @UseGuards(AuthGuard)
-  @Get('find/DateAndProduct_id')
-  @ApiOperation({
-    summary: 'یافتن گزارشات بر اساس تاریخ و ایدی محصول',
-  })
-  @ApiQuery({
-    name: 'startdate',
-    example: '2000-12-02',
-  })
-  @ApiQuery({
-    name: 'enddate',
-    example: '2003-12-02',
-  })
-  @ApiQuery({
-    name: 'product_id',
-    example: '1',
-  })
-  async getBasedOnDateAndProductId(
-    @Query('startdate') startdate: string,
-    @Query('enddate') enddate: string,
-    @Query('product_id') product_id: string,
-  ) {
-    return await this.reportService.findBasedOnProductIdAndDate(
-      startdate,
-      enddate,
-      product_id,
-    );
   }
 }

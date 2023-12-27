@@ -51,7 +51,11 @@ export class CategoryController {
         },
         parent_id: {
           type: 'string',
-          example: '1',
+          example: '',
+        },
+        path_to_root: {
+          type: 'string',
+          example: '',
         },
       },
     },
@@ -65,6 +69,7 @@ export class CategoryController {
     const imageBuffer = image.buffer;
     const imagePath = path.join(folderPath, `${category.image_id}.jpg`);
     await fs.writeFile(imagePath, imageBuffer);
+    category.path_to_root = '';
     return await this.categoryService.create(category);
   }
   @UseGuards(AuthGuard)
