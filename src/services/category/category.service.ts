@@ -25,7 +25,7 @@ export class CategoryService {
       const pc: CategoryEntity = await parentCategory.next();
       newCategory.path_to_root = pc.path_to_root + '.' + newCategory._key;
     }
-    await this.update(newCategory);
+    await this.update(category._id, newCategory);
     return { result: 'the category is created' };
   }
 
@@ -49,12 +49,12 @@ export class CategoryService {
     }
   }
 
-  async update(updatedCategory: CategoryEntity): Promise<object> {
+  async update(_id: string, updatedCategory: CategoryEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR cat IN Categories 
-        FILTER cat._id == ${updatedCategory._id}
-        UPDATE cat._id WITH ${updatedCategory} IN Categories
+        FILTER cat._id == ${_id}
+        UPDATE cat WITH ${updatedCategory} IN Categories
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();

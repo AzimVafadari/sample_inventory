@@ -44,9 +44,9 @@ export class SupplierController {
   })
   async updateSupplier(
     @Body() updatedSupplier: SupplierEntity,
-    @Query('supplierID') supplierID: string,
+    @Query('_id') _id: string,
   ) {
-    return await this.supplierService.update(updatedSupplier, supplierID);
+    return await this.supplierService.update(_id, updatedSupplier);
   }
   //This method remove the supplier if it does exist and returns an object
   // @UseGuards(AuthGuard)
