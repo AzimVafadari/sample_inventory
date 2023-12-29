@@ -17,12 +17,12 @@ export class CustomerService {
   async findAll(): Promise<ResultList<CustomerEntity>> {
     return await this.customerRepository.findAll();
   }
-  async update(updatedCustomer: CustomerEntity): Promise<object> {
+  async update(_id: string, updatedCustomer: CustomerEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR cus IN Customers 
-        FILTER cus._id == ${updatedCustomer._id}
-        UPDATE cus._id WITH ${updatedCustomer} IN Customers
+        FILTER cus._id == ${_id}
+        UPDATE cus WITH ${updatedCustomer} IN Customers
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();

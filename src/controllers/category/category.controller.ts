@@ -9,6 +9,7 @@ import {
   UploadedFile,
   // UseGuards,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   // ApiBearerAuth,
@@ -93,8 +94,11 @@ export class CategoryController {
   @ApiOperation({
     summary: 'ویرایش دسته بندی',
   })
-  async updateCategory(@Body() category: CategoryEntity) {
-    return await this.categoryService.update(category);
+  async updateCategory(
+    @Body() category: CategoryEntity,
+    @Query('_id') _id: string,
+  ) {
+    return await this.categoryService.update(_id, category);
   }
   // @UseGuards(AuthGuard)
   @Delete(':categoryId')

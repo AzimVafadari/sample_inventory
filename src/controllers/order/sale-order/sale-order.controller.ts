@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   // UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -45,8 +46,11 @@ export class SaleOrderController {
   @ApiOperation({
     summary: 'ویرایش یک سفارش فروش',
   })
-  async updateSaleOrder(@Body() updatedSaleOrder: SaleOrderEntity) {
-    return await this.saleOrderService.update(updatedSaleOrder);
+  async updateSaleOrder(
+    @Body() updatedSaleOrder: SaleOrderEntity,
+    @Query('_id') _id: string,
+  ) {
+    return await this.saleOrderService.update(_id, updatedSaleOrder);
   }
 
   //This method remove the saleOrder if it does exist and returns an object

@@ -17,15 +17,12 @@ export class SupplierService {
   async findAll(): Promise<ResultList<SupplierEntity>> {
     return await this.supplierRepository.findAll();
   }
-  async update(
-    updatedSupplier: SupplierEntity,
-    supplierID: string,
-  ): Promise<object> {
+  async update(_id: string, updatedSupplier: SupplierEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR sup IN Suppliers 
-        FILTER sup._id == ${supplierID}
-        UPDATE sup._key WITH ${updatedSupplier} IN Suppliers
+        FILTER sup._id == ${_id}
+        UPDATE sup WITH ${updatedSupplier} IN Suppliers
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();

@@ -57,12 +57,12 @@ export class BuyOrderService {
     return await this.buyOrderRepository.findAll();
   }
   //This method update a buy order if it does exist
-  async update(updatedBuyOrder: BuyOrderEntity): Promise<object> {
+  async update(_id: string, updatedBuyOrder: BuyOrderEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR bo IN BuyOrders 
-        FILTER bo._id == ${updatedBuyOrder._id}
-        UPDATE bo._id WITH ${updatedBuyOrder} IN BuyOrders
+        FILTER bo._id == ${_id}
+        UPDATE bo WITH ${updatedBuyOrder} IN BuyOrders
         RETURN OLD
     `);
     const isUpdated = await updatedDocument.next();
