@@ -54,9 +54,14 @@ export class ProductController {
           example: '2',
         },
         balance: {
-          type: 'string',
+          type: 'number',
           description: 'مقدار باقی مانده محصول در انبار',
-          example: '5 کیلوگرم',
+          example: 5,
+        },
+        scale: {
+          type: 'string',
+          description: 'مقیاس موجودی مخصول',
+          example: 'کیلوگرم',
         },
         image: {
           type: 'string',

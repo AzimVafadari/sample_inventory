@@ -36,10 +36,10 @@ export class BuyOrderService {
         RETURN product
         `);
         const p: ProductEntity = await product.next();
-        const scale: string[] = p.balance.split(' ');
-        const newBalance = parseInt(p.balance) + parseInt(buyOrder.amount);
-        p.balance = `${newBalance} ${scale[1]}`;
-        await this.productService.updateProduct(p);
+        // const scale: string[] = p.balance.split(' ');
+        // const newBalance = parseInt(p.balance) + parseInt(buyOrder.amount);
+        // p.balance = `${newBalance} ${scale[1]}`;
+        // await this.productService.updateProduct(p);
       } else {
         return { result: 'Please first create the product' };
       }
