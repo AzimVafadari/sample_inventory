@@ -1,16 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArangoDocument, Collection } from 'nest-arango';
-import { IsString } from 'class-validator';
+import { IsInt, IsString } from 'class-validator';
 
 @Collection('BuyOrders')
 export class BuyOrderEntity extends ArangoDocument {
-  @ApiProperty({
-    description: 'ایدی سفارش',
-    example: '1',
-  })
-  @IsString()
-  buy_order_id?: string;
-
   @ApiProperty({
     description: 'ایدی محصول',
     example: '1',
@@ -34,8 +27,14 @@ export class BuyOrderEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'مقدار خرید',
-    example: '500 کیلوگرم',
+    example: 500,
+  })
+  @IsInt()
+  amount?: number;
+  @ApiProperty({
+    description: 'مقیاس خرید',
+    example: 'کیلوگرم',
   })
   @IsString()
-  amount?: string;
+  scale?: string;
 }

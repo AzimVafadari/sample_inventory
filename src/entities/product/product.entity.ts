@@ -18,7 +18,7 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'مقدار باقی مانده محصول در انبار',
-    example: '5 کیلوگرم',
+    example: 5,
   })
   @IsInt()
   balance?: number;

@@ -35,9 +35,9 @@ export class MyDatabase {
     const isExist = cursor.all();
     return (await isExist).length > 0;
   }
-  static async getCollectionSize(collectio_name: string) {
+  static async getCollectionSize(collection_name: string) {
     const collectionSize = await MyDatabase.getDb()
-      .collection(collectio_name)
+      .collection(collection_name)
       .count();
     return collectionSize.count;
   }

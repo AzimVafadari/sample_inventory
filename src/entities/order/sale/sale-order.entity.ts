@@ -5,12 +5,6 @@ import { IsString } from 'class-validator';
 @Collection('sale_orders')
 export class SaleOrderEntity extends ArangoDocument {
   @ApiProperty({
-    description: 'ایدی سفارش',
-    example: '1',
-  })
-  @IsString()
-  sale_order_id?: string;
-  @ApiProperty({
     description: 'ایدی محصول',
     example: '1',
   })
@@ -32,7 +26,13 @@ export class SaleOrderEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'مقدار خرید',
-    example: '500 کیلو گرم',
+    example: 500,
   })
-  amount?: string;
+  amount?: number;
+
+  @ApiProperty({
+    description: 'مقیاس خرید',
+    example: 'کیلوگرم',
+  })
+  scale?: string;
 }

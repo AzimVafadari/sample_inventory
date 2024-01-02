@@ -133,6 +133,20 @@ export class ProductService {
       return { error: 'the product doesnt exist' };
     }
   }
-  
-  async filterByBalance(lowBalance: string , )
+
+  async filterByBalance(lowBalance, highBalance) {
+    const lowBalanceNumber = parseInt(lowBalance);
+    const highBalanceNumber = parseInt(highBalance);
+    const productsDocuments = await MyDatabase.getDb().query(aql`
+    FOR p IN Products
+      FILTER p.balance >= ${lowBalanceNumber} && p.balance <= ${highBalanceNumber}
+      RETURN p
+    `);
+    const products = await productsDocuments.all();
+    if (products.length !== 0) {
+      return products;
+    } else {
+      return { error: 'any product between this balances not found' };
+    }
+  }
 }
