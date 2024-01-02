@@ -20,39 +20,23 @@ export class SaleOrderService {
   //This method create a sale order if it doesn't exist
   async create(saleOrder: SaleOrderEntity): Promise<object> {
     if (await MyDatabase.productIsExist(saleOrder.product_id)) {
-      //Update product by new balance
-      const product = await MyDatabase.getDb().query(aql`
-        FOR product in Products
-        FILTER product.product_id == ${saleOrder.product_id}
-        RETURN product
-        `);
-      const p: ProductEntity = await product.next();
-      if (parseInt(p.balance) >= parseInt(saleOrder.amount)) {
-        const newBalance = parseInt(p.balance) - parseInt(saleOrder.amount);
-        const scale: string[] = p.balance.split(' ');
-        p.balance = `${newBalance} ${scale[1]}`;
-        await this.productService.updateProduct(p);
-
-        //Find customer
-        const customer = await MyDatabase.getDb().query(aql`
+      //Find customer
+      const customer = await MyDatabase.getDb().query(aql`
           FOR c IN Customers
           FILTER c._id == ${saleOrder.customer_id}
           RETURN c
           `);
-        const c: CustomerEntity = await customer.next();
-        if (c === undefined) return { result: 'customer does not exist' };
-        const report: ReportEntity = {
-          title: 'سفارش فروش به ' + c.name,
-          content: ['این سفارش مربوط به فروش است'],
-          date: new Date(),
-        };
-        //Create report
-        await this.reportService.create(report);
-        await this.saleOrderRepository.save(saleOrder);
-        return { result: 'the saleOrder is created' };
-      } else {
-        return { result: 'Balance of this product is not enough' };
-      }
+      const c: CustomerEntity = await customer.next();
+      if (c === undefined) return { result: 'customer does not exist' };
+      const report: ReportEntity = {
+        title: 'سفارش فروش به ' + c.name,
+        content: ['این سفارش مربوط به فروش است'],
+        date: new Date(),
+      };
+      //Create report
+      await this.reportService.create(report);
+      await this.saleOrderRepository.save(saleOrder);
+      return { result: 'the saleOrder is created' };
     } else {
       return { result: 'Please first create the product' };
     }
@@ -73,11 +57,30 @@ export class SaleOrderService {
         UPDATE so WITH ${updatedSaleOrder} IN SaleOrders
         RETURN OLD
     `);
-    const isUpdated = await updatedDocument.next();
-    if (isUpdated) {
-      return { message: 'The saleOrder is successfully updated.' };
-    } else {
-      return { error: 'saleOrder not found' };
+    const isUpdated: SaleOrderEntity = await updatedDocument.next();
+    if (
+      isUpdated.status != 'finished' &&
+      updatedSaleOrder.status == 'finished'
+    ) {
+      //Update product by new balance
+      const product = await MyDatabase.getDb().query(aql`
+            FOR product in Products
+            FILTER product.product_id == ${updatedSaleOrder.product_id}
+            RETURN product
+            `);
+      const p: ProductEntity = await product.next();
+      if (p.balance >= updatedSaleOrder.amount) {
+        const newBalance = p.balance - updatedSaleOrder.amount;
+        p.balance = newBalance;
+        await this.productService.updateProduct(p);
+      } else {
+        return { error: 'the balace is not enough' };
+      }
+      if (isUpdated) {
+        return { message: 'The saleOrder is successfully updated.' };
+      } else {
+        return { error: 'saleOrder not found' };
+      }
     }
   }
   //This method remove a buy order if it does exist

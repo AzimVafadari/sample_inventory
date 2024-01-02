@@ -8,6 +8,7 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  Query,
   // UseGuards,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
@@ -54,9 +55,14 @@ export class ProductController {
           example: '2',
         },
         balance: {
-          type: 'string',
+          type: 'number',
           description: 'مقدار باقی مانده محصول در انبار',
-          example: '5 کیلوگرم',
+          example: 5,
+        },
+        scale: {
+          type: 'string',
+          description: 'مقیاس موجودی مخصول',
+          example: 'کیلوگرم',
         },
         image: {
           type: 'string',
@@ -95,6 +101,7 @@ export class ProductController {
     @Body() product: ProductEntity,
   ) {
     product.image_id = uuidv4();
+    product.balance = parseInt(product.balance.toString());
     const folderPath: string = './images/products/';
     const imageBuffer = image.buffer;
     const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
@@ -127,5 +134,15 @@ export class ProductController {
     @Param('product_id') product_id: string,
   ): Promise<object> {
     return await this.productService.removeProduct(product_id);
+  }
+  @Get('filterByBalance')
+  @ApiOperation({
+    summary: 'فیلتر محصولات بر اساس موجودی',
+  })
+  async filterByBalance(
+    @Query('lowBalance') lowBalance: number,
+    @Query('highBalance') highBalance: number,
+  ) {
+    return await this.productService.filterByBalance(lowBalance, highBalance);
   }
 }

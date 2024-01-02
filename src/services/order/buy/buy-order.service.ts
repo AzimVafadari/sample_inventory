@@ -19,26 +19,15 @@ export class BuyOrderService {
   ) {}
   //This method create a buy order if it doesn't exist
   async create(buyOrder: BuyOrderEntity): Promise<object> {
-    if (await MyDatabase.productIsExist(buyOrder.product_id)) {
-      //Update product by new balance
-      const product = await MyDatabase.getDb().query(aql`
-        FOR product in Products
-        FILTER product.product_id == ${buyOrder.product_id}
-        RETURN product
-        `);
-      const p: ProductEntity = await product.next();
-      const scale: string[] = p.balance.split(' ');
-      const newBalance = parseInt(p.balance) + parseInt(buyOrder.amount);
-      p.balance = `${newBalance} ${scale[1]}`;
-      await this.productService.updateProduct(p);
-    } else {
+    if (!MyDatabase.productIsExist(buyOrder.product_id)) {
       return { result: 'Please first create the product' };
     }
-    //Find supplier
+
+    //Find customer
     const supplier = await MyDatabase.getDb().query(aql`
-          FOR sup IN Suppliers
-          FILTER sup._id == ${buyOrder.supplier_id}
-          RETURN sup
+          FOR s IN Suppliers
+          FILTER s.supplier_id == ${buyOrder.supplier_id}
+          RETURN s
           `);
     const s: SupplierEntity = await supplier.next();
     if (s === undefined) return { result: 'supplier does not exist' };
@@ -65,7 +54,22 @@ export class BuyOrderService {
         UPDATE bo WITH ${updatedBuyOrder} IN BuyOrders
         RETURN OLD
     `);
-    const isUpdated = await updatedDocument.next();
+    const isUpdated: BuyOrderEntity = await updatedDocument.next();
+    if (
+      isUpdated.status != 'finished' &&
+      updatedBuyOrder.status == 'finished'
+    ) {
+      //Update product by new balance
+      const product = await MyDatabase.getDb().query(aql`
+        FOR product in Products
+        FILTER product.product_id == ${updatedBuyOrder.product_id}
+        RETURN product
+      `);
+      const p: ProductEntity = await product.next();
+      const newBalance = p.balance + updatedBuyOrder.amount;
+      p.balance = newBalance;
+      await this.productService.updateProduct(p);
+    }
     if (isUpdated) {
       return { message: 'The buyOrder is successfully updated.' };
     } else {

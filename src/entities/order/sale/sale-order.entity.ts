@@ -26,7 +26,13 @@ export class SaleOrderEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'مقدار خرید',
-    example: '500 کیلو گرم',
+    example: 500,
   })
-  amount?: string;
+  amount?: number;
+
+  @ApiProperty({
+    description: 'مقیاس خرید',
+    example: 'کیلوگرم',
+  })
+  scale?: string;
 }

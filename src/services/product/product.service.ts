@@ -14,6 +14,7 @@ export class ProductService {
     private readonly productRepository: ArangoRepository<ProductEntity>,
     private readonly reportService: ReportService,
   ) {}
+  // the supplier id and category id properties should'nt be get from user should handle in front by createing an object with the full property product
   async create(product: ProductEntity): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
       FOR product IN Products
@@ -24,26 +25,18 @@ export class ProductService {
     if (isExist.length > 0) {
       return { error: 'the product already exist' };
     } else {
-      if (await MyDatabase.supplierIsExist(product.supplier_id)) {
-        if (await MyDatabase.categoryIsExist(product.category_id)) {
-          const report: ReportEntity = {
-            title: `ایجاد محصول با ایدی  ${product.product_id}`,
-            content: [`محصول با ایدی ${product.product_id}  به مقدار  ${product.balance} ایچاد شد`],
-            date: new Date(),
-          };
-          console.log(report);
-          await this.reportService.create(report);
-          await this.productRepository.save(product);
-          return {
-            result:
-              'the product with name  ' + product.product_name + ' created',
-          };
-        } else {
-          return { error: 'the category doesnt exist' };
-        }
-      } else {
-        return { error: 'this supplier doesnt exist' };
-      }
+      const report: ReportEntity = {
+        title: `ایجاد محصول با ایدی  ${product.product_id}`,
+        content: [
+          `محصول با ایدی ${product.product_id}  به مقدار  ${product.balance} ایچاد شد`,
+        ],
+        date: new Date(),
+      };
+      await this.reportService.create(report);
+      await this.productRepository.save(product);
+      return {
+        result: 'the product with name  ' + product.product_name + ' created',
+      };
     }
   }
 
@@ -134,11 +127,26 @@ export class ProductService {
         ],
         date: new Date(),
       };
-      console.log(report)
       await this.reportService.create(report);
       return isDeleted;
     } else {
       return { error: 'the product doesnt exist' };
+    }
+  }
+
+  async filterByBalance(lowBalance, highBalance) {
+    const lowBalanceNumber = parseInt(lowBalance);
+    const highBalanceNumber = parseInt(highBalance);
+    const productsDocuments = await MyDatabase.getDb().query(aql`
+    FOR p IN Products
+      FILTER p.balance >= ${lowBalanceNumber} && p.balance <= ${highBalanceNumber}
+      RETURN p
+    `);
+    const products = await productsDocuments.all();
+    if (products.length !== 0) {
+      return products;
+    } else {
+      return { error: 'any product between this balances not found' };
     }
   }
 }
