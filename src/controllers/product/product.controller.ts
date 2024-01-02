@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  ParseIntPipe,
   // UseGuards,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
@@ -140,9 +141,17 @@ export class ProductController {
     summary: 'فیلتر محصولات بر اساس موجودی',
   })
   async filterByBalance(
-    @Query('lowBalance') lowBalance: number,
-    @Query('highBalance') highBalance: number,
+    @Query('lowBalance', new ParseIntPipe()) lowBalance: number,
+    @Query('highBalance', new ParseIntPipe()) highBalance: number,
   ) {
     return await this.productService.filterByBalance(lowBalance, highBalance);
+  }
+
+  @Get('filterBySupplierID')
+  @ApiOperation({
+    summary: 'فیلتر مخصولات بر اساس ایدی تامین کننده',
+  })
+  async filterBySupplierId(@Query('supplierId') supplierId: string) {
+    return await this.productService.filterBySupplier(supplierId);
   }
 }
