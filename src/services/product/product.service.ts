@@ -133,4 +133,6 @@ export class ProductService {
       return { error: 'the product doesnt exist' };
     }
   }
+  
+  async filterByBalance(lowBalance: string , )
 }
