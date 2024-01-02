@@ -134,12 +134,10 @@ export class ProductService {
     }
   }
 
-  async filterByBalance(lowBalance, highBalance) {
-    const lowBalanceNumber = parseInt(lowBalance);
-    const highBalanceNumber = parseInt(highBalance);
+  async filterByBalance(lowBalance: number, highBalance: number) {
     const productsDocuments = await MyDatabase.getDb().query(aql`
     FOR p IN Products
-      FILTER p.balance >= ${lowBalanceNumber} && p.balance <= ${highBalanceNumber}
+      FILTER p.balance >= ${lowBalance} && p.balance <= ${highBalance}
       RETURN p
     `);
     const products = await productsDocuments.all();
@@ -147,6 +145,19 @@ export class ProductService {
       return products;
     } else {
       return { error: 'any product between this balances not found' };
+    }
+  }
+  async filterBySupplier(supplierId: string) {
+    const productsDocuments = await MyDatabase.getDb().query(aql`
+      FOR p IN Products
+      FILTER p.supplier_id == ${supplierId}
+      RETURN p
+    `)
+    const product = await productsDocuments.next()
+    if (product) {
+      return product
+    } else {
+      return {error : "product doesnt found"}
     }
   }
 }
