@@ -200,4 +200,18 @@ export class ProductService {
       return {error : 'any product doesnt found in this category'}
     }
   }
+  async findExpiredProductsBasedDate(beginDate?: string, endDate?: string) {
+    if (endDate == undefined) { 
+      if (beginDate == undefined) {
+        const altENdDate: Date = new Date();
+        const productDocuments = await MyDatabase.getDb().query(aql`
+        FOR p IN Products
+        FILTER DATE_DIFF(p.expiry_date, ${altENdDate.toISOString()}, "d") >= 0
+          RETURN p
+        `)
+        const products = await productDocuments.all()
+        console.log(products)
+      }
+    }
+  }
 }

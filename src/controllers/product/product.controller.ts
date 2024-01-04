@@ -177,4 +177,17 @@ export class ProductController {
   async findByCategory(@Query('categoryId') categoryId: string) {
     return await this.productService.findByCategory(categoryId);
   }
+  @Get('getExpiredProducts')
+  @ApiOperation({
+    summary: 'یافتن محصولات منقضی شده بر اساس تاریخ',
+  })
+  async findExpiredProductsBasedDate(
+    @Query('beginDate') beginDate?: string,
+    @Query('enddate') enddate?: string,
+  ) {
+    return await this.productService.findExpiredProductsBasedDate(
+      beginDate,
+      enddate,
+    );
+  }
 }
