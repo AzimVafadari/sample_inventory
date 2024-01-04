@@ -140,25 +140,78 @@ export class ProductService {
       FILTER p.balance >= ${lowBalance} && p.balance <= ${highBalance}
       RETURN p
     `);
-    const products = await productsDocuments.all();
+    const products: ProductEntity[] = await productsDocuments.all();
     if (products.length !== 0) {
       return products;
     } else {
       return { error: 'any product between this balances not found' };
     }
   }
-  async filterBySupplier(supplierId: string) {
+  async filterBySupplier(supplierId: string): Promise<object> {
     const productsDocuments = await MyDatabase.getDb().query(aql`
       FOR p IN Products
       FILTER p.supplier_id == ${supplierId}
       RETURN p
-    `)
-    const product = await productsDocuments.next()
+    `);
+    const product = await productsDocuments.next();
     if (product) {
-      return product
+      return product;
     } else {
-      return {error : "product doesnt found"}
+      return { error: 'product doesnt found' };
+    }
+  }
+  async findById(productId: string): Promise<object> {
+    const productsDocument = await MyDatabase.getDb().query(aql`
+      FOR p IN Products
+      FILTER p.product_id == ${productId}
+      RETURN p
+    `);
+    const product = productsDocument.next();
+    if (product) {
+      return product;
+    } else {
+      return { error: 'product doesnt found' };
+    }
+  }
+  async findByProductName(productName: string) {
+    const productDocuments = await MyDatabase.getDb().query(aql`
+      FOR p IN Products
+      FILTER LIKE(p.product_name, CONCAT(${productName}, '%'))
+      RETURN p
+      `);
+    const products = await productDocuments.all();
+    if (products.length !== 0) {
+      return products;
+    } else {
+      return {error: 'any product with this name doesnt found'};
     }
   }
   
+  async findByCategory(categoryID: string) {
+    const productsDocument = await MyDatabase.getDb().query(aql`
+      FOR p IN Products
+      FILTER p.category_id == ${categoryID}
+      RETURN p
+    `)
+    const products = await productsDocument.all()
+    if (products.length !== 0) {
+      return products
+    } else {
+      return {error : 'any product doesnt found in this category'}
+    }
+  }
+  async findExpiredProductsBasedDate(beginDate?: string, endDate?: string) {
+    if (endDate == undefined) { 
+      if (beginDate == undefined) {
+        const altENdDate: Date = new Date();
+        const productDocuments = await MyDatabase.getDb().query(aql`
+        FOR p IN Products
+        FILTER DATE_DIFF(p.expiry_date, ${altENdDate.toISOString()}, "d") >= 0
+          RETURN p
+        `)
+        const products = await productDocuments.all()
+        console.log(products)
+      }
+    }
+  }
 }

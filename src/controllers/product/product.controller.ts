@@ -154,4 +154,40 @@ export class ProductController {
   async filterBySupplierId(@Query('supplierId') supplierId: string) {
     return await this.productService.filterBySupplier(supplierId);
   }
+
+  @Get('findById/:productId')
+  @ApiOperation({
+    summary: 'یافتن یک محصول با ایدی',
+  })
+  async findById(@Param('productId') productId: string) {
+    return await this.productService.findById(productId);
+  }
+  @Get('findByName')
+  @ApiOperation({
+    summary: 'یافتن یک محصول با نام ان',
+  })
+  async findByProductName(@Query('productName') productName: string) {
+    return this.productService.findByProductName(productName);
+  }
+
+  @Get('findByCategory')
+  @ApiOperation({
+    summary: 'یافتن محصولات موجود در یک دسته بندی',
+  })
+  async findByCategory(@Query('categoryId') categoryId: string) {
+    return await this.productService.findByCategory(categoryId);
+  }
+  @Get('getExpiredProducts')
+  @ApiOperation({
+    summary: 'یافتن محصولات منقضی شده بر اساس تاریخ',
+  })
+  async findExpiredProductsBasedDate(
+    @Query('beginDate') beginDate?: string,
+    @Query('enddate') enddate?: string,
+  ) {
+    return await this.productService.findExpiredProductsBasedDate(
+      beginDate,
+      enddate,
+    );
+  }
 }
