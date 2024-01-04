@@ -1,3 +1,9 @@
+
+
+<p align="center">
+  a sample inventory with nest js and arangodb database with cooperation of <a href="https://github.com/amirhossein6666" target="blank">
+</p>
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
