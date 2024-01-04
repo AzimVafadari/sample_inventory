@@ -186,4 +186,18 @@ export class ProductService {
       return {error: 'any product with this name doesnt found'};
     }
   }
+  
+  async findByCategory(categoryID: string) {
+    const productsDocument = await MyDatabase.getDb().query(aql`
+      FOR p IN Products
+      FILTER p.category_id == ${categoryID}
+      RETURN p
+    `)
+    const products = await productsDocument.all()
+    if (products.length !== 0) {
+      return products
+    } else {
+      return {error : 'any product doesnt found in this category'}
+    }
+  }
 }

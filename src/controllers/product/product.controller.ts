@@ -169,4 +169,12 @@ export class ProductController {
   async findByProductName(@Query('productName') productName: string) {
     return this.productService.findByProductName(productName);
   }
+
+  @Get('findByCategory')
+  @ApiOperation({
+    summary: 'یافتن محصولات موجود در یک دسته بندی',
+  })
+  async findByCategory(@Query('categoryId') categoryId: string) {
+    return await this.productService.findByCategory(categoryId);
+  }
 }
