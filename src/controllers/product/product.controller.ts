@@ -154,4 +154,12 @@ export class ProductController {
   async filterBySupplierId(@Query('supplierId') supplierId: string) {
     return await this.productService.filterBySupplier(supplierId);
   }
+
+  @Get('findById/:productId')
+  @ApiOperation({
+    summary: 'یافتن یک محصول با ایدی',
+  })
+  async findById(@Param('productId') productId: string) {
+    return await this.productService.findById(productId);
+  }
 }

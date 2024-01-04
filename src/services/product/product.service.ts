@@ -160,5 +160,17 @@ export class ProductService {
       return {error : "product doesnt found"}
     }
   }
-  
+  async findById(productId : string) {
+    const productsDocument = await MyDatabase.getDb().query(aql`
+      FOR p IN Products
+      FILTER p.product_id == ${productId}
+      RETURN p
+    `)
+    const product = productsDocument.next();
+    if (product) {
+      return product
+    } else {
+      return {error : 'product doesnt found'}
+    }
+  }
 }
