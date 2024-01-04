@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  a sample inventory with nest js and arangodb database with cooperation of <a href="https://github.com/amirhossein6666" target="blank">
+  a sample inventory with nest js and arangodb database with cooperation of <a href="https://github.com/amirhossein6666" target="blank">https://github.com/amirhossein6666</a>
 </p>
 
 <p align="center">
