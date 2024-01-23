@@ -26,12 +26,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+
 // import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('product')
 // @ApiBearerAuth()
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
   // @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
@@ -109,6 +111,7 @@ export class ProductController {
     await fs.writeFile(imagePath, imageBuffer);
     return await this.productService.create(product);
   }
+
   // @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
@@ -117,6 +120,7 @@ export class ProductController {
   async findAll(): Promise<ResultList<ProductEntity>> {
     return await this.productService.findAll();
   }
+
   // @UseGuards(AuthGuard)
   @Put()
   @ApiOperation({
@@ -126,6 +130,7 @@ export class ProductController {
   async updateProduct(@Body() product: ProductEntity): Promise<object> {
     return await this.productService.updateProduct(product);
   }
+
   // @UseGuards(AuthGuard)
   @Delete(':product_id')
   @ApiOperation({
@@ -136,6 +141,7 @@ export class ProductController {
   ): Promise<object> {
     return await this.productService.removeProduct(product_id);
   }
+
   @Get('filterByBalance')
   @ApiOperation({
     summary: 'فیلتر محصولات بر اساس موجودی',
@@ -162,6 +168,7 @@ export class ProductController {
   async findById(@Param('productId') productId: string) {
     return await this.productService.findById(productId);
   }
+
   @Get('findByName')
   @ApiOperation({
     summary: 'یافتن یک محصول با نام ان',
@@ -177,6 +184,7 @@ export class ProductController {
   async findByCategory(@Query('categoryId') categoryId: string) {
     return await this.productService.findByCategory(categoryId);
   }
+
   @Get('getExpiredProducts')
   @ApiOperation({
     summary: 'یافتن محصولات منقضی شده بر اساس تاریخ',
@@ -190,4 +198,16 @@ export class ProductController {
       enddate,
     );
   }
+
+  @Get('findByPrice')
+  @ApiOperation({
+    summary: 'یافتن محصولات بر اساس قیمت',
+  })
+  async findByPrice(
+    @Query('lowPrice') lowPrice?: number,
+    @Query('highPrice') highPrice?: number,
+  ) {
+    return await this.productService.fillterByPrice(lowPrice, highPrice);
+  }
+  
 }
