@@ -18,27 +18,33 @@ export class ProductService {
 
   // the supplier id and category id properties shouldn't be got from user should handle in front of creating an object with the full property product
   async create(product: ProductEntity): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-      FOR product IN Products
-      FILTER product.product_id == ${product.product_id}
-      RETURN product
-    `);
-    const isExist = await cursor.all();
-    if (isExist.length > 0) {
+    const isExist = await MyDatabase.productIsExist(product.product_id);
+    if (isExist) {
       return { error: "the product already exist" };
     } else {
-      const report: ReportEntity = {
-        title: `ایجاد محصول با ایدی  ${product.product_id}`,
-        content: [
-          `محصول با ایدی ${product.product_id}  به مقدار  ${product.balance} ایچاد شد`
-        ],
-        date: new Date()
-      };
-      await this.reportService.create(report);
-      await this.productRepository.save(product);
-      return {
-        result: "the product with name  " + product.product_name + " created"
-      };
+      const isSupplierExist = await MyDatabase.getDb().query(aql`
+        FOR s IN Suppliers
+        FILTER s._id == ${product.supplier_id}
+        RETURN s
+      `);
+      const isExist = await isSupplierExist.all();
+      if (isExist.length > 0) {
+        const report: ReportEntity = {
+          title: `ایجاد محصول با ایدی  ${product.product_id}`,
+          content: [
+            `محصول با ایدی ${product.product_id}  به مقدار  ${product.balance} ایچاد شد`
+          ],
+          date: new Date()
+        };
+        await this.reportService.create(report);
+        await this.productRepository.save(product);
+        return {
+          result: "the product with name  " + product.product_name + " created"
+        };
+      }
+      else {
+        return {error: 'supplier doesnt exist'};
+      }
     }
   }
 

@@ -209,5 +209,4 @@ export class ProductController {
   ) {
     return await this.productService.fillterByPrice(lowPrice, highPrice);
   }
-  
 }

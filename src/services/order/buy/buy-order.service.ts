@@ -17,16 +17,18 @@ export class BuyOrderService {
     private readonly reportService: ReportService,
     private readonly productService: ProductService,
   ) {}
+
   //This method create a buy order if it doesn't exist
   async create(buyOrder: BuyOrderEntity): Promise<object> {
-    if (!MyDatabase.productIsExist(buyOrder.product_id)) {
+    const isExist = await MyDatabase.productIsExist(buyOrder.product_id);
+    if (!isExist) {
       return { result: 'Please first create the product' };
     }
 
     //Find customer
     const supplier = await MyDatabase.getDb().query(aql`
           FOR s IN Suppliers
-          FILTER s.supplier_id == ${buyOrder.supplier_id}
+          FILTER s._id == ${buyOrder.supplier_id}
           RETURN s
           `);
     const s: SupplierEntity = await supplier.next();
@@ -41,10 +43,12 @@ export class BuyOrderService {
     await this.buyOrderRepository.save(buyOrder);
     return { result: 'the buyOrder is created' };
   }
+
   //This method return all buy orders
   async findAll(): Promise<ResultList<BuyOrderEntity>> {
     return await this.buyOrderRepository.findAll();
   }
+
   //This method update a buy order if it does exist
   async update(_id: string, updatedBuyOrder: BuyOrderEntity): Promise<object> {
     //This query is better that be updated later...
@@ -76,6 +80,7 @@ export class BuyOrderService {
       return { error: 'buyOrder not found' };
     }
   }
+
   //This method remove a buy order if it does exist
   async remove(buyOrderId: string): Promise<object> {
     //This query is better that be updated later...
@@ -92,6 +97,7 @@ export class BuyOrderService {
       return { result: 'buyOrder not found' };
     }
   }
+
   //This method filter buy orders that have specific status
   async findManyByStatus(status: string): Promise<object> {
     //This query search all buyOrders that their name starts with buyOrderName
@@ -108,6 +114,7 @@ export class BuyOrderService {
       return { error: 'buyOrder not found' };
     }
   }
+
   //This method filter buy orders based on their product id
   async findManyByProductId(productId: string): Promise<object> {
     //This query search all buyOrders that their name starts with buyOrderName
@@ -124,6 +131,7 @@ export class BuyOrderService {
       return { error: 'buyOrder not found' };
     }
   }
+
   //This method filter buy orders based on their product id
   async findManyBySupplierId(supplierId: string): Promise<object> {
     //This query search all buyOrders that their name starts with buyOrderName
