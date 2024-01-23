@@ -14,7 +14,7 @@ export class ProductService {
     private readonly productRepository: ArangoRepository<ProductEntity>,
     private readonly reportService: ReportService,
   ) {}
-  // the supplier id and category id properties should'nt be get from user should handle in front by createing an object with the full property product
+  // the supplier id and category id properties shouldn't be got from user should handle in front of creating an object with the full property product
   async create(product: ProductEntity): Promise<object> {
     const cursor = await MyDatabase.getDb().query(aql`
       FOR product IN Products
@@ -201,17 +201,50 @@ export class ProductService {
     }
   }
   async findExpiredProductsBasedDate(beginDate?: string, endDate?: string) {
-    if (endDate == undefined) { 
+    let products
+    if (endDate == undefined) {
       if (beginDate == undefined) {
         const altENdDate: Date = new Date();
         const productDocuments = await MyDatabase.getDb().query(aql`
-        FOR p IN Products
+        FOR p IN Products 
         FILTER DATE_DIFF(p.expiry_date, ${altENdDate.toISOString()}, "d") >= 0
           RETURN p
         `)
-        const products = await productDocuments.all()
-        console.log(products)
+        products = await productDocuments.all()
+        return products
+      }
+      else {
+        const productDocuments = await MyDatabase.getDb().query(aql`
+        FOR p IN Products
+        FILTER DATE_DIFF(p.expiry_date, ${beginDate}, "d") <= 0
+        RETURN p
+        `)
+        products = await productDocuments.all()
+        return products
       }
     }
+    else {
+      if (beginDate == undefined) {
+        const productDocuments = await MyDatabase.getDb().query(aql`
+          FOR p IN Products
+          FILTER DATE_DIFF(p.expiry_date, ${endDate}, "d") >= 0
+          RETURN p
+        `)
+        products = await productDocuments.all()
+        return products
+      }
+      else {
+        const productDocuments = await MyDatabase.getDb().query(aql`
+          FOR p IN Products
+          FILTER DATE_DIFF(p.expiry_date, ${endDate}, "d") >= 0
+          FILTER DATE_DIFF(p.expiry_date, ${beginDate}, "d") <= 0
+          RETURN p
+          
+        `)
+        products = await productDocuments.all()
+        return products
+      }
+    }
+
   }
 }
