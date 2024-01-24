@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
   Query,
@@ -59,34 +58,34 @@ export class SaleOrderController {
   @ApiOperation({
     summary: 'حذف سفارش فروش',
   })
-  async deleteSaleOrder(@Param('saleOrder_id') saleOrder_id: string) {
+  async deleteSaleOrder(@Query('saleOrder_id') saleOrder_id: string) {
     return await this.saleOrderService.remove(saleOrder_id);
   }
 
   // @UseGuards(AuthGuard)
-  @Get(':status')
+  @Get('fsobs')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله وضعیت آن',
   })
-  async findSaleOrderByStatus(@Param('status') status: string) {
+  async findSaleOrderByStatus(@Query('status') status: string) {
     return await this.saleOrderService.findManyByStatus(status);
   }
 
   // @UseGuards(AuthGuard)
-  @Get(':productId')
+  @Get('fsobpi')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله آیدی محصول آن',
   })
-  async findSaleOrderByProductId(@Param('productId') productId: string) {
+  async findSaleOrderByProductId(@Query('productId') productId: string) {
     return await this.saleOrderService.findManyByProductId(productId);
   }
 
   // @UseGuards(AuthGuard)
-  @Get(':customerId')
+  @Get('fsobci')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله آیدی فروشنده آن',
   })
-  async findSaleOrderBySupplierId(@Param('customerId') customerId: string) {
+  async findSaleOrderBySupplierId(@Query('customerId') customerId: string) {
     return await this.saleOrderService.findManyByCustomerId(customerId);
   }
 }

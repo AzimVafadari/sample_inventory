@@ -70,11 +70,10 @@ export class SaleOrderService {
             `);
       const p: ProductEntity = await product.next();
       if (p.balance >= updatedSaleOrder.amount) {
-        const newBalance = p.balance - updatedSaleOrder.amount;
-        p.balance = newBalance;
+        p.balance = p.balance - updatedSaleOrder.amount;
         await this.productService.updateProduct(p);
       } else {
-        return { error: 'the balace is not enough' };
+        return { error: 'the balance is not enough' };
       }
       if (isUpdated) {
         return { message: 'The saleOrder is successfully updated.' };
