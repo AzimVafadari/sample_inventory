@@ -70,8 +70,7 @@ export class BuyOrderService {
         RETURN product
       `);
       const p: ProductEntity = await product.next();
-      const newBalance = p.balance + updatedBuyOrder.amount;
-      p.balance = newBalance;
+      p.balance = p.balance + updatedBuyOrder.amount;
       await this.productService.updateProduct(p);
     }
     if (isUpdated) {
@@ -85,9 +84,9 @@ export class BuyOrderService {
   async remove(buyOrderId: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
-    FOR bo IN buyOrders
+    FOR bo IN BuyOrders
     FILTER bo._id == ${buyOrderId}
-    REMOVE bo IN buyOrders
+    REMOVE bo IN BuyOrders
     RETURN OLD
     `);
     const isDeleted = await deletedDocument.all();
@@ -121,12 +120,14 @@ export class BuyOrderService {
     //ChatGPT did this query
     const buyOrder = await MyDatabase.getDb().query(aql`
     FOR buyOrder IN BuyOrders
-    FILTER LIKE(buyOrder.product_id, CONCAT(${productId}, '%'))
+    FILTER buyOrder.product_id == ${productId}
     RETURN buyOrder
     `);
-    const isExist = buyOrder.all();
-    if ((await isExist).length > 0) {
-      return isExist;
+    const buyOrders = await buyOrder.all();
+    console.log(buyOrders);
+    const isExist = (await buyOrders).length > 0;
+    if (isExist) {
+      return buyOrders;
     } else {
       return { error: 'buyOrder not found' };
     }
