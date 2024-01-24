@@ -1,6 +1,6 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsDateString, IsInt, IsNumber, IsString } from "class-validator";
 
 @Collection('Products')
 export class ProductEntity extends ArangoDocument {
@@ -54,7 +54,7 @@ export class ProductEntity extends ArangoDocument {
     description: 'تاریخ انقضا محصول',
     example: new Date('2023-12-31'),
   })
-  @IsDate()
+  @IsDateString()
   expiry_date?: Date;
 
   @ApiProperty({ description: 'برند محصول', example: 'چی توز' })
