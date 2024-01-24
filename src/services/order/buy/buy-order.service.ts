@@ -19,7 +19,8 @@ export class BuyOrderService {
   ) {}
   //This method create a buy order if it doesn't exist
   async create(buyOrder: BuyOrderEntity): Promise<object> {
-    if (!(await MyDatabase.productIsExist(buyOrder.product_id))) {
+    const isExist = await MyDatabase.productIsExist(buyOrder.product_id);
+    if (!isExist) {
       return { result: 'Please first create the product' };
     }
 
