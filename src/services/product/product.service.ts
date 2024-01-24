@@ -12,7 +12,7 @@ export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: ArangoRepository<ProductEntity>,
-    private readonly reportService: ReportService
+    private readonly  reportService: ReportService
   ) {
   }
 
@@ -22,13 +22,9 @@ export class ProductService {
     if (isExist) {
       return { error: "the product already exist" };
     } else {
-      const isSupplierExist = await MyDatabase.getDb().query(aql`
-        FOR s IN Suppliers
-        FILTER s._id == ${product.supplier_id}
-        RETURN s
-      `);
-      const isExist = await isSupplierExist.all();
-      if (isExist.length > 0) {
+      const IsSupplierExist = await MyDatabase.supplierIsExist(product.supplier_id);
+      const IsCategoryExist = await MyDatabase.categoryIsExist(product.category_id);
+      if (IsSupplierExist && IsCategoryExist) {
         const report: ReportEntity = {
           title: `ایجاد محصول با ایدی  ${product.product_id}`,
           content: [
@@ -42,7 +38,11 @@ export class ProductService {
           result: "the product with name  " + product.product_name + " created"
         };
       } else {
-        return { error: "supplier doesnt exist" };
+        if (IsSupplierExist) {
+          return { error: "supplier doesnt exist" };
+        } else {
+          return { error: "category doesnt exist" };
+        }
       }
     }
   }
