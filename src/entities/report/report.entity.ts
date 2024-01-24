@@ -1,6 +1,6 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsString } from 'class-validator';
+import { IsArray, IsDateString, IsString } from 'class-validator';
 
 @Collection('Reports')
 export class ReportEntity extends ArangoDocument {
@@ -22,6 +22,6 @@ export class ReportEntity extends ArangoDocument {
     description: 'تاریخ گزارش',
     example: new Date('2001-12-2'),
   })
-  @IsDate()
+  @IsDateString()
   date?: Date;
 }

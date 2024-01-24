@@ -1,10 +1,10 @@
-import { aql, Database } from "arangojs";
+import { aql, Database } from 'arangojs';
 
 export class MyDatabase {
   private static db = new Database({
-    url: "http://localhost:8529",
-    databaseName: "_system",
-    auth: { username: "root", password: "azim1383" }
+    url: 'http://localhost:8529',
+    databaseName: '_system',
+    auth: { username: 'root', password: 'azim1383' },
   });
 
   static getDb() {
@@ -48,4 +48,3 @@ export class MyDatabase {
     return collectionSize.count;
   }
 }
-
