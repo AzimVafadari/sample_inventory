@@ -41,9 +41,8 @@ export class ProductService {
         return {
           result: "the product with name  " + product.product_name + " created"
         };
-      }
-      else {
-        return {error: 'supplier doesnt exist'};
+      } else {
+        return { error: "supplier doesnt exist" };
       }
     }
   }
@@ -53,71 +52,78 @@ export class ProductService {
   }
 
   async updateProduct(updatedProduct: ProductEntity): Promise<object> {
-    const newAndOldProduct = await MyDatabase.getDb().query(aql`
-      FOR product IN Products
-      FILTER product.product_id == ${updatedProduct.product_id}
-      UPDATE product._key WITH ${updatedProduct} IN Products
-      RETURN {
-        oldProduct : OLD,
-        newProduct : NEW,
-      }
-    `);
-    const updateOutput = await newAndOldProduct.next();
-    if (updateOutput) {
-      // console.log(isUpdated.oldProduct.balance);
-
-      const diffrence = {
-        oldPrice: updateOutput.oldProduct.price,
-        newPrice: updateOutput.newProduct.price,
-        oldSupplierId: updateOutput.oldProduct.supplier_id,
-        newSupplierId: updateOutput.newProduct.supplier_id,
-        oldBalance: updateOutput.oldProduct.balance,
-        newBalance: updateOutput.newProduct.balance
-      };
-      // eslint-disable-next-line prefer-const
-      let content: string[] = [];
-      if (diffrence.oldPrice !== diffrence.newPrice) {
-        content.push(
-          `قیمت محصول از  ${diffrence.oldPrice}  به  ${diffrence.newPrice}  تغییر کرد `
-        );
-      }
-      if (diffrence.oldSupplierId !== diffrence.newSupplierId) {
-        const cursor = await MyDatabase.getDb().query(aql`
-          FOR s IN Suppliers
-          FILTER s.supplier_id == ${diffrence.oldSupplierId}
-          RETURN s.supplier_name
-        `);
-        const oldSupplierName = await cursor.next();
-        const cursor2 = await MyDatabase.getDb().query(aql`
-          FOR s IN Suppliers
-          FILTER s.supplier_id == ${diffrence.newSupplierId}
-          RETURN s.supplier_name
-        `);
-        const NewSupplierName = await cursor2.next();
-        content.push(
-          `نام تامین کننده محصول از  ${oldSupplierName} به  ${NewSupplierName} تغییر کرد `
-        );
-      }
-      if (diffrence.oldBalance !== diffrence.newBalance) {
-        content.push(
-          `موجودی محصول از ${diffrence.oldBalance} به  ${diffrence.newBalance} تغییر کرد`
-        );
-      }
-
-      const report: ReportEntity = {
-        title:
-          "محصول با ایدی  " +
-          updateOutput.oldProduct.product_id +
-          " تغییر کرد ",
-        content: content,
-        date: new Date()
-      };
-      this.reportService.create(report);
-      return { result: "the product is updated" };
+    const isProductExist = await MyDatabase.productIsExist(updatedProduct.product_id);
+    if (!isProductExist) {
+      return { error: "product doesnt exist" };
     } else {
-      return { error: "the product doesnt exist" };
+      const isSupplierExist = await MyDatabase.supplierIsExist(updatedProduct.supplier_id);
+      if (!isSupplierExist) {
+        return { error: "supplier doesnt exist" };
+      } else {
+        const newAndOldProduct = await MyDatabase.getDb().query(aql`
+          FOR product IN Products
+          FILTER product.product_id == ${updatedProduct.product_id}
+          UPDATE product._key WITH ${updatedProduct} IN Products
+          RETURN {
+            oldProduct : OLD,
+            newProduct : NEW,
+          }
+       `);
+        const updateOutput = await newAndOldProduct.next();
+
+        const diffrence = {
+          oldPrice: updateOutput.oldProduct.price,
+          newPrice: updateOutput.newProduct.price,
+          oldSupplierId: updateOutput.oldProduct.supplier_id,
+          newSupplierId: updateOutput.newProduct.supplier_id,
+          oldBalance: updateOutput.oldProduct.balance,
+          newBalance: updateOutput.newProduct.balance
+        };
+        const content: string[] = [];
+        if (diffrence.oldPrice !== diffrence.newPrice) {
+          content.push(
+            `قیمت محصول از  ${diffrence.oldPrice}  به  ${diffrence.newPrice}  تغییر کرد `
+          );
+        }
+        if (diffrence.oldSupplierId !== diffrence.newSupplierId) {
+          const cursor = await MyDatabase.getDb().query(aql`
+          FOR s IN Suppliers
+          FILTER s._id == ${diffrence.oldSupplierId}
+          RETURN s.supplier_name
+        `);
+          const oldSupplierName = await cursor.next();
+          const cursor2 = await MyDatabase.getDb().query(aql`
+          FOR s IN Suppliers
+          FILTER s._id == ${diffrence.newSupplierId}
+          RETURN s.supplier_name
+        `);
+          const NewSupplierName = await cursor2.next();
+          content.push(
+            `نام تامین کننده محصول از  ${oldSupplierName} به  ${NewSupplierName} تغییر کرد `
+          );
+        }
+        if (diffrence.oldBalance !== diffrence.newBalance) {
+          content.push(
+            `موجودی محصول از ${diffrence.oldBalance} به  ${diffrence.newBalance} تغییر کرد`
+          );
+        }
+
+        const report: ReportEntity = {
+          title:
+            "محصول با ایدی  " +
+            updateOutput.oldProduct.product_id +
+            " تغییر کرد ",
+          content: content,
+          date: new Date()
+        };
+        this.reportService.create(report);
+        return { result: "the product is updated" };
+
+      }
     }
+
   }
+
 
   async removeProduct(product_id: string): Promise<object> {
     const deletedProduct = await MyDatabase.getDb().query(aql`
@@ -269,6 +275,7 @@ export class ProductService {
         RETURN p
         `);
         products = await productDocuments.all();
+        console.log(typeof products[0])
         return products;
       }
     } else {

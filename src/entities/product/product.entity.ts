@@ -1,6 +1,6 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, IsString } from 'class-validator';
+import { IsDate, IsInt, IsNumber, IsString } from 'class-validator';
 
 @Collection('Products')
 export class ProductEntity extends ArangoDocument {
@@ -20,7 +20,7 @@ export class ProductEntity extends ArangoDocument {
     description: 'مقدار باقی مانده محصول در انبار',
     example: 5,
   })
-  @IsInt()
+  @IsNumber()
   balance?: number;
 
   @ApiProperty({
@@ -47,6 +47,7 @@ export class ProductEntity extends ArangoDocument {
   description?: string;
 
   @ApiProperty({ description: 'قیمت', example: 1000 })
+  @IsNumber()
   price?: number;
 
   @ApiProperty({

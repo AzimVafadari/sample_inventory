@@ -27,7 +27,7 @@
     "@nestjs/swagger": "^7.1.16",
     "arangojs": "^8.6.0",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.0",
+    "class-validator": "^0.14.1",
     "kafka": "^0.2.3",
     "kafkajs": "^2.2.4",
     "nest-arango": "^0.2.0",
