@@ -58,27 +58,27 @@ export class BuyOrderController {
     return await this.buyOrderService.remove(buyOrder_id);
   }
   // @UseGuards(AuthGuard)
-  @Get(':status')
+  @Get('fbobs')
   @ApiOperation({
     summary: 'دریافت یک سفارش خرید به وسیله وضعیت آن',
   })
-  async findBuyOrderByStatus(@Param('status') status: string) {
+  async findBuyOrderByStatus(@Query('status') status: string) {
     return await this.buyOrderService.findManyByStatus(status);
   }
   // @UseGuards(AuthGuard)
-  @Get(':productId')
+  @Get('fbobpi')
   @ApiOperation({
     summary: 'دریافت یک سفارش خرید به وسیله آیدی محصول آن',
   })
-  async findBuyOrderByProductId(@Param('productId') productId: string) {
+  async findBuyOrderByProductId(@Query('productId') productId: string) {
     return await this.buyOrderService.findManyByProductId(productId);
   }
   // @UseGuards(AuthGuard)
-  @Get(':supplierId')
+  @Get('fbobsi')
   @ApiOperation({
     summary: 'دریافت یک سفارش خرید کننده به وسیله آیدی تامین کننده آن',
   })
-  async findBuyOrderBySupplierId(@Param('supplierId') supplierId: string) {
+  async findBuyOrderBySupplierId(@Query('supplierId') supplierId: string) {
     return await this.buyOrderService.findManyBySupplierId(supplierId);
   }
 }
