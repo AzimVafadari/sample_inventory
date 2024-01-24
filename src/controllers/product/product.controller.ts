@@ -105,11 +105,11 @@ export class ProductController {
     @UploadedFile() image: Express.Multer.File,
     @Body() product: ProductEntity,
   ) {
-    product.image_id = uuidv4();
-    const folderPath: string = './images/products/';
-    const imageBuffer = image.buffer;
-    const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
-    await fs.writeFile(imagePath, imageBuffer);
+    // product.image_id = uuidv4();
+    // const folderPath: string = './images/products/';
+    // const imageBuffer = image.buffer;
+    // const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
+    // await fs.writeFile(imagePath, imageBuffer);
     return await this.productService.create(product);
   }
 
