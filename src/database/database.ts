@@ -24,7 +24,7 @@ export class MyDatabase {
   static async supplierIsExist(value: string): Promise<boolean> {
     const cursor = await this.getDb().query(aql`
     FOR s IN Suppliers
-    FILTER s.supplier_id == ${value}
+    FILTER s._id == ${value}
     RETURN s
   `);
     const isExist = cursor.all();

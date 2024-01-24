@@ -9,9 +9,9 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
-  ParseIntPipe,
+  ParseIntPipe, UsePipes, ValidationPipe
   // UseGuards,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import { ResultList } from 'nest-arango';
 import {
   // ApiBearerAuth,
@@ -26,6 +26,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { validate } from 'class-validator';
 
 // import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('product')
@@ -36,6 +37,7 @@ export class ProductController {
 
   // @UseGuards(AuthGuard)
   @Post()
+  // @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -84,7 +86,7 @@ export class ProductController {
         price: {
           type: 'number',
           description: 'قیمت',
-          example: 1000,
+          example: 10000,
         },
         expiry_date: {
           type: 'date',
@@ -104,7 +106,6 @@ export class ProductController {
     @Body() product: ProductEntity,
   ) {
     product.image_id = uuidv4();
-    product.balance = parseInt(product.balance.toString());
     const folderPath: string = './images/products/';
     const imageBuffer = image.buffer;
     const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
