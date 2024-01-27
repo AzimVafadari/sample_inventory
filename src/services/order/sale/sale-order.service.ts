@@ -20,9 +20,10 @@ export class SaleOrderService {
 
   //This method create a sale order if it doesn't exist
   async create(saleOrder: SaleOrderEntity): Promise<object> {
-    const saleOrderProduct: ProductEntity = await this.productService.findById(
+    const temp: ProductEntity = await this.productService.findById(
       saleOrder.product_id,
-    )[0];
+    );
+    const saleOrderProduct = temp[0];
     if (await MyDatabase.productIsExist(saleOrder.product_id)) {
       //Find customer
       const customer = await MyDatabase.getDb().query(aql`
@@ -84,7 +85,11 @@ export class SaleOrderService {
       updatedSaleOrder.status == 'finished'
     ) {
       //Update product by new balance
-      const product: ProductEntity = await this.productService.findById(_id)[0];
+      const temp = await this.productService.findById(
+        updatedSaleOrder.product_id,
+      );
+      const product: ProductEntity = temp[0];
+      console.log(product);
       product.balance = product.balance - updatedSaleOrder.amount;
       await this.productService.updateProduct(product);
       if (isUpdated) {

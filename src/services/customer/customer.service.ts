@@ -48,7 +48,7 @@ export class CustomerService {
     }
   }
 
-  async findOne(customerName: string): Promise<object> {
+  async findBasedName(customerName: string): Promise<object> {
     //This query search all customers that their name starts with customerName
     //ChatGPT did this query
     const customer = await MyDatabase.getDb().query(aql`
@@ -59,6 +59,19 @@ export class CustomerService {
     const isExist = customer.all();
     if ((await isExist).length > 0 && customerName !== '.') {
       return isExist;
+    } else {
+      return { error: 'customer not found' };
+    }
+  }
+  async findBasedId(customerId: string): Promise<object> {
+    const customerDocument = await MyDatabase.getDb().query(aql`
+      FOR c IN Customers
+      FILTER c._id == ${customerId}
+      RETURN c
+    `);
+    const Customer = await customerDocument.all();
+    if (Customer) {
+      return Customer;
     } else {
       return { error: 'customer not found' };
     }

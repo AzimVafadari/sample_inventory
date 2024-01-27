@@ -63,7 +63,7 @@ export class SaleOrderController {
   }
 
   // @UseGuards(AuthGuard)
-  @Get('fsobs')
+  @Get('findBasedOnStatus')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله وضعیت آن',
   })
@@ -72,7 +72,7 @@ export class SaleOrderController {
   }
 
   // @UseGuards(AuthGuard)
-  @Get('fsobpi')
+  @Get('findBasedOnProductId')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله آیدی محصول آن',
   })
@@ -81,7 +81,7 @@ export class SaleOrderController {
   }
 
   // @UseGuards(AuthGuard)
-  @Get('fsobci')
+  @Get('findBasedOnCustomerId')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله آیدی فروشنده آن',
   })
