@@ -12,19 +12,22 @@ export class CategoryService {
   ) {}
 
   async create(category: CategoryEntity): Promise<object> {
-    const newCategory = await this.categoryRepository.save(category);
-    //If category collection size is one category path_to_root is its _id
-    if (newCategory.path_to_root == '') {
-      newCategory.path_to_root = newCategory._key;
-    } else {
-      const parentCategory = await MyDatabase.getDb().query(aql`
+    const parentCategory = await MyDatabase.getDb().query(aql`
       FOR category IN Categories
-      FILTER category._key == ${newCategory.parent_id}
+      FILTER category._key == ${category.parent_id}
       RETURN category
     `);
-      const pc: CategoryEntity = await parentCategory.next();
+    const pc: CategoryEntity = await parentCategory.next();
+    if (!pc && category.parent_id != '') {
+      return { error: 'parent category not found' };
+    }
+    const newCategory = await this.categoryRepository.save(category);
+    if (category.parent_id == '') {
+      newCategory.path_to_root = newCategory._key;
+    } else {
       newCategory.path_to_root = pc.path_to_root + '.' + newCategory._key;
     }
+    //If category collection size is one category path_to_root is its _id
     await this.update(newCategory._id, newCategory);
     return { result: 'the category is created' };
   }
