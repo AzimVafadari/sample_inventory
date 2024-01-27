@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArangoDocument, Collection } from 'nest-arango';
-import { IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNumber, IsString } from 'class-validator';
 
 @Collection('BuyOrders')
 export class BuyOrderEntity extends ArangoDocument {
@@ -37,4 +37,11 @@ export class BuyOrderEntity extends ArangoDocument {
   })
   @IsString()
   scale?: string;
+
+  @ApiProperty({
+    description: 'تاریخ ایجاد سفارش خرید',
+    example: new Date(),
+  })
+  @IsDateString()
+  create_date?: Date;
 }

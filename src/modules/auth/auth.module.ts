@@ -12,7 +12,7 @@ import { UserEntity } from '../../entities/user/user.entity';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '600s' },
+      signOptions: { expiresIn: '6000s' },
     }),
     ArangoModule.forFeature([UserEntity]),
   ],
