@@ -12,6 +12,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SaleOrderEntity } from '../../../entities/order/sale/sale-order.entity';
 import { SaleOrderService } from '../../../services/order/sale/sale-order.service';
 import { AuthGuard } from '../../../auth/auth.guard';
+import { SaleOrderFilter } from '../../../interfaces/order/sale/sale-order.interface';
 
 @ApiTags('sale-order')
 @ApiBearerAuth()
@@ -87,5 +88,14 @@ export class SaleOrderController {
   })
   async findSaleOrderBySupplierId(@Query('customerId') customerId: string) {
     return await this.saleOrderService.findManyByCustomerId(customerId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('findBasedOnSomeFilters')
+  @ApiOperation({
+    summary: 'دریافت یک سفارش فروش به وسیله چندین فیلتر',
+  })
+  async findSaleOrderBySomeFilters(@Body() filter: SaleOrderFilter) {
+    return await this.saleOrderService.multiFilter(filter);
   }
 }

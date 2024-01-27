@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BuyOrderService } from '../../../services/order/buy/buy-order.service';
 import { BuyOrderEntity } from '../../../entities/order/buy/buy-order.entity';
 import { AuthGuard } from '../../../auth/auth.guard';
+import { BuyOrderFilter } from '../../../interfaces/order/buy/buy-order.interface';
 @ApiTags('buy-order')
 @ApiBearerAuth()
 @Controller('buy-order')
@@ -80,5 +81,14 @@ export class BuyOrderController {
   })
   async findBuyOrderBySupplierId(@Query('supplierId') supplierId: string) {
     return await this.buyOrderService.findManyBySupplierId(supplierId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('findBasedOnSomeFilters')
+  @ApiOperation({
+    summary: 'دریافت یک سفارش خرید به وسیله چندین فیلتر',
+  })
+  async findSaleOrderBySomeFilters(@Body() filter: BuyOrderFilter) {
+    return await this.buyOrderService.multiFilter(filter);
   }
 }

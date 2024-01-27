@@ -8,7 +8,7 @@ import { ReportEntity } from '../../../entities/report/report.entity';
 import { CustomerEntity } from '../../../entities/customer/customer.entity';
 import { ReportService } from '../../report/report.service';
 import { ProductService } from '../../product/product.service';
-
+import { SaleOrderFilter } from '../../../interfaces/order/sale/sale-order.interface';
 @Injectable()
 export class SaleOrderService {
   constructor(
@@ -60,6 +60,52 @@ export class SaleOrderService {
     } else {
       return { result: 'Please first create the product' };
     }
+  }
+
+  //Multi-filter based on an interface
+  async multiFilter(filterFormat: SaleOrderFilter) {
+    // This AQL query is written by chatGPT
+    const result = await MyDatabase.getDb().query(aql`
+      FOR so IN SaleOrders
+      FILTER ${
+        filterFormat.product_id
+          ? aql`so.product_id == ${filterFormat.product_id}`
+          : aql`true`
+      }
+      FILTER ${
+        filterFormat.customer_id
+          ? aql`so.customer_id == ${filterFormat.customer_id}`
+          : aql`true`
+      }
+      FILTER ${
+        filterFormat.amount_from
+          ? aql`so.amount >= ${filterFormat.amount_from}`
+          : aql`true`
+      }
+      FILTER ${
+        filterFormat.amount_to
+          ? aql`so.amount <= ${filterFormat.amount_to}`
+          : aql`true`
+      }
+      FILTER ${
+        filterFormat.status
+          ? aql`so.status == ${filterFormat.status}`
+          : aql`true`
+      }
+      FILTER ${
+        filterFormat.date_from
+          ? aql`so.date >= ${filterFormat.date_from}`
+          : aql`true`
+      }
+      FILTER ${
+        filterFormat.date_to
+          ? aql`so.date <= ${filterFormat.date_to}`
+          : aql`true`
+      }
+      RETURN so
+    `);
+    const finallyResult: SaleOrderEntity[] = await result.all();
+    return finallyResult;
   }
 
   //This method return all buy orders
