@@ -58,11 +58,18 @@ export class CustomerController {
     return await this.customerService.remove(customer_id);
   }
   // @UseGuards(AuthGuard)
-  @Get(':customerName')
+  @Get('findByName/:customerName')
   @ApiOperation({
     summary: 'دریافت یک مشتری به وسیله نام آن',
   })
-  async findSupplier(@Param('customerName') customerName: string) {
-    return await this.customerService.findOne(customerName);
+  async findBasedName(@Param('customerName') customerName: string) {
+    return await this.customerService.findBasedName(customerName);
+  }
+  @Get(':customerId')
+  @ApiOperation({
+    summary: 'دریافت یک مشتری به وسیله ایدی آن',
+  })
+  async findBasedId(@Param('customerId') customerId: string) {
+    return await this.customerService.findBasedId(customerId);
   }
 }
