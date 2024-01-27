@@ -25,6 +25,16 @@ export class BuyOrderService {
       return { result: 'Please first create the product' };
     }
 
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR p IN Products
+    FILTER p.product_id == ${buyOrder.product_id}
+    RETURN p
+  `);
+    const product = await cursor.next();
+    if (product.scale !== buyOrder.scale) {
+      return { result: 'scale is not correct' };
+    }
+
     //Find customer
     const supplier = await MyDatabase.getDb().query(aql`
           FOR s IN Suppliers
