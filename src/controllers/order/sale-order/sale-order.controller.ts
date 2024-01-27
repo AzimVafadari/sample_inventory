@@ -6,21 +6,21 @@ import {
   Post,
   Put,
   Query,
-  // UseGuards,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SaleOrderEntity } from '../../../entities/order/sale/sale-order.entity';
 import { SaleOrderService } from '../../../services/order/sale/sale-order.service';
-// import { AuthGuard } from '../../../auth/auth.guard';
+import { AuthGuard } from '../../../auth/auth.guard';
 
 @ApiTags('sale-order')
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('sale-order')
 export class SaleOrderController {
   constructor(private readonly saleOrderService: SaleOrderService) {}
 
   //This method creates saleOrder if it doesn't exist and returns an object that says the status of creation
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({
     summary: 'ایجاد سفارش فروش',
@@ -30,7 +30,7 @@ export class SaleOrderController {
   }
 
   //This method is created to receive all saleOrders
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'دریافت تمامی سفارش های فروش',
@@ -40,7 +40,7 @@ export class SaleOrderController {
   }
 
   //This method update the saleOrder by its updated form and returns an object that says the update status
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Put()
   @ApiOperation({
     summary: 'ویرایش یک سفارش فروش',
@@ -53,7 +53,7 @@ export class SaleOrderController {
   }
 
   //This method remove the saleOrder if it does exist and returns an object
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Delete(':saleOrder_id')
   @ApiOperation({
     summary: 'حذف سفارش فروش',
@@ -62,7 +62,7 @@ export class SaleOrderController {
     return await this.saleOrderService.remove(saleOrder_id);
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('findBasedOnStatus')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله وضعیت آن',
@@ -71,7 +71,7 @@ export class SaleOrderController {
     return await this.saleOrderService.findManyByStatus(status);
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('findBasedOnProductId')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله آیدی محصول آن',
@@ -80,7 +80,7 @@ export class SaleOrderController {
     return await this.saleOrderService.findManyByProductId(productId);
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('findBasedOnCustomerId')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله آیدی فروشنده آن',

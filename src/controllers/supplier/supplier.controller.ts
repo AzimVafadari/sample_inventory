@@ -7,21 +7,21 @@ import {
   Post,
   Put,
   Query,
-  // UseGuards,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
 import { SupplierService } from 'src/services/supplier/supplier.service';
 
-// import { AuthGuard } from '../../auth/auth.guard';
+import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('supplier')
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('supplier')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
   //This method creates supplier if it doesn't exist and returns an object that says the status of creation
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({
     summary: 'ایجاد تامین کننده',
@@ -31,7 +31,7 @@ export class SupplierController {
   }
 
   //This method is created to receive all suppliers
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({
     summary: 'دریافت تمامی تامین کنندگان',
@@ -41,7 +41,7 @@ export class SupplierController {
   }
 
   //This method update the supplier by its updated form and returns an object that says the update status
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Put()
   @ApiOperation({
     summary: 'ویرایش یک تامین کننده به وسیله نام آن',
@@ -54,7 +54,7 @@ export class SupplierController {
   }
 
   //This method remove the supplier if it does exist and returns an object
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Delete(':supplier_id')
   @ApiOperation({
     summary: 'حذف تامین کننده به وسیله آیدی آن',
@@ -67,7 +67,7 @@ export class SupplierController {
   @ApiOperation({
     summary: 'دریافت یک تامین کننده به وسیله نام آن',
   })
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   async findSupplier(@Query('supplierName') supplierName: string) {
     if (supplierName === '.') {
       return { error: 'نام تامین کننده نامعتبر است' };
