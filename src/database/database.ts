@@ -27,14 +27,14 @@ export class MyDatabase {
     FILTER s._id == ${value}
     RETURN s
   `);
-    const isExist = cursor.all();
-    return (await isExist).length > 0;
+    const isExist = await cursor.all();
+    return isExist.length > 0;
   }
 
   static async categoryIsExist(value: string): Promise<boolean> {
     const cursor = await this.getDb().query(aql`
     FOR category IN Categories
-    FILTER category.category_id == ${value}
+    FILTER category._id == ${value}
     RETURN category
   `);
     const isExist = cursor.all();

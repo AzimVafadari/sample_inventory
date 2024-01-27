@@ -20,7 +20,7 @@ export class SaleOrderEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'وضعیت سفاارش',
-    example: 'finished',
+    example: 'pending',
   })
   @IsString()
   status?: string;
