@@ -10,7 +10,12 @@ export class CategoryEntity extends ArangoDocument {
   @IsString()
   category_name?: string;
 
-  image_id: number;
+  @ApiProperty({
+    description: 'آیدی عکس دسته بندی',
+    example: 'ffvddv5v5fdv5fdbvfd2',
+  })
+  @IsString()
+  image_id: string;
 
   @ApiProperty({
     description: 'توضیحات دسته بندی',
