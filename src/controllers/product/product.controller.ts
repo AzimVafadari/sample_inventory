@@ -9,9 +9,9 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
-  ParseIntPipe, UsePipes, ValidationPipe
+  ParseIntPipe,
   // UseGuards,
-} from "@nestjs/common";
+} from '@nestjs/common';
 import { ResultList } from 'nest-arango';
 import {
   // ApiBearerAuth,
@@ -26,7 +26,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { validate } from 'class-validator';
 
 // import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('product')
@@ -37,82 +36,35 @@ export class ProductController {
 
   // @UseGuards(AuthGuard)
   @Post()
-  // @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiOperation({
+    summary: 'ساخت محصول',
+  })
+  async createProduct(@Body() product: ProductEntity) {
+    return await this.productService.create(product);
+  }
+
+  @Post('uploadProductImage')
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        product_id: {
-          type: 'string',
-          description: 'product pk',
-          example: '1',
-        },
-        product_name: {
-          type: 'string',
-          description: 'نام محصول',
-          example: 'موز',
-        },
-        supplier_id: {
-          type: 'string',
-          description: 'ایدی تامین کننده محصول',
-          example: '2',
-        },
-        balance: {
-          type: 'number',
-          description: 'مقدار باقی مانده محصول در انبار',
-          example: 5,
-        },
-        scale: {
-          type: 'string',
-          description: 'مقیاس موجودی مخصول',
-          example: 'کیلوگرم',
-        },
         image: {
           type: 'string',
           format: 'binary',
         },
-        category_id: {
-          type: 'string',
-          description: 'آیدی دسته بندی',
-          example: '1',
-        },
-        description: {
-          type: 'string',
-          description: 'توضیحات محصول',
-          example: 'موز به انبار اضافه شد',
-        },
-        price: {
-          type: 'number',
-          description: 'قیمت',
-          example: 10000,
-        },
-        expiry_date: {
-          type: 'date',
-          description: 'تاریخ انقضا محصول',
-          example: new Date('2023-12-31'),
-        },
-        brand: {
-          type: 'string',
-          description: 'برند محصول',
-          example: 'چی توز',
-        },
       },
     },
   })
-  async createProduct(
-    @UploadedFile() image: Express.Multer.File,
-    @Body() product: ProductEntity,
-  ) {
-    // product.image_id = uuidv4();
-    // const folderPath: string = './images/products/';
-    // const imageBuffer = image.buffer;
-    // const imagePath = path.join(folderPath, `${product.image_id}.jpg`);
-    // await fs.writeFile(imagePath, imageBuffer);
-    return await this.productService.create(product);
+  async uploadProductImage(@UploadedFile() image: Express.Multer.File) {
+    const imageId = uuidv4();
+    const folderPath: string = './images/products/';
+    const imageBuffer = image.buffer;
+    const imagePath = path.join(folderPath, `${imageId}.jpg`);
+    await fs.writeFile(imagePath, imageBuffer);
+    return await imageId;
   }
-
   // @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({

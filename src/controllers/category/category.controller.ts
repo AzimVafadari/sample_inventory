@@ -32,46 +32,32 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
   // @UseGuards(AuthGuard)
   @Post()
+  async createCategory(@Body() category: CategoryEntity) {
+    category.path_to_root = '';
+    return await this.categoryService.create(category);
+  }
+
+  @Post('uploadProductImage')
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        category_name: {
-          type: 'string',
-          example: 'صیفی جات',
-        },
         image: {
           type: 'string',
           format: 'binary',
         },
-        description: {
-          type: 'string',
-          example: 'این دسته بندی دارای میوه ها است',
-        },
-        parent_id: {
-          type: 'string',
-          example: '',
-        },
-        path_to_root: {
-          type: 'string',
-          example: '',
-        },
       },
     },
   })
-  async createCategory(
-    @UploadedFile() image: Express.Multer.File,
-    @Body() category: CategoryEntity,
-  ) {
-    category.image_id = uuidv4();
-    const folderPath: string = './images/categories';
+  async uploadProductImage(@UploadedFile() image: Express.Multer.File) {
+    const imageId = uuidv4();
+    const folderPath: string = './images/products/';
     const imageBuffer = image.buffer;
-    const imagePath = path.join(folderPath, `${category.image_id}.jpg`);
+    const imagePath = path.join(folderPath, `${imageId}.jpg`);
     await fs.writeFile(imagePath, imageBuffer);
-    category.path_to_root = '';
-    return await this.categoryService.create(category);
+    return await imageId;
   }
   // @UseGuards(AuthGuard)
   @Get()
