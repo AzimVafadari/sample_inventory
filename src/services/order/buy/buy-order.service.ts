@@ -26,12 +26,12 @@ export class BuyOrderService {
       return { result: 'Please first create the product' };
     }
 
-    const curbor = await MyDatabase.getDb().query(aql`
+    const cursor = await MyDatabase.getDb().query(aql`
     FOR p IN Products
     FILTER p.product_id == ${buyOrder.product_id}
     RETURN p
   `);
-    const product = await curbor.next();
+    const product = await cursor.next();
     if (product.scale !== buyOrder.scale) {
       return { result: 'scale is not correct' };
     }
@@ -58,6 +58,16 @@ export class BuyOrderService {
   //This method return all buy orders
   async findAll(): Promise<ResultList<BuyOrderEntity>> {
     return await this.buyOrderRepository.findAll();
+  }
+
+  //This method return all buy orders
+  async findById(Id: string): Promise<BuyOrderEntity> {
+    const cursor = await MyDatabase.getDb().query(aql`
+    FOR bo IN BuyOrders
+    FILTER bo._id == ${Id}
+    RETURN bo
+    `);
+    return await cursor.next();
   }
 
   //This method update a buy order if it does exist
@@ -150,58 +160,6 @@ export class BuyOrderService {
       return { result: 'buyOrder successfully deleted' };
     } else {
       return { result: 'buyOrder not found' };
-    }
-  }
-
-  //This method filter buy orders that have specific status
-  async findManyByStatus(status: string): Promise<object> {
-    //This query search all buyOrders that their name starts with buyOrderName
-    //ChatGPT did this query
-    const buyOrder = await MyDatabase.getDb().query(aql`
-    FOR buyOrder IN BuyOrders
-    FILTER LIKE(buyOrder.status, CONCAT(${status}, '%'))
-    RETURN buyOrder
-    `);
-    const isExist = buyOrder.all();
-    if ((await isExist).length > 0) {
-      return isExist;
-    } else {
-      return { error: 'buyOrder not found' };
-    }
-  }
-
-  //This method filter buy orders based on their product id
-  async findManyByProductId(productId: string): Promise<object> {
-    //This query search all buyOrders that their name starts with buyOrderName
-    //ChatGPT did this query
-    const buyOrder = await MyDatabase.getDb().query(aql`
-    FOR buyOrder IN BuyOrders
-    FILTER buyOrder.product_id == ${productId}
-    RETURN buyOrder
-    `);
-    const buyOrders = await buyOrder.all();
-    const isExist = (await buyOrders).length > 0;
-    if (isExist) {
-      return buyOrders;
-    } else {
-      return { error: 'buyOrder not found' };
-    }
-  }
-
-  //This method filter buy orders based on their product id
-  async findManyBySupplierId(supplierId: string): Promise<object> {
-    //This query search all buyOrders that their name starts with buyOrderName
-    //ChatGPT did this query
-    const buyOrder = await MyDatabase.getDb().query(aql`
-    FOR buyOrder IN BuyOrders
-    FILTER LIKE(buyOrder.supplier_id, CONCAT(${supplierId}, '%'))
-    RETURN buyOrder
-    `);
-    const isExist = buyOrder.all();
-    if ((await isExist).length > 0) {
-      return isExist;
-    } else {
-      return { error: 'buyOrder not found' };
     }
   }
 }
