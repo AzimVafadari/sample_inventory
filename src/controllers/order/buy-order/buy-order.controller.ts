@@ -39,12 +39,12 @@ export class BuyOrderController {
   }
   //This method is created to receive all buyOrders
   @UseGuards(AuthGuard)
-  @Get(':Id')
+  @Get(':Key')
   @ApiOperation({
     summary: 'دریافت سفارش خرید به وسیله آیدی آن',
   })
-  async getBuyOrdersById(@Param('Id') Id: string) {
-    return await this.buyOrderService.findById(Id);
+  async getBuyOrdersById(@Param('Key') Key: string) {
+    return await this.buyOrderService.findByKey(Key);
   }
   //This method update the buyOrder by its updated form and returns an object that says the update status
   @UseGuards(AuthGuard)

@@ -61,10 +61,10 @@ export class BuyOrderService {
   }
 
   //This method return all buy orders
-  async findById(Id: string): Promise<BuyOrderEntity> {
+  async findByKey(key: string): Promise<BuyOrderEntity> {
     const cursor = await MyDatabase.getDb().query(aql`
     FOR bo IN BuyOrders
-    FILTER bo._id == ${Id}
+    FILTER bo._key == ${key}
     RETURN bo
     `);
     return await cursor.next();
