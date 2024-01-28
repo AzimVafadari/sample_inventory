@@ -67,8 +67,7 @@ export class BuyOrderService {
     FILTER bo._id == ${Id}
     RETURN bo
     `);
-    const buyOrder: BuyOrderEntity = await cursor.next();
-    return buyOrder;
+    return await cursor.next();
   }
 
   //This method update a buy order if it does exist
