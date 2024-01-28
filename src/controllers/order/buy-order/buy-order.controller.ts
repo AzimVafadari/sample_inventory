@@ -13,7 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BuyOrderService } from '../../../services/order/buy/buy-order.service';
 import { BuyOrderEntity } from '../../../entities/order/buy/buy-order.entity';
 import { AuthGuard } from '../../../auth/auth.guard';
-import { BuyOrderFilter } from '../../../interfaces/order/buy/buy-order.interface';
+import { BuyOrderFilter } from '../../../interfaces/order/buy/buy-order-filter';
 @ApiTags('buy-order')
 @ApiBearerAuth()
 @Controller('buy-order')

@@ -8,7 +8,7 @@ import { ReportEntity } from '../../../entities/report/report.entity';
 import { CustomerEntity } from '../../../entities/customer/customer.entity';
 import { ReportService } from '../../report/report.service';
 import { ProductService } from '../../product/product.service';
-import { SaleOrderFilter } from '../../../interfaces/order/sale/sale-order.interface';
+import { SaleOrderFilter } from '../../../interfaces/order/sale/sale-order-filter';
 @Injectable()
 export class SaleOrderService {
   constructor(
