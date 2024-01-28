@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -13,6 +14,7 @@ import { SaleOrderEntity } from '../../../entities/order/sale/sale-order.entity'
 import { SaleOrderService } from '../../../services/order/sale/sale-order.service';
 import { AuthGuard } from '../../../auth/auth.guard';
 import { SaleOrderFilter } from '../../../interfaces/order/sale/sale-order-filter';
+import { validate } from 'class-validator';
 
 @ApiTags('sale-order')
 @ApiBearerAuth()
@@ -64,38 +66,27 @@ export class SaleOrderController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('findBasedOnStatus')
-  @ApiOperation({
-    summary: 'دریافت یک سفارش فروش به وسیله وضعیت آن',
-  })
-  async findSaleOrderByStatus(@Query('status') status: string) {
-    return await this.saleOrderService.findManyByStatus(status);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('findBasedOnProductId')
-  @ApiOperation({
-    summary: 'دریافت یک سفارش فروش به وسیله آیدی محصول آن',
-  })
-  async findSaleOrderByProductId(@Query('productId') productId: string) {
-    return await this.saleOrderService.findManyByProductId(productId);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('findBasedOnCustomerId')
-  @ApiOperation({
-    summary: 'دریافت یک سفارش فروش به وسیله آیدی فروشنده آن',
-  })
-  async findSaleOrderBySupplierId(@Query('customerId') customerId: string) {
-    return await this.saleOrderService.findManyByCustomerId(customerId);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('findBasedOnSomeFilters')
+  @Get('findByFilters')
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله چندین فیلتر',
   })
-  async findSaleOrderBySomeFilters(@Body() filter: SaleOrderFilter) {
-    return await this.saleOrderService.multiFilter(filter);
+  async findSaleOrderBySomeFilters(@Query('filter') filter: string) {
+    const filterObject = JSON.parse(filter);
+    const saleOrderFilter = new SaleOrderFilter(filterObject);
+    const errors = await validate(saleOrderFilter);
+    if (errors.length > 0) {
+      return { errors: errors };
+    } else {
+      return await this.saleOrderService.multiFilter(saleOrderFilter);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':key')
+  @ApiOperation({
+    summary: 'دریافت یک سفارش فروش به وسیله شناسه',
+  })
+  async findSaleOrderByKey(@Param('key') key: string) {
+    return await this.saleOrderService.findOneByKey(key);
   }
 }

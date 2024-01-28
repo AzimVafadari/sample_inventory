@@ -9,6 +9,7 @@ import { CustomerEntity } from '../../../entities/customer/customer.entity';
 import { ReportService } from '../../report/report.service';
 import { ProductService } from '../../product/product.service';
 import { SaleOrderFilter } from '../../../interfaces/order/sale/sale-order-filter';
+
 @Injectable()
 export class SaleOrderService {
   constructor(
@@ -94,12 +95,12 @@ export class SaleOrderService {
       }
       FILTER ${
         filterFormat.date_from
-          ? aql`so.date >= ${filterFormat.date_from}`
+          ? aql`DATE_DIFF(so.create_date, ${filterFormat.date_from}, 'd') <= 0`
           : aql`true`
       }
       FILTER ${
         filterFormat.date_to
-          ? aql`so.date <= ${filterFormat.date_to}`
+          ? aql`DATE_DIFF(so.create_date, ${filterFormat.date_to}, 'd') >= 0`
           : aql`true`
       }
       RETURN so
@@ -163,54 +164,17 @@ export class SaleOrderService {
     }
   }
 
-  //This method filter buy orders that have specific status
-  async findManyByStatus(status: string): Promise<object> {
-    //This query search all saleOrders that their name starts with saleOrderName
-    //ChatGPT did this query
-    const saleOrder = await MyDatabase.getDb().query(aql`
-    FOR saleOrder IN SaleOrders
-    FILTER LIKE(saleOrder.status, CONCAT(${status}, '%'))
-    RETURN saleOrder
+  async findOneByKey(saleOrderkey: string): Promise<object> {
+    const saleOrderDocument = await MyDatabase.getDb().query(aql`
+      FOR so IN SaleOrders
+      FILTER so._key == ${saleOrderkey}
+      RETURN so
     `);
-    const isExist = saleOrder.all();
-    if ((await isExist).length > 0) {
-      return isExist;
+    const saleOrder = await saleOrderDocument.next();
+    if (saleOrder) {
+      return saleOrder;
     } else {
-      return { error: 'saleOrder not found' };
-    }
-  }
-
-  //This method filter buy orders based on their product id
-  async findManyByProductId(productId: string): Promise<object> {
-    //This query search all saleOrders that their name starts with saleOrderName
-    //ChatGPT did this query
-    const saleOrder = await MyDatabase.getDb().query(aql`
-    FOR saleOrder IN SaleOrders
-    FILTER LIKE(saleOrder.product_id, CONCAT(${productId}, '%'))
-    RETURN saleOrder
-    `);
-    const isExist = saleOrder.all();
-    if ((await isExist).length > 0) {
-      return isExist;
-    } else {
-      return { error: 'saleOrder not found' };
-    }
-  }
-
-  //This method filter buy orders based on their customer id
-  async findManyByCustomerId(customerId: string): Promise<object> {
-    //This query search all saleOrders that their name starts with saleOrderName
-    //ChatGPT did this query
-    const saleOrder = await MyDatabase.getDb().query(aql`
-    FOR saleOrder IN SaleOrders
-    FILTER LIKE(saleOrder.customer_id, CONCAT(${customerId}, '%'))
-    RETURN saleOrder
-    `);
-    const isExist = saleOrder.all();
-    if ((await isExist).length > 0) {
-      return isExist;
-    } else {
-      return { error: 'saleOrder not found' };
+      return { error: 'SaleOrder not found' };
     }
   }
 }
