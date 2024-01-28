@@ -1,7 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArangoDocument, Collection } from 'nest-arango';
-import { IsDateString, IsNumber, IsString } from 'class-validator';
+import {
+  Contains,
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsPositive,
+  IsString,
+  Length,
+} from 'class-validator';
+enum status {
+  pending = 'pending',
+  finished = 'finished',
+  canceled = 'canceled',
+}
 
+enum scale {
+  kg = 'kg',
+  g = 'g',
+  pieces = 'pieces',
+  ton = 'ton',
+}
 @Collection('BuyOrders')
 export class BuyOrderEntity extends ArangoDocument {
   @ApiProperty({
@@ -9,39 +28,41 @@ export class BuyOrderEntity extends ArangoDocument {
     example: '1',
   })
   @IsString()
-  product_id?: string;
+  @Length(1, 25)
+  product_id: string;
 
   @ApiProperty({
     description: 'ایدی تامین کننده',
     example: '1',
   })
   @IsString()
-  supplier_id?: string;
+  @Length(10, 25)
+  @Contains('Suppliers/')
+  supplier_id: string;
 
   @ApiProperty({
     description: 'وضعیت سفارش',
     example: 'pending',
   })
   @IsString()
-  status?: string;
+  @IsEnum(status)
+  status: string;
 
   @ApiProperty({
     description: 'مقدار خرید',
     example: 500,
   })
   @IsNumber()
-  amount?: number;
+  @IsPositive()
+  amount: number;
   @ApiProperty({
     description: 'مقیاس خرید',
     example: 'کیلوگرم',
   })
   @IsString()
-  scale?: string;
+  @IsEnum(scale)
+  scale: string;
 
-  @ApiProperty({
-    description: 'تاریخ ایجاد سفارش خرید',
-    example: new Date(),
-  })
   @IsDateString()
-  create_date?: Date;
+  create_date: Date;
 }

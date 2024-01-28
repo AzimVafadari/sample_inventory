@@ -51,6 +51,7 @@ export class BuyOrderService {
     };
     //Create report
     await this.reportService.create(report);
+    buyOrder.create_date = new Date();
     await this.buyOrderRepository.save(buyOrder);
     return { result: 'the buyOrder is created' };
   }
