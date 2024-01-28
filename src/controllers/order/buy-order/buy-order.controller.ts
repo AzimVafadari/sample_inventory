@@ -37,6 +37,15 @@ export class BuyOrderController {
   async getAllBuyOrders() {
     return await this.buyOrderService.findAll();
   }
+  //This method is created to receive all buyOrders
+  @UseGuards(AuthGuard)
+  @Get(':Id')
+  @ApiOperation({
+    summary: 'دریافت سفارش خرید به وسیله آیدی آن',
+  })
+  async getBuyOrdersById(@Param('Id') Id: string) {
+    return await this.buyOrderService.findById(Id);
+  }
   //This method update the buyOrder by its updated form and returns an object that says the update status
   @UseGuards(AuthGuard)
   @Put()
@@ -58,31 +67,6 @@ export class BuyOrderController {
   async deleteBuyOrder(@Param('buyOrder_id') buyOrder_id: string) {
     return await this.buyOrderService.remove(buyOrder_id);
   }
-  @UseGuards(AuthGuard)
-  @Get('fbobs')
-  @ApiOperation({
-    summary: 'دریافت یک سفارش خرید به وسیله وضعیت آن',
-  })
-  async findBuyOrderByStatus(@Query('status') status: string) {
-    return await this.buyOrderService.findManyByStatus(status);
-  }
-  @UseGuards(AuthGuard)
-  @Get('fbobpi')
-  @ApiOperation({
-    summary: 'دریافت یک سفارش خرید به وسیله آیدی محصول آن',
-  })
-  async findBuyOrderByProductId(@Query('productId') productId: string) {
-    return await this.buyOrderService.findManyByProductId(productId);
-  }
-  @UseGuards(AuthGuard)
-  @Get('fbobsi')
-  @ApiOperation({
-    summary: 'دریافت یک سفارش خرید کننده به وسیله آیدی تامین کننده آن',
-  })
-  async findBuyOrderBySupplierId(@Query('supplierId') supplierId: string) {
-    return await this.buyOrderService.findManyBySupplierId(supplierId);
-  }
-
   @UseGuards(AuthGuard)
   @Get('findBasedOnSomeFilters')
   @ApiOperation({
