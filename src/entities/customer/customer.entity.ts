@@ -1,6 +1,6 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, Length } from 'class-validator';
 
 @Collection('Customers')
 export class CustomerEntity extends ArangoDocument {
@@ -9,12 +9,14 @@ export class CustomerEntity extends ArangoDocument {
     example: 'علی حسینی',
   })
   @IsString()
-  name?: string;
+  @Length(5, 20)
+  name: string;
 
   @ApiProperty({
     description: 'آدرس',
     example: 'یزد میدان امام علی',
   })
   @IsString()
-  address?: string;
+  @Length(10, 70)
+  address: string;
 }
