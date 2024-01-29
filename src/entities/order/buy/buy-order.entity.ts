@@ -5,10 +5,12 @@ import {
   IsDateString,
   IsEnum,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   Length,
 } from 'class-validator';
+
 enum status {
   pending = 'pending',
   finished = 'finished',
@@ -21,6 +23,7 @@ enum scale {
   pieces = 'pieces',
   ton = 'ton',
 }
+
 @Collection('BuyOrders')
 export class BuyOrderEntity extends ArangoDocument {
   @ApiProperty({
@@ -62,7 +65,7 @@ export class BuyOrderEntity extends ArangoDocument {
   @IsString()
   @IsEnum(scale)
   scale: string;
-
+  @IsOptional()
   @IsDateString()
   create_date: Date;
 }

@@ -1,14 +1,6 @@
 import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SaleOrderFilter {
-  @IsOptional()
-  @IsString()
-  product_id?: string;
-
-  @IsOptional()
-  @IsString()
-  customer_id: string;
-
   constructor(object: SaleOrderFilter) {
     this.product_id = object.product_id;
     this.customer_id = object.customer_id;
@@ -18,6 +10,14 @@ export class SaleOrderFilter {
     this.date_from = object.date_from;
     this.date_to = object.date_to;
   }
+
+  @IsOptional()
+  @IsString()
+  product_id?: string;
+
+  @IsOptional()
+  @IsString()
+  customer_id: string;
 
   @IsOptional()
   @IsNumber()
