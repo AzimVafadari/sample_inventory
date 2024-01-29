@@ -1,59 +1,85 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsString } from 'class-validator';
-
+import {
+  Contains,
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
+enum scale {
+  kg = 'kg',
+  g = 'g',
+  pieces = 'pieces',
+  ton = 'ton',
+}
 @Collection('Products')
 export class ProductEntity extends ArangoDocument {
   @ApiProperty({ description: 'product pk', example: '1' })
   @IsString()
-  product_id?: string;
+  @Length(1, 25)
+  product_id: string;
 
   @ApiProperty({ description: 'نام محصول', example: 'موز' })
   @IsString()
-  product_name?: string;
+  @Length(5, 20)
+  product_name: string;
 
   @ApiProperty({ description: 'ایدی تامین کننده محصول', example: '2' })
   @IsString()
-  supplier_id?: string;
+  @Length(10, 25)
+  supplier_id: string;
 
   @ApiProperty({
     description: 'مقدار باقی مانده محصول در انبار',
     example: 5,
   })
   @IsNumber()
-  balance?: number;
+  @IsPositive()
+  balance: number;
 
   @ApiProperty({
     description: 'مقیاس موجودی محصول',
     example: 'کیلوگرم',
   })
   @IsString()
-  scale?: string;
+  @IsEnum(scale)
+  scale: string;
 
   @ApiProperty({
     description: 'آیدی دسته بندی',
     example: '1',
   })
   @IsString()
-  category_id?: string;
+  @Length(12, 25)
+  @Contains('Categories/')
+  category_id: string;
 
   @ApiProperty({
     description: 'آیدی عکس محصول',
     example: 'vfd2v6fdvgf3bsd62',
   })
-  @IsString()
-  image_id?: string;
+  @IsOptional()
+  @IsUUID()
+  image_id: string;
 
   @ApiProperty({
     description: 'توضیحات محصول',
     example: 'موز به انبار اضافه شد',
   })
   @IsString()
-  description?: string;
+  @IsOptional()
+  @Length(0, 70)
+  description: string;
 
   @ApiProperty({ description: 'قیمت', example: 1000 })
   @IsNumber()
-  price?: number;
+  @IsPositive()
+  price: number;
 
   @ApiProperty({
     description: 'تاریخ انقضا محصول',
@@ -64,5 +90,6 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({ description: 'برند محصول', example: 'چی توز' })
   @IsString()
-  brand?: string;
+  @Length(1, 30)
+  brand: string;
 }

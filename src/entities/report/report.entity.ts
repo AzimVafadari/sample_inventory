@@ -1,6 +1,13 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDateString, IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsDateString,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 @Collection('Reports')
 export class ReportEntity extends ArangoDocument {
@@ -8,20 +15,23 @@ export class ReportEntity extends ArangoDocument {
     description: 'عنوان گزارش',
     example: 'این گزارش ... است',
   })
+  @IsOptional()
   @IsString()
-  title?: string;
+  @Length(0, 20)
+  title: string;
 
   @ApiProperty({
     description: 'توضیحات گزارش',
     example: 'این گزارش ...',
   })
   @IsArray()
-  content?: string[];
+  @ArrayMaxSize(10)
+  content: string[];
 
   @ApiProperty({
     description: 'تاریخ گزارش',
-    example: new Date('2001-12-2'),
+    example: new Date(),
   })
   @IsDateString()
-  date?: Date;
+  date: Date;
 }
