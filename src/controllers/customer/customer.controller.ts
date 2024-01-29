@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CustomerService } from '../../services/customer/customer.service';
 import { CustomerEntity } from '../../entities/customer/customer.entity';
 import { AuthGuard } from '../../auth/auth.guard';
+import { MyDatabase } from '../../database/database';
 @ApiTags('customer')
 @ApiBearerAuth()
 @Controller('customer')
@@ -66,11 +67,15 @@ export class CustomerController {
     return await this.customerService.findBasedName(customerName);
   }
   @UseGuards(AuthGuard)
-  @Get(':customerId')
+  @Get(':key')
   @ApiOperation({
-    summary: 'دریافت یک مشتری به وسیله ایدی آن',
+    summary: 'دریافت یک مشتری به وسیله کلید آن',
   })
-  async findBasedId(@Param('customerId') customerId: string) {
-    return await this.customerService.findBasedKey(customerId);
+  async findBasedKey(@Param('key') key: string) {
+    return await MyDatabase.findByKey(
+      key,
+      'Customers',
+      'customer doesnt exist',
+    );
   }
 }

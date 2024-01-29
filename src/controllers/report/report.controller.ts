@@ -72,6 +72,6 @@ export class ReportController {
     summary: 'یافتن گزارشات بر اساس کلید',
   })
   async findByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(key, 'Reports');
+    return await MyDatabase.findByKey(key, 'Reports', 'error doesnt exist');
   }
 }

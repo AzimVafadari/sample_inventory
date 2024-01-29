@@ -60,22 +60,6 @@ export class BuyOrderService {
   async findAll(): Promise<ResultList<BuyOrderEntity>> {
     return await this.buyOrderRepository.findAll();
   }
-
-  //This method return all buy orders
-  async findByKey(key: string) {
-    const cursor = await MyDatabase.getDb().query(aql`
-    FOR bo IN BuyOrders
-    FILTER bo._key == ${key}
-    RETURN bo
-    `);
-    const buyOrder = await cursor.next();
-    if (buyOrder) {
-      return buyOrder;
-    } else {
-      return { error: 'buy order does not exist' };
-    }
-  }
-
   //This method update a buy order if it does exist
   async update(_id: string, updatedBuyOrder: BuyOrderEntity): Promise<object> {
     //This query is better that be updated later...

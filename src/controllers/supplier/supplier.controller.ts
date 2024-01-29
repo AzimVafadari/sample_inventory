@@ -76,6 +76,10 @@ export class SupplierController {
     return await this.supplierService.findOne(supplierName);
   }
   async findByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(key, 'Suppliers');
+    return await MyDatabase.findByKey(
+      key,
+      'Suppliers',
+      'supplier doesnt exist',
+    );
   }
 }
