@@ -30,6 +30,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { AuthGuard } from '../../auth/auth.guard';
 import { createReadStream } from 'fs';
+import { MyDatabase } from '../../database/database';
 @ApiTags('category')
 @ApiBearerAuth()
 @Controller('category')
@@ -128,6 +129,10 @@ export class CategoryController {
     summary: 'دریافت دسته بندی با کلید',
   })
   async findByKey(@Param('key') key: string) {
-    return await this.categoryService.findByKey(key);
+    return await MyDatabase.findByKey(
+      key,
+      'Categories',
+      'category does not exist',
+    );
   }
 }

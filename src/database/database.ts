@@ -11,10 +11,10 @@ export class MyDatabase {
     return MyDatabase.db;
   }
 
-  static async productIsExist(value: string): Promise<boolean> {
+  static async productIsExist(product_id: string): Promise<boolean> {
     const cursor = await this.getDb().query(aql`
     FOR p IN Products
-    FILTER p.product_id == ${value}
+    FILTER p.product_id == ${product_id}
     RETURN p
   `);
     const isExist = await cursor.all();
@@ -47,4 +47,23 @@ export class MyDatabase {
       .count();
     return collectionSize.count;
   }
+
+  static async findByKey(
+    key: string,
+    collectionName: string,
+    error_message: string,
+  ) {
+    const document = await this.getDb()
+      .collection(collectionName)
+      .lookupByKeys([key]);
+    if (document.length !== 0) return document;
+    else return { error: error_message };
+  }
+
+  // static async isExist(key: string, collectionName: string) {
+  //   const isExist = await this.getDb()
+  //     .collection(collectionName)
+  //     .documentExists(key);
+  //   return isExist;
+  // }
 }
