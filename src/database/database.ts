@@ -47,4 +47,11 @@ export class MyDatabase {
       .count();
     return collectionSize.count;
   }
+
+  static async findByKey(key: string, collectionName: string) {
+    const collection = await this.getDb()
+      .collection(collectionName)
+      .lookupByKeys([key]);
+    return collection;
+  }
 }
