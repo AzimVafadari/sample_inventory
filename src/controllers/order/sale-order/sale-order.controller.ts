@@ -15,6 +15,7 @@ import { SaleOrderService } from '../../../services/order/sale/sale-order.servic
 import { AuthGuard } from '../../../auth/auth.guard';
 import { SaleOrderFilter } from '../../../interfaces/order/sale/sale-order-filter';
 import { validate } from 'class-validator';
+import { MyDatabase } from '../../../database/database';
 
 @ApiTags('sale-order')
 @ApiBearerAuth()
@@ -87,6 +88,6 @@ export class SaleOrderController {
     summary: 'دریافت یک سفارش فروش به وسیله شناسه',
   })
   async findSaleOrderByKey(@Param('key') key: string) {
-    return await this.saleOrderService.findOneByKey(key);
+    return await MyDatabase.findByKey(key, 'SaleOrders');
   }
 }

@@ -17,6 +17,7 @@ import {
 import { ReportEntity } from 'src/entities/report/report.entity';
 import { ReportService } from 'src/services/report/report.service';
 import { AuthGuard } from '../../auth/auth.guard';
+import { MyDatabase } from '../../database/database';
 @ApiTags('report')
 @ApiBearerAuth()
 @Controller('report')
@@ -71,6 +72,6 @@ export class ReportController {
     summary: 'یافتن گزارشات بر اساس کلید',
   })
   async findByKey(@Param('key') key: string) {
-    return await this.reportService.findBasedOnKey(key);
+    return await MyDatabase.findByKey(key, 'Reports');
   }
 }

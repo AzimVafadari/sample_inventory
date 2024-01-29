@@ -14,6 +14,7 @@ import { SupplierEntity } from 'src/entities/supplier/supplier.entity';
 import { SupplierService } from 'src/services/supplier/supplier.service';
 
 import { AuthGuard } from '../../auth/auth.guard';
+import { MyDatabase } from '../../database/database';
 @ApiTags('supplier')
 @ApiBearerAuth()
 @Controller('supplier')
@@ -75,6 +76,6 @@ export class SupplierController {
     return await this.supplierService.findOne(supplierName);
   }
   async findByKey(@Param('key') key: string) {
-    return await this.supplierService.findByKey(key);
+    return await MyDatabase.findByKey(key, 'Suppliers');
   }
 }
