@@ -51,17 +51,4 @@ export class ReportService {
       return { error: 'no report found' };
     }
   }
-  async findBasedOnKey(key: string): Promise<object> {
-    const cursor = await MyDatabase.getDb().query(aql`
-      FOR report IN Reports
-      FILTER report._key == ${key}
-      RETURN report
-    `);
-    const reports = await cursor.all();
-    if (reports.length > 0) {
-      return reports;
-    } else {
-      return { error: 'report not found' };
-    }
-  }
 }

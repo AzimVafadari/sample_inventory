@@ -15,7 +15,7 @@ import { BuyOrderEntity } from '../../../entities/order/buy/buy-order.entity';
 import { AuthGuard } from '../../../auth/auth.guard';
 import { BuyOrderFilter } from '../../../interfaces/order/buy/buy-order-filter';
 import { validate } from 'class-validator';
-import { MyDatabase } from "../../../database/database";
+import { MyDatabase } from '../../../database/database';
 @ApiTags('buy-order')
 @ApiBearerAuth()
 @Controller('buy-order')
@@ -83,6 +83,10 @@ export class BuyOrderController {
     summary: 'دریافت سفارش خرید به وسیله آیدی آن',
   })
   async getBuyOrdersByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(key, 'BuyOrders');
+    return await MyDatabase.findByKey(
+      key,
+      'BuyOrders',
+      "buyOrder doesn't exist",
+    );
   }
 }

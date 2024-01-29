@@ -63,17 +63,4 @@ export class CustomerService {
       return { error: 'customer not found' };
     }
   }
-  async findBasedKey(key: string): Promise<object> {
-    const customerDocument = await MyDatabase.getDb().query(aql`
-      FOR c IN Customers
-      FILTER c._key == ${key}
-      RETURN c
-    `);
-    const Customer = await customerDocument.all();
-    if (Customer) {
-      return Customer;
-    } else {
-      return { error: 'customer not found' };
-    }
-  }
 }

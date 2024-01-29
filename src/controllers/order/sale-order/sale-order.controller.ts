@@ -88,6 +88,10 @@ export class SaleOrderController {
     summary: 'دریافت یک سفارش فروش به وسیله شناسه',
   })
   async findSaleOrderByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(key, 'SaleOrders');
+    return await MyDatabase.findByKey(
+      key,
+      'SaleOrders',
+      'saleOrder doesnt exits',
+    );
   }
 }

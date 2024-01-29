@@ -67,17 +67,4 @@ export class SupplierService {
       return { error: 'supplier not found' };
     }
   }
-  async findByKey(key: string): Promise<object> {
-    const supplier = await MyDatabase.getDb().query(aql`
-    FOR supplier IN Suppliers
-    FILTER supplier._key == ${key}
-    RETURN supplier
-    `);
-    const isExist = await supplier.all();
-    if (isExist.length > 0) {
-      return isExist;
-    } else {
-      return { error: 'supplier not found' };
-    }
-  }
 }

@@ -161,18 +161,4 @@ export class SaleOrderService {
       return { result: 'saleOrder not found' };
     }
   }
-
-  async findOneByKey(saleOrderkey: string): Promise<object> {
-    const saleOrderDocument = await MyDatabase.getDb().query(aql`
-      FOR so IN SaleOrders
-      FILTER so._key == ${saleOrderkey}
-      RETURN so
-    `);
-    const saleOrder = await saleOrderDocument.next();
-    if (saleOrder) {
-      return saleOrder;
-    } else {
-      return { error: 'SaleOrder not found' };
-    }
-  }
 }
