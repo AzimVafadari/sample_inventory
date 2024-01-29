@@ -65,4 +65,12 @@ export class ReportController {
   ) {
     return await this.reportService.findBasedOnDate(startdate, enddate);
   }
+  @UseGuards(AuthGuard)
+  @Get('":key')
+  @ApiOperation({
+    summary: 'یافتن گزارشات بر اساس کلید',
+  })
+  async findByKey(@Param('key') key: string) {
+    return await this.reportService.findBasedOnKey(key);
+  }
 }
