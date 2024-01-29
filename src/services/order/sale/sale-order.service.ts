@@ -21,9 +21,7 @@ export class SaleOrderService {
 
   //This method create a sale order if it doesn't exist
   async create(saleOrder: SaleOrderEntity): Promise<object> {
-    const temp: ProductEntity = await this.productService.findById(
-      saleOrder.product_id,
-    );
+    const temp = await this.productService.findById(saleOrder.product_id);
     const saleOrderProduct = temp[0];
     if (await MyDatabase.productIsExist(saleOrder.product_id)) {
       //Find customer
