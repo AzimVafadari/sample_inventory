@@ -11,6 +11,9 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
+  HttpStatus,
+  ParseFilePipeBuilder,
+  StreamableFile,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
 import {
@@ -26,7 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-
+import { createReadStream } from 'fs';
 import { AuthGuard } from '../../auth/auth.guard';
 @ApiTags('product')
 @ApiBearerAuth()
@@ -43,7 +46,7 @@ export class ProductController {
     return await this.productService.create(product);
   }
   @UseGuards(AuthGuard)
-  @Post('uploadProductImage')
+  @Post('upLoadProductImage')
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -57,13 +60,34 @@ export class ProductController {
       },
     },
   })
-  async uploadProductImage(@UploadedFile() image: Express.Multer.File) {
+  async uploadProductImage(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'jpg',
+        })
+        .addMaxSizeValidator({
+          maxSize: 5000000,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    image: Express.Multer.File,
+  ) {
     const imageId = uuidv4();
     const folderPath: string = './images/products/';
     const imageBuffer = image.buffer;
     const imagePath = path.join(folderPath, `${imageId}.jpg`);
     await fs.writeFile(imagePath, imageBuffer);
     return await imageId;
+  }
+  @Get('downLoadProductImage')
+  getImage(@Query('imageId') imageId: string): StreamableFile {
+    const folderPath: string = './images/products/';
+    const imagePath = path.join(folderPath, `${imageId}.jpg`);
+    const file = createReadStream(imagePath);
+    return new StreamableFile(file);
   }
   @UseGuards(AuthGuard)
   @Get()
