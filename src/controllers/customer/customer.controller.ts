@@ -71,6 +71,6 @@ export class CustomerController {
     summary: 'دریافت یک مشتری به وسیله ایدی آن',
   })
   async findBasedId(@Param('customerId') customerId: string) {
-    return await this.customerService.findBasedId(customerId);
+    return await this.customerService.findBasedKey(customerId);
   }
 }

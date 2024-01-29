@@ -74,4 +74,7 @@ export class SupplierController {
     }
     return await this.supplierService.findOne(supplierName);
   }
+  async findByKey(@Param('key') key: string) {
+    return await this.supplierService.findByKey(key);
+  }
 }

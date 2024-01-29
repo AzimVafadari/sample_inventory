@@ -102,4 +102,17 @@ export class CategoryService {
       return { error: 'category not found' };
     }
   }
+  async findByKey(key: string): Promise<object> {
+    const categoryDocument = await MyDatabase.getDb().query(aql`
+      FOR category IN Categories
+      FILTER category._key == ${key}
+      RETURN category
+    `);
+    const category: CategoryEntity = await categoryDocument.next();
+    if (category) {
+      return category;
+    } else {
+      return { error: 'category does not exist' };
+    }
+  }
 }
