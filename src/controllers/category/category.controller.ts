@@ -10,6 +10,9 @@ import {
   UseGuards,
   Put,
   Query,
+  StreamableFile,
+  ParseFilePipeBuilder,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -26,6 +29,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { AuthGuard } from '../../auth/auth.guard';
+import { createReadStream } from 'fs';
 @ApiTags('category')
 @ApiBearerAuth()
 @Controller('category')
@@ -38,7 +42,7 @@ export class CategoryController {
     return await this.categoryService.create(category);
   }
 
-  @Post('uploadProductImage')
+  @Post('upLoadCategoryImage')
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -52,13 +56,34 @@ export class CategoryController {
       },
     },
   })
-  async uploadProductImage(@UploadedFile() image: Express.Multer.File) {
+  async uploadProductImage(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'jpg',
+        })
+        .addMaxSizeValidator({
+          maxSize: 5000000,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    image: Express.Multer.File,
+  ) {
     const imageId = uuidv4();
     const folderPath: string = './images/products/';
     const imageBuffer = image.buffer;
     const imagePath = path.join(folderPath, `${imageId}.jpg`);
     await fs.writeFile(imagePath, imageBuffer);
     return await imageId;
+  }
+  @Get('downLoadCategoryImage')
+  getImage(@Query('imageId') imageId: string): StreamableFile {
+    const folderPath: string = './images/categories/';
+    const imagePath = path.join(folderPath, `${imageId}.jpg`);
+    const file = createReadStream(imagePath);
+    return new StreamableFile(file);
   }
   @UseGuards(AuthGuard)
   @Get()
