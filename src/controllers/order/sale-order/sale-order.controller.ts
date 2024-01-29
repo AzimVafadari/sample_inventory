@@ -71,7 +71,7 @@ export class SaleOrderController {
     summary: 'دریافت یک سفارش فروش به وسیله چندین فیلتر',
   })
   async findSaleOrderBySomeFilters(@Query('filter') filter: string) {
-    const filterObject = JSON.parse(filter);
+    const filterObject: SaleOrderFilter = JSON.parse(filter);
     const saleOrderFilter = new SaleOrderFilter(filterObject);
     const errors = await validate(saleOrderFilter);
     if (errors.length > 0) {
