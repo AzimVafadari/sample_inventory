@@ -63,10 +63,10 @@ export class CustomerService {
       return { error: 'customer not found' };
     }
   }
-  async findBasedId(customerId: string): Promise<object> {
+  async findBasedKey(key: string): Promise<object> {
     const customerDocument = await MyDatabase.getDb().query(aql`
       FOR c IN Customers
-      FILTER c._id == ${customerId}
+      FILTER c._key == ${key}
       RETURN c
     `);
     const Customer = await customerDocument.all();

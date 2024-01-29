@@ -94,11 +94,11 @@ export class CategoryController {
     return await this.categoryService.findAll();
   }
   @UseGuards(AuthGuard)
-  @Get(':categoryName')
+  @Get('/categoryName')
   @ApiOperation({
     summary: 'دریافت دسته بندی با نام ',
   })
-  async findCategoriesByName(@Param('categoryName') categoryName: string) {
+  async findCategoriesByName(@Query('categoryName') categoryName: string) {
     return await this.categoryService.findOne(categoryName);
   }
   @UseGuards(AuthGuard)
@@ -121,5 +121,13 @@ export class CategoryController {
     @Param('categoryId') categoryId: string,
   ): Promise<object> {
     return await this.categoryService.remove(categoryId);
+  }
+  @UseGuards(AuthGuard)
+  @Get(':key')
+  @ApiOperation({
+    summary: 'دریافت دسته بندی با کلید',
+  })
+  async findByKey(@Param('key') key: string) {
+    return await this.categoryService.findByKey(key);
   }
 }

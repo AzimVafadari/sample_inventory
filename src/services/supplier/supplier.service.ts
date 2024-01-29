@@ -10,13 +10,16 @@ export class SupplierService {
     @InjectRepository(SupplierEntity)
     private readonly supplierRepository: ArangoRepository<SupplierEntity>,
   ) {}
+
   async create(supplier: SupplierEntity): Promise<object> {
     await this.supplierRepository.save(supplier);
     return { result: 'the supplier is created' };
   }
+
   async findAll(): Promise<ResultList<SupplierEntity>> {
     return await this.supplierRepository.findAll();
   }
+
   async update(_id: string, updatedSupplier: SupplierEntity): Promise<object> {
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
@@ -32,6 +35,7 @@ export class SupplierService {
       return { error: 'Supplier not found' };
     }
   }
+
   async remove(supplierId: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
@@ -58,6 +62,19 @@ export class SupplierService {
     `);
     const isExist = supplier.all();
     if ((await isExist).length > 0 && supplierName !== '.') {
+      return isExist;
+    } else {
+      return { error: 'supplier not found' };
+    }
+  }
+  async findByKey(key: string): Promise<object> {
+    const supplier = await MyDatabase.getDb().query(aql`
+    FOR supplier IN Suppliers
+    FILTER supplier._key == ${key}
+    RETURN supplier
+    `);
+    const isExist = await supplier.all();
+    if (isExist.length > 0) {
       return isExist;
     } else {
       return { error: 'supplier not found' };

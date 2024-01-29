@@ -4,7 +4,6 @@ import {
   ArrayMaxSize,
   IsArray,
   IsDateString,
-  IsOptional,
   IsString,
   Length,
 } from 'class-validator';
@@ -15,7 +14,6 @@ export class ReportEntity extends ArangoDocument {
     description: 'عنوان گزارش',
     example: 'این گزارش ... است',
   })
-  @IsOptional()
   @IsString()
   @Length(0, 20)
   title: string;
