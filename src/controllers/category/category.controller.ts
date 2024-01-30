@@ -10,6 +10,9 @@ import {
   UseGuards,
   Put,
   Query,
+  StreamableFile,
+  ParseFilePipeBuilder,
+  HttpStatus,
   Res,
   ParseFilePipe,
   MaxFileSizeValidator,
@@ -82,11 +85,10 @@ export class CategoryController {
   async getImage(@Query('imageId') imageId: string, @Res() res: Response) {
     const folderPath: string = './images/categories/';
     const imagePath = path.join(folderPath, `${imageId}.jpg`);
-    const file = createReadStream(imagePath);
     const isExist = fileExistsSync(imagePath);
     if (isExist) {
-      file.pipe(res);
-      // return new StreamableFile(file);
+      const file = createReadStream(imagePath);
+      file.pipe(res.set('Content-Type', 'image/jpeg'));
     } else {
       res.status(422).send({ error: 'image not found' });
     }
