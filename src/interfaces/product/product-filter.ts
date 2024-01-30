@@ -16,10 +16,10 @@ enum scale {
 }
 export class ProductFilter {
   constructor(obj: ProductFilter) {
-    this.product_id = obj.product_id;
     this.product_name = obj.product_name;
     this.supplier_id = obj.supplier_id;
-    this.balance = obj.balance;
+    this.balance_from = obj.balance_from;
+    this.balance_to = obj.balance_to;
     this.scale = obj.scale;
     this.category_id = obj.category_id;
     this.price_from = obj.price_from;
@@ -27,10 +27,6 @@ export class ProductFilter {
     this.expiry_date_from = obj.expiry_date_from;
     this.expiry_date_to = obj.expiry_date_to;
   }
-  @IsOptional()
-  @IsString()
-  @Length(1, 25)
-  product_id: string;
 
   @IsOptional()
   @IsString()
@@ -46,7 +42,12 @@ export class ProductFilter {
   @IsOptional()
   @IsNumber()
   @IsPositive()
-  balance: number;
+  balance_from: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  balance_to: number;
 
   @IsOptional()
   @IsEnum(scale)

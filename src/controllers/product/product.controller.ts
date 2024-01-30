@@ -34,6 +34,8 @@ import { createReadStream } from 'fs';
 import { AuthGuard } from '../../auth/auth.guard';
 import { fileExistsSync } from 'tsconfig-paths/lib/filesystem';
 import { Response } from 'express';
+import { ProductFilter } from '../../interfaces/product/product-filter';
+import { validate } from 'class-validator';
 @ApiTags('product')
 @ApiBearerAuth()
 @Controller('product')
@@ -122,6 +124,22 @@ export class ProductController {
     @Param('product_id') product_id: string,
   ): Promise<object> {
     return await this.productService.removeProduct(product_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('findByFilters')
+  @ApiOperation({
+    summary: 'دریافت محصولات با فیلتر',
+  })
+  async findBySomeFilter(@Query('filters') filters: string) {
+    const filtersObject: ProductFilter = JSON.parse(filters);
+    const productFilters = new ProductFilter(filtersObject);
+    const errors = await validate(productFilters);
+    if (errors.length > 0) {
+      return { error: errors };
+    } else {
+      return await this.productService.multiFilter(filtersObject);
+    }
   }
   @UseGuards(AuthGuard)
   @Get('filterByBalance')

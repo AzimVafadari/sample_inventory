@@ -26,11 +26,12 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({ description: 'نام محصول', example: 'موز' })
   @IsString()
-  @Length(5, 20)
+  @Length(3, 20)
   product_name: string;
 
   @ApiProperty({ description: 'ایدی تامین کننده محصول', example: '2' })
   @IsString()
+  @Contains('Suppliers/')
   @Length(10, 25)
   supplier_id: string;
 
@@ -46,7 +47,6 @@ export class ProductEntity extends ArangoDocument {
     description: 'مقیاس موجودی محصول',
     example: 'کیلوگرم',
   })
-  @IsString()
   @IsEnum(scale)
   scale: string;
 
