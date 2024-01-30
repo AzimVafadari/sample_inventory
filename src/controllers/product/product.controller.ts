@@ -11,10 +11,10 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
-  StreamableFile,
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Res,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
 import {
@@ -33,6 +33,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createReadStream } from 'fs';
 import { AuthGuard } from '../../auth/auth.guard';
 import { fileExistsSync } from 'tsconfig-paths/lib/filesystem';
+import { Response } from 'express';
 @ApiTags('product')
 @ApiBearerAuth()
 @Controller('product')
@@ -81,17 +82,16 @@ export class ProductController {
     return await imageId;
   }
   @Get('downLoadProductImage')
-  async getImage(
-    @Query('imageId') imageId: string,
-  ): Promise<StreamableFile | object> {
+  @UseGuards(AuthGuard)
+  async getImage(@Query('imageId') imageId: string, @Res() res: Response) {
     const folderPath: string = './images/products/';
     const imagePath = path.join(folderPath, `${imageId}.jpg`);
-    const file = createReadStream(imagePath);
     const isExist = fileExistsSync(imagePath);
     if (isExist) {
-      return new StreamableFile(file);
+      const file = createReadStream(imagePath);
+      file.pipe(res.set('content-type', 'image/jpeg'));
     } else {
-      return { error: 'image not found' };
+      res.status(422).send({ error: 'image not found' });
     }
   }
   @UseGuards(AuthGuard)
