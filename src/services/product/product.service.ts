@@ -221,45 +221,18 @@ export class ProductService {
       RETURN product
     `);
     const finallyResult: ProductEntity[] = await result.all();
-    console.log(finallyResult)
+    console.log(finallyResult);
     return finallyResult;
   }
-  async filterByBalance(lowBalance: number, highBalance: number) {
-    const productsDocuments = await MyDatabase.getDb().query(aql`
-    FOR p IN Products
-      FILTER p.balance >= ${lowBalance} && p.balance <= ${highBalance}
-      RETURN p
-    `);
-    const products: ProductEntity[] = await productsDocuments.all();
-    if (products.length !== 0) {
-      return products;
-    } else {
-      return { error: 'any product between this balances not found' };
-    }
-  }
 
-  async filterBySupplier(supplierId: string): Promise<object> {
-    const productsDocuments = await MyDatabase.getDb().query(aql`
-      FOR p IN Products
-      FILTER p.supplier_id == ${supplierId}
-      RETURN p
-    `);
-    const product = await productsDocuments.next();
-    if (product) {
-      return product;
-    } else {
-      return { error: 'product doesnt found' };
-    }
-  }
-
-  async findById(productId: string): Promise<object> {
+  async findById(productId: string) {
     const productsDocument = await MyDatabase.getDb().query(aql`
       FOR p IN Products
       FILTER p.product_id == ${productId}
       RETURN p
     `);
-    const product = await productsDocument.all();
-    if (product.length !== 0) {
+    const product = await productsDocument.next();
+    if (product) {
       return product;
     } else {
       return { error: 'product doesnt found' };
@@ -280,107 +253,8 @@ export class ProductService {
     }
   }
 
-  async findByCategory(categoryID: string) {
-    const productsDocument = await MyDatabase.getDb().query(aql`
-      FOR p IN Products
-      FILTER p.category_id == ${categoryID}
-      RETURN p
-    `);
-    const products = await productsDocument.all();
-    if (products.length !== 0) {
-      return products;
-    } else {
-      return { error: 'any product doesnt found in this category' };
-    }
-  }
-
-  async findExpiredProductsBasedDate(beginDate?: string, endDate?: string) {
-    let products;
-    if (endDate == undefined) {
-      if (beginDate == undefined) {
-        const altENdDate: Date = new Date();
-        const productDocuments = await MyDatabase.getDb().query(aql`
-          FOR p IN Products 
-          FILTER DATE_DIFF(p.expiry_date, ${altENdDate.toISOString()}, "d") >= 0
-          RETURN p
-        `);
-        products = await productDocuments.all();
-        return products;
-      } else {
-        const productDocuments = await MyDatabase.getDb().query(aql`
-        FOR p IN Products
-        FILTER DATE_DIFF(p.expiry_date, ${beginDate}, "d") <= 0
-        RETURN p
-        `);
-        products = await productDocuments.all();
-        return products;
-      }
-    } else {
-      if (beginDate == undefined) {
-        const productDocuments = await MyDatabase.getDb().query(aql`
-          FOR p IN Products
-          FILTER DATE_DIFF(p.expiry_date, ${endDate}, "d") >= 0
-          RETURN p
-        `);
-        products = await productDocuments.all();
-        return products;
-      } else {
-        const productDocuments = await MyDatabase.getDb().query(aql`
-          FOR p IN Products
-          FILTER DATE_DIFF(p.expiry_date, ${endDate}, "d") >= 0
-          FILTER DATE_DIFF(p.expiry_date, ${beginDate}, "d") <= 0
-          RETURN p
-          
-        `);
-        products = await productDocuments.all();
-        return products;
-      }
-    }
-  }
-
-  async fillterByPrice(lowPrice: number, highPrice: number) {
-    let products;
-    if (highPrice == undefined) {
-      if (lowPrice == undefined) {
-        return { error: 'you must enter a price' };
-      } else {
-        const productDocuments = await MyDatabase.getDb().query(aql`
-        FOR p IN Products
-        FILTER p.price >= ${lowPrice}
-        RETURN p
-        `);
-        products = await productDocuments.all();
-        console.log(typeof products[0]);
-        return products;
-      }
-    } else {
-      if (lowPrice == undefined) {
-        const productDocuments = await MyDatabase.getDb().query(aql`
-          FOR p IN Products
-          FILTER p.price <= ${highPrice}
-          RETURN p
-        `);
-        products = await productDocuments.all();
-        return products;
-      } else {
-        const productDocuments = await MyDatabase.getDb().query(aql`
-          FOR p IN Products
-          FILTER p.price >= ${lowPrice} && p.price <= ${highPrice}
-          RETURN p
-        `);
-        products = await productDocuments.all();
-        return products;
-      }
-    }
-  }
-
   async isExpired(productId: string) {
-    const ExpiredProducts = await this.findExpiredProductsBasedDate(null, null);
-    for (const expiredProduct of ExpiredProducts) {
-      if (expiredProduct.product_id == productId) {
-        return true;
-      }
-    }
-    return false;
+    const product: ProductEntity = await this.findById(productId);
+    return product.expiry_date <= new Date();
   }
 }
