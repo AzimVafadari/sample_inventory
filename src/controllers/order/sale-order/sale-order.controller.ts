@@ -71,14 +71,14 @@ export class SaleOrderController {
   @ApiOperation({
     summary: 'دریافت یک سفارش فروش به وسیله چندین فیلتر',
   })
-  async findSaleOrderBySomeFilters(@Query('filter') filter: string) {
-    const filterObject: SaleOrderFilter = JSON.parse(filter);
-    const saleOrderFilter = new SaleOrderFilter(filterObject);
-    const errors = await validate(saleOrderFilter);
+  async findBySomeFilters(@Query('filters') filters: string) {
+    const filtersObject: SaleOrderFilter = JSON.parse(filters);
+    const saleOrderFilters = new SaleOrderFilter(filtersObject);
+    const errors = await validate(saleOrderFilters);
     if (errors.length > 0) {
       return { errors: errors };
     } else {
-      return await this.saleOrderService.multiFilter(saleOrderFilter);
+      return await this.saleOrderService.multiFilter(saleOrderFilters);
     }
   }
 
