@@ -47,6 +47,7 @@ export class CategoryController {
   }
 
   @Post('upLoadCategoryImage')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -79,6 +80,7 @@ export class CategoryController {
     return await imageId;
   }
   @Get('downLoadCategoryImage')
+  @UseGuards(AuthGuard)
   async getImage(@Query('imageId') imageId: string, @Res() res: Response) {
     const folderPath: string = './images/categories/';
     const imagePath = path.join(folderPath, `${imageId}.jpg`);
