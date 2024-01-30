@@ -11,9 +11,10 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
-  HttpStatus,
-  ParseFilePipeBuilder,
   StreamableFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
 import {
@@ -31,6 +32,7 @@ import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { createReadStream } from 'fs';
 import { AuthGuard } from '../../auth/auth.guard';
+import { fileExistsSync } from 'tsconfig-paths/lib/filesystem';
 @ApiTags('product')
 @ApiBearerAuth()
 @Controller('product')
@@ -62,16 +64,12 @@ export class ProductController {
   })
   async uploadProductImage(
     @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: 'jpg',
-        })
-        .addMaxSizeValidator({
-          maxSize: 5000000,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
+          new FileTypeValidator({ fileType: 'jpeg' }),
+        ],
+      }),
     )
     image: Express.Multer.File,
   ) {
@@ -83,11 +81,18 @@ export class ProductController {
     return await imageId;
   }
   @Get('downLoadProductImage')
-  getImage(@Query('imageId') imageId: string): StreamableFile {
+  async getImage(
+    @Query('imageId') imageId: string,
+  ): Promise<StreamableFile | object> {
     const folderPath: string = './images/products/';
     const imagePath = path.join(folderPath, `${imageId}.jpg`);
     const file = createReadStream(imagePath);
-    return new StreamableFile(file);
+    const isExist = fileExistsSync(imagePath);
+    if (isExist) {
+      return new StreamableFile(file);
+    } else {
+      return { error: 'image not found' };
+    }
   }
   @UseGuards(AuthGuard)
   @Get()
