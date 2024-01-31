@@ -9,7 +9,6 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
-  ParseIntPipe,
   UseGuards,
   ParseFilePipe,
   MaxFileSizeValidator,
@@ -141,25 +140,7 @@ export class ProductController {
       return await this.productService.multiFilter(filtersObject);
     }
   }
-  @UseGuards(AuthGuard)
-  @Get('filterByBalance')
-  @ApiOperation({
-    summary: 'فیلتر محصولات بر اساس موجودی',
-  })
-  async filterByBalance(
-    @Query('lowBalance', new ParseIntPipe()) lowBalance: number,
-    @Query('highBalance', new ParseIntPipe()) highBalance: number,
-  ) {
-    return await this.productService.filterByBalance(lowBalance, highBalance);
-  }
-  @UseGuards(AuthGuard)
-  @Get('filterBySupplierID')
-  @ApiOperation({
-    summary: 'فیلتر مخصولات بر اساس ایدی تامین کننده',
-  })
-  async filterBySupplierId(@Query('supplierId') supplierId: string) {
-    return await this.productService.filterBySupplier(supplierId);
-  }
+
   @UseGuards(AuthGuard)
   @Get('findById/:productId')
   @ApiOperation({
@@ -175,38 +156,5 @@ export class ProductController {
   })
   async findByProductName(@Query('productName') productName: string) {
     return this.productService.findByProductName(productName);
-  }
-  @UseGuards(AuthGuard)
-  @Get('findByCategory')
-  @ApiOperation({
-    summary: 'یافتن محصولات موجود در یک دسته بندی',
-  })
-  async findByCategory(@Query('categoryId') categoryId: string) {
-    return await this.productService.findByCategory(categoryId);
-  }
-  @UseGuards(AuthGuard)
-  @Get('getExpiredProducts')
-  @ApiOperation({
-    summary: 'یافتن محصولات منقضی شده بر اساس تاریخ',
-  })
-  async findExpiredProductsBasedDate(
-    @Query('beginDate') beginDate?: string,
-    @Query('enddate') enddate?: string,
-  ) {
-    return await this.productService.findExpiredProductsBasedDate(
-      beginDate,
-      enddate,
-    );
-  }
-  @UseGuards(AuthGuard)
-  @Get('findByPrice')
-  @ApiOperation({
-    summary: 'یافتن محصولات بر اساس قیمت',
-  })
-  async findByPrice(
-    @Query('lowPrice') lowPrice?: number,
-    @Query('highPrice') highPrice?: number,
-  ) {
-    return await this.productService.fillterByPrice(lowPrice, highPrice);
   }
 }
