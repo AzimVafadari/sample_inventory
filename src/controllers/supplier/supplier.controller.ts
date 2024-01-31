@@ -93,6 +93,11 @@ export class SupplierController {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
+  @UseGuards(AuthGuard)
+  @Get(':key')
+  @ApiOperation({
+    summary: 'دریافت یک تامین کننده به وسیله کلید آن',
+  })
   async findByKey(@Param('key') key: string) {
     try {
       return await MyDatabase.findByKey(
