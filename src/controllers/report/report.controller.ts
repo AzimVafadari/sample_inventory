@@ -90,7 +90,7 @@ export class ReportController {
   })
   async findByKey(@Param('key') key: string) {
     try {
-      return await MyDatabase.findByKey(key, 'Reports', 'error doesnt exist');
+      return await MyDatabase.findByKey(key, 'Reports', 'report doesnt exist');
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }

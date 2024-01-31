@@ -100,10 +100,14 @@ export class BuyOrderController {
     summary: 'دریافت سفارش خرید به وسیله آیدی آن',
   })
   async getBuyOrdersByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(
-      key,
-      'BuyOrders',
-      "buyOrder doesn't exist",
-    );
+    try {
+      return await MyDatabase.findByKey(
+        key,
+        'BuyOrders',
+        "buyOrder doesn't exist",
+      );
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 }
