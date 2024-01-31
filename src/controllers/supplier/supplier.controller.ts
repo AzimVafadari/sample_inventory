@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -38,7 +40,11 @@ export class SupplierController {
     summary: 'دریافت تمامی تامین کنندگان',
   })
   async getAllSuppliers() {
-    return await this.supplierService.findAll();
+    const suppliers = await this.supplierService.findAll();
+    if (suppliers.totalCount == 0) {
+      throw new HttpException('Supplier not found', HttpStatus.NO_CONTENT);
+    }
+    return suppliers;
   }
 
   //This method update the supplier by its updated form and returns an object that says the update status
@@ -51,7 +57,11 @@ export class SupplierController {
     @Body() updatedSupplier: SupplierEntity,
     @Query('_id') _id: string,
   ) {
-    return await this.supplierService.update(_id, updatedSupplier);
+    try {
+      return await this.supplierService.update(_id, updatedSupplier);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   //This method remove the supplier if it does exist and returns an object
@@ -61,7 +71,11 @@ export class SupplierController {
     summary: 'حذف تامین کننده به وسیله آیدی آن',
   })
   async deleteSupplier(@Param('supplier_key') supplier_key: string) {
-    return await this.supplierService.remove(supplier_key);
+    try {
+      return await this.supplierService.remove(supplier_key);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   @Get('supplierName')
@@ -73,13 +87,21 @@ export class SupplierController {
     if (supplierName === '.') {
       return { error: 'نام تامین کننده نامعتبر است' };
     }
-    return await this.supplierService.findOne(supplierName);
+    try {
+      return await this.supplierService.findOne(supplierName);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
   async findByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(
-      key,
-      'Suppliers',
-      'supplier doesnt exist',
-    );
+    try {
+      return await MyDatabase.findByKey(
+        key,
+        'Suppliers',
+        'supplier doesnt exist',
+      );
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 }

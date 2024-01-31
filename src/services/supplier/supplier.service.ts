@@ -32,7 +32,7 @@ export class SupplierService {
     if (isUpdated) {
       return { message: 'The supplier is successfully updated.' };
     } else {
-      return { error: 'Supplier not found' };
+      throw new Error('Supplier not found');
     }
   }
 
@@ -48,7 +48,7 @@ export class SupplierService {
     if (isDeleted.length > 0) {
       return { message: 'supplier successfully deleted' };
     } else {
-      return { error: 'supplier not found' };
+      throw new Error('Supplier not found');
     }
   }
 
@@ -64,7 +64,7 @@ export class SupplierService {
     if ((await isExist).length > 0 && supplierName !== '.') {
       return isExist;
     } else {
-      return { error: 'supplier not found' };
+      throw new Error('Supplier not found');
     }
   }
 }
