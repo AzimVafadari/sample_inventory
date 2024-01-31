@@ -4,7 +4,6 @@ import {
   Contains,
   IsDateString,
   IsEnum,
-  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
@@ -42,20 +41,19 @@ export class ProductEntity extends ArangoDocument {
     description: 'مقدار باقی مانده محصول در انبار',
     example: 5,
   })
-  @IsNumber()
   @IsPositive()
   balance: number;
 
   @ApiProperty({
     description: 'مقیاس موجودی محصول',
-    example: 'کیلوگرم',
+    example: 'kg',
   })
   @IsEnum(scale)
   scale: string;
 
   @ApiProperty({
     description: 'آیدی دسته بندی',
-    example: '1',
+    example: 'Categories/85640',
   })
   @IsString()
   @Length(12, 25)
@@ -64,7 +62,7 @@ export class ProductEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'آیدی عکس محصول',
-    example: 'vfd2v6fdvgf3bsd62',
+    example: '996de063-3f1b-4201-b9a1-2da6b32f09c5',
   })
   @IsOptional()
   @IsUUID()
@@ -80,13 +78,12 @@ export class ProductEntity extends ArangoDocument {
   description: string;
 
   @ApiProperty({ description: 'قیمت', example: 1000 })
-  @IsNumber()
   @IsPositive()
   price: number;
 
   @ApiProperty({
     description: 'تاریخ انقضا محصول',
-    example: new Date('2023-12-31'),
+    example: new Date('2024-12-31'),
   })
   @IsDateString()
   expiry_date?: Date;

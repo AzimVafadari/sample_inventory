@@ -1,12 +1,6 @@
 import { Collection, ArangoDocument } from 'nest-arango';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNumberString,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Length,
-} from 'class-validator';
+import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 @Collection('Categories')
 export class CategoryEntity extends ArangoDocument {
   @ApiProperty({
@@ -30,15 +24,15 @@ export class CategoryEntity extends ArangoDocument {
     example: 'این دسته بندی دارای میوه ها است',
   })
   @IsString()
+  @IsOptional()
   @Length(0, 70)
   description: string;
 
   @ApiProperty({
     description: 'آیدی پدر دسته بندی',
-    example: '1',
+    example: '',
   })
-  @IsOptional()
-  @IsNumberString()
+  @IsString()
   parent_id: string;
 
   path_to_root: string;
