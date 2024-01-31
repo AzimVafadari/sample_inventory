@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -30,7 +32,11 @@ export class SaleOrderController {
     summary: 'ایجاد سفارش فروش',
   })
   async createSaleOrder(@Body() saleOrder: SaleOrderEntity) {
-    return await this.saleOrderService.create(saleOrder);
+    try {
+      return await this.saleOrderService.create(saleOrder);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   //This method is created to receive all saleOrders
@@ -40,7 +46,11 @@ export class SaleOrderController {
     summary: 'دریافت تمامی سفارش های فروش',
   })
   async getAllSaleOrders() {
-    return await this.saleOrderService.findAll();
+    try {
+      return await this.saleOrderService.findAll();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NO_CONTENT);
+    }
   }
 
   //This method update the saleOrder by its updated form and returns an object that says the update status
@@ -53,7 +63,11 @@ export class SaleOrderController {
     @Body() updatedSaleOrder: SaleOrderEntity,
     @Query('_id') _id: string,
   ) {
-    return await this.saleOrderService.update(_id, updatedSaleOrder);
+    try {
+      return await this.saleOrderService.update(_id, updatedSaleOrder);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   //This method remove the saleOrder if it does exist and returns an object
@@ -63,7 +77,11 @@ export class SaleOrderController {
     summary: 'حذف سفارش فروش',
   })
   async deleteSaleOrder(@Query('saleOrder_id') saleOrder_id: string) {
-    return await this.saleOrderService.remove(saleOrder_id);
+    try {
+      return await this.saleOrderService.remove(saleOrder_id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -76,7 +94,12 @@ export class SaleOrderController {
     const saleOrderFilters = new SaleOrderFilter(filtersObject);
     const errors = await validate(saleOrderFilters);
     if (errors.length > 0) {
-      return { errors: errors };
+      throw new HttpException(errors[0].constraints, HttpStatus.BAD_REQUEST);
+    } else if (errors.length == 0) {
+      throw new HttpException(
+        'no saleorders found with this filters',
+        HttpStatus.NO_CONTENT,
+      );
     } else {
       return await this.saleOrderService.multiFilter(saleOrderFilters);
     }

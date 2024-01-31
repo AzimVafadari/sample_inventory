@@ -127,7 +127,7 @@ export class CategoryController {
   })
   async findCategoriesByName(@Query('categoryName') categoryName: string) {
     try {
-      return await this.categoryService.findOne(categoryName);
+      return await this.categoryService.findByName(categoryName);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new HttpException('Category not found', HttpStatus.NOT_FOUND);

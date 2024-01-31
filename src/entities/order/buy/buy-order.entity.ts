@@ -35,7 +35,7 @@ export class BuyOrderEntity extends ArangoDocument {
 
   @ApiProperty({
     description: 'ایدی تامین کننده',
-    example: '1',
+    example: 'Suppliers/45640',
   })
   @IsString()
   @Length(10, 25)

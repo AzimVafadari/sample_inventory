@@ -23,9 +23,8 @@ export class BuyOrderService {
   async create(buyOrder: BuyOrderEntity): Promise<object> {
     const isExist = await MyDatabase.productIsExist(buyOrder.product_id);
     if (!isExist) {
-      return { result: 'Please first create the product' };
+      throw new Error('please first create the product');
     }
-
     const cursor = await MyDatabase.getDb().query(aql`
     FOR p IN Products
     FILTER p.product_id == ${buyOrder.product_id}
@@ -33,7 +32,7 @@ export class BuyOrderService {
   `);
     const product = await cursor.next();
     if (product.scale !== buyOrder.scale) {
-      return { result: 'scale is not correct' };
+      throw new Error('scale is not correct');
     }
 
     //Find customer
@@ -43,7 +42,7 @@ export class BuyOrderService {
           RETURN s
           `);
     const s: SupplierEntity = await supplier.next();
-    if (s === undefined) return { result: 'supplier does not exist' };
+    if (s === undefined) throw new Error('supplier does not exist');
     const report: ReportEntity = {
       title: 'سفارش خرید از ' + s.supplier_name,
       content: ['این سفارش مربوط به خرید است'],
@@ -58,11 +57,33 @@ export class BuyOrderService {
 
   //This method return all buy orders
   async findAll(): Promise<ResultList<BuyOrderEntity>> {
-    return await this.buyOrderRepository.findAll();
+    const allBuyOrders: ResultList<BuyOrderEntity> =
+      await this.buyOrderRepository.findAll();
+    if (allBuyOrders.totalCount == 0) {
+      throw new Error('there is no buy order');
+    } else {
+      return allBuyOrders;
+    }
   }
   //This method update a buy order if it does exist
   async update(_id: string, updatedBuyOrder: BuyOrderEntity): Promise<object> {
     //This query is better that be updated later...
+    const isProductExist = await MyDatabase.productIsExist(
+      updatedBuyOrder.product_id,
+    );
+    const isSupplierExist = await MyDatabase.supplierIsExist(
+      updatedBuyOrder.supplier_id,
+    );
+    if (!isProductExist) {
+      throw new Error('product does not exist');
+    }
+    if (!isSupplierExist) {
+      throw new Error('supplier does not exist');
+    }
+    const isBuyOrderExist = await MyDatabase.buyOrderIsExist(_id);
+    if (!isBuyOrderExist) {
+      throw new Error('buy order does not exist');
+    }
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR bo IN BuyOrders 
         FILTER bo._id == ${_id}
@@ -150,7 +171,7 @@ export class BuyOrderService {
     if (isDeleted.length > 0) {
       return { result: 'buyOrder successfully deleted' };
     } else {
-      return { result: 'buyOrder not found' };
+      throw new Error('buyOrder not found');
     }
   }
 }
