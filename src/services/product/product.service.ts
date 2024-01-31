@@ -19,7 +19,7 @@ export class ProductService {
   async create(product: ProductEntity): Promise<object> {
     const isExist = await MyDatabase.productIsExist(product.product_id);
     if (isExist) {
-      return { error: 'the product already exist' };
+      throw new Error('The product is exist');
     } else {
       const IsSupplierExist = await MyDatabase.supplierIsExist(
         product.supplier_id,
@@ -43,9 +43,9 @@ export class ProductService {
         };
       } else {
         if (!IsSupplierExist) {
-          return { error: 'supplier doesnt exist' };
+          throw new Error('The supplier doesnt exist');
         } else {
-          return { error: 'category doesnt exist' };
+          throw new Error('The category doesnt exist');
         }
       }
     }
