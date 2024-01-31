@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -28,7 +30,11 @@ export class BuyOrderController {
     summary: 'ایجاد سفارش خرید',
   })
   async createBuyOrder(@Body() buyOrder: BuyOrderEntity) {
-    return await this.buyOrderService.create(buyOrder);
+    try {
+      return await this.buyOrderService.create(buyOrder);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
   //This method is created to receive all buyOrders
   @UseGuards(AuthGuard)
@@ -37,7 +43,11 @@ export class BuyOrderController {
     summary: 'دریافت تمامی سفارش های خرید',
   })
   async getAllBuyOrders() {
-    return await this.buyOrderService.findAll();
+    try {
+      return await this.buyOrderService.findAll();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
   //This method is created to receive all buyOrders
   //This method update the buyOrder by its updated form and returns an object that says the update status
@@ -50,7 +60,11 @@ export class BuyOrderController {
     @Body() updatedBuyOrder: BuyOrderEntity,
     @Query('_id') _id: string,
   ) {
-    return await this.buyOrderService.update(_id, updatedBuyOrder);
+    try {
+      return await this.buyOrderService.update(_id, updatedBuyOrder);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
   //This method remove the buyOrder if it does exist and returns an object
   @UseGuards(AuthGuard)
@@ -59,7 +73,11 @@ export class BuyOrderController {
     summary: 'حذف سفارش خرید',
   })
   async deleteBuyOrder(@Param('buyOrder_id') buyOrder_id: string) {
-    return await this.buyOrderService.remove(buyOrder_id);
+    try {
+      return await this.buyOrderService.remove(buyOrder_id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
   @UseGuards(AuthGuard)
   @Get('findByFilters')
@@ -67,12 +85,11 @@ export class BuyOrderController {
     summary: 'دریافت یک سفارش خرید به وسیله چندین فیلتر',
   })
   async findBuyOrderBySomeFilters(@Query('filter') filter: string) {
-    console.log('hello');
     const filterObject: BuyOrderFilter = JSON.parse(filter);
     const buyOrderFilter = new BuyOrderFilter(filterObject);
     const errors = await validate(buyOrderFilter);
     if (errors.length > 0) {
-      return { error: errors };
+      throw new HttpException(errors[0].constraints, HttpStatus.BAD_REQUEST);
     } else {
       return await this.buyOrderService.multiFilter(buyOrderFilter);
     }

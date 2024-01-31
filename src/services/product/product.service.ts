@@ -221,7 +221,6 @@ export class ProductService {
       RETURN product
     `);
     const finallyResult: ProductEntity[] = await result.all();
-    console.log(finallyResult);
     return finallyResult;
   }
 

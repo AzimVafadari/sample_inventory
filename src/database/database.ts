@@ -67,4 +67,33 @@ export class MyDatabase {
   //     .documentExists(key);
   //   return isExist;
   // }
+  static async buyOrderIsExist(_id: string) {
+    const cursor = await this.getDb().query(aql`
+    FOR bo IN BuyOrders
+    FILTER bo._id == ${_id}
+    RETURN bo
+  `);
+    const isExist = await cursor.all();
+    return isExist.length > 0;
+  }
+
+  static async customerIsExist(_id: string) {
+    const cursor = await this.getDb().query(aql`
+    FOR customer IN Customers
+    FILTER customer._id == ${_id}
+    RETURN customer
+  `);
+    const isExist = await cursor.all();
+    return isExist.length > 0;
+  }
+
+  static async saleOrderIsExist(_id: string) {
+    const cursor = await this.getDb().query(aql`
+    FOR so IN SaleOrders
+    FILTER so._id == ${_id}
+    RETURN so
+  `);
+    const isExist = await cursor.all();
+    return isExist.length > 0;
+  }
 }

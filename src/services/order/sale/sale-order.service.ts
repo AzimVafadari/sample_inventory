@@ -3,7 +3,6 @@ import { aql } from 'arangojs';
 import { ArangoRepository, InjectRepository, ResultList } from 'nest-arango';
 import { MyDatabase } from 'src/database/database';
 import { SaleOrderEntity } from '../../../entities/order/sale/sale-order.entity';
-import { ProductEntity } from '../../../entities/product/product.entity';
 import { ReportEntity } from '../../../entities/report/report.entity';
 import { CustomerEntity } from '../../../entities/customer/customer.entity';
 import { ReportService } from '../../report/report.service';
@@ -21,8 +20,9 @@ export class SaleOrderService {
 
   //This method create a sale order if it doesn't exist
   async create(saleOrder: SaleOrderEntity): Promise<object> {
-    const temp = await this.productService.findById(saleOrder.product_id);
-    const saleOrderProduct: ProductEntity = temp[0];
+    const saleOrderProduct = await this.productService.findById(
+      saleOrder.product_id,
+    );
     if (await MyDatabase.productIsExist(saleOrder.product_id)) {
       //Find customer
       const customer = await MyDatabase.getDb().query(aql`
@@ -31,18 +31,15 @@ export class SaleOrderService {
           RETURN c
           `);
       const c: CustomerEntity = await customer.next();
-      if (c === undefined) return { result: 'customer does not exist' };
+      if (c === undefined) throw new Error('customer does not exist');
       if (saleOrder.scale !== saleOrderProduct.scale) {
-        return {
-          result:
-            'the scale of the product is not the same as the scale of the sale order',
-        };
+        throw new Error('scale is not the same as the product');
       } else {
         if (saleOrder.amount > saleOrderProduct.balance) {
-          return { result: 'the amount of the product is not enough' };
+          throw new Error('amount is not enough');
         } else {
           if (await this.productService.isExpired(saleOrder.product_id)) {
-            return { error: 'product is expired' };
+            throw new Error('the product is expired');
           } else {
             const report: ReportEntity = {
               title: 'سفارش فروش به ' + c.name,
@@ -57,7 +54,7 @@ export class SaleOrderService {
         }
       }
     } else {
-      return { result: 'Please first create the product' };
+      throw new Error('product does not exist');
     }
   }
 
@@ -109,7 +106,11 @@ export class SaleOrderService {
 
   //This method return all buy orders
   async findAll(): Promise<ResultList<SaleOrderEntity>> {
-    return await this.saleOrderRepository.findAll();
+    const allSaleOrders = await this.saleOrderRepository.findAll();
+    if (allSaleOrders.totalCount == 0) {
+      throw new Error('no sale order found');
+    }
+    return allSaleOrders;
   }
 
   //This method update a buy order if it does exist
@@ -117,6 +118,22 @@ export class SaleOrderService {
     _id: string,
     updatedSaleOrder: SaleOrderEntity,
   ): Promise<object> {
+    const isProductExist = await MyDatabase.productIsExist(
+      updatedSaleOrder.product_id,
+    );
+    const customerIsExist = await MyDatabase.customerIsExist(
+      updatedSaleOrder.customer_id,
+    );
+    if (!isProductExist) {
+      throw new Error('product does not exist');
+    }
+    if (!customerIsExist) {
+      throw new Error('customer does not exist');
+    }
+    const isSaleOrderExist = await MyDatabase.saleOrderIsExist(_id);
+    if (!isSaleOrderExist) {
+      throw new Error('sale order does not exist');
+    }
     //This query is better that be updated later...
     const updatedDocument = await MyDatabase.getDb().query(aql`
         FOR so IN SaleOrders 
@@ -125,23 +142,20 @@ export class SaleOrderService {
         RETURN OLD
     `);
     const isUpdated: SaleOrderEntity = await updatedDocument.next();
+    console.log(isUpdated);
     if (
-      isUpdated.status != 'finished' &&
+      isUpdated.status == 'pending' &&
       updatedSaleOrder.status == 'finished'
     ) {
       //Update product by new balance
-      const temp = await this.productService.findById(
+      const product = await this.productService.findById(
         updatedSaleOrder.product_id,
       );
-      const product: ProductEntity = temp[0];
-      console.log(product);
       product.balance = product.balance - updatedSaleOrder.amount;
       await this.productService.updateProduct(product);
-      if (isUpdated) {
-        return { message: 'The saleOrder is successfully updated.' };
-      } else {
-        return { error: 'saleOrder not found' };
-      }
+    }
+    if (isUpdated) {
+      return { message: 'The saleOrder is successfully updated.' };
     }
   }
 
@@ -158,7 +172,7 @@ export class SaleOrderService {
     if (isDeleted.length > 0) {
       return { result: 'saleOrder successfully deleted' };
     } else {
-      return { result: 'saleOrder not found' };
+      throw new Error('saleOrder does not exist');
     }
   }
 }

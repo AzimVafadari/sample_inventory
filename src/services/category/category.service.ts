@@ -36,7 +36,7 @@ export class CategoryService {
     return await this.categoryRepository.findAll();
   }
 
-  async findOne(categoryName: string): Promise<object> {
+  async findByName(categoryName: string): Promise<object> {
     //This query search all customers that their name starts with customerName
     //ChatGPT did this query
     const category = await MyDatabase.getDb().query(aql`
