@@ -40,6 +40,9 @@ import { Response } from 'express';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'ساخت دسته بندی',
+  })
   @Post()
   async createCategory(@Body() category: CategoryEntity) {
     category.path_to_root = '';
@@ -50,6 +53,9 @@ export class CategoryController {
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
+  @ApiOperation({
+    summary: 'بارگذاری تصویر دسته بندی',
+  })
   @ApiBody({
     schema: {
       type: 'object',
@@ -81,6 +87,9 @@ export class CategoryController {
   }
   @Get('downLoadCategoryImage')
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'دریافت تصویر دسته بندی',
+  })
   async getImage(@Query('imageId') imageId: string, @Res() res: Response) {
     const folderPath: string = './images/categories/';
     const imagePath = path.join(folderPath, `${imageId}.jpg`);

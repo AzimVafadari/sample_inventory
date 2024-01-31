@@ -29,7 +29,10 @@ export class ProductEntity extends ArangoDocument {
   @Length(3, 20)
   product_name: string;
 
-  @ApiProperty({ description: 'ایدی تامین کننده محصول', example: '2' })
+  @ApiProperty({
+    description: 'ایدی تامین کننده محصول',
+    example: 'Suppliers/92570',
+  })
   @IsString()
   @Contains('Suppliers/')
   @Length(10, 25)
