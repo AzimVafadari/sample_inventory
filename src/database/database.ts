@@ -58,7 +58,7 @@ export class MyDatabase {
       .collection(collectionName)
       .lookupByKeys([key]);
     if (document.length !== 0) return document;
-    else throw new NotFoundException(error_message);
+    else throw new Error(error_message);
   }
 
   // static async isExist(key: string, collectionName: string) {

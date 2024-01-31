@@ -60,13 +60,13 @@ export class ProductService {
       updatedProduct.product_id,
     );
     if (!isProductExist) {
-      return { error: 'product doesnt exist' };
+      throw new Error('The product doesnt exist');
     } else {
       const isSupplierExist = await MyDatabase.supplierIsExist(
         updatedProduct.supplier_id,
       );
       if (!isSupplierExist) {
-        return { error: 'supplier doesnt exist' };
+        throw new Error('The supplier doesnt exist');
       } else {
         const newAndOldProduct = await MyDatabase.getDb().query(aql`
           FOR product IN Products
@@ -136,7 +136,7 @@ export class ProductService {
           content: content,
           date: new Date(),
         };
-        this.reportService.create(report);
+        await this.reportService.create(report);
         return { result: 'the product is updated' };
       }
     }
@@ -161,7 +161,7 @@ export class ProductService {
       await this.reportService.create(report);
       return isDeleted;
     } else {
-      return { error: 'the product doesnt exist' };
+      throw new Error('The product doesnt exist');
     }
   }
 
@@ -221,7 +221,6 @@ export class ProductService {
       RETURN product
     `);
     const finallyResult: ProductEntity[] = await result.all();
-    console.log(finallyResult);
     return finallyResult;
   }
 
@@ -235,7 +234,7 @@ export class ProductService {
     if (product) {
       return product;
     } else {
-      return { error: 'product doesnt found' };
+      throw new Error('Product not found');
     }
   }
 
@@ -249,7 +248,7 @@ export class ProductService {
     if (products.length !== 0) {
       return products;
     } else {
-      return { error: 'any product with this name doesnt found' };
+      throw new Error('Any product with this name doesnt found');
     }
   }
 

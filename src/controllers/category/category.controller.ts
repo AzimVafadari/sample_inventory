@@ -49,7 +49,11 @@ export class CategoryController {
   @Post()
   async createCategory(@Body() category: CategoryEntity) {
     category.path_to_root = '';
-    return await this.categoryService.create(category);
+    try {
+      return await this.categoryService.create(category);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Post('upLoadCategoryImage')

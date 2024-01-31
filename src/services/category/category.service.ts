@@ -19,7 +19,7 @@ export class CategoryService {
     `);
     const pc: CategoryEntity = await parentCategory.next();
     if (!pc && category.parent_id != '') {
-      return { error: 'parent category not found' };
+      throw new Error('Parent category not found');
     }
     const newCategory = await this.categoryRepository.save(category);
     if (category.parent_id == '') {
@@ -48,7 +48,7 @@ export class CategoryService {
     if ((await isExist).length > 0 && categoryName !== '.') {
       return isExist;
     } else {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException();
     }
   }
 
@@ -64,7 +64,7 @@ export class CategoryService {
     if (isUpdated) {
       return { message: 'The category is successfully updated.' };
     } else {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException();
     }
   }
 
@@ -99,7 +99,7 @@ export class CategoryService {
       `);
       return { message: 'category and its products successfully deleted' };
     } else {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException();
     }
   }
 }
