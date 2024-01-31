@@ -29,7 +29,7 @@ export class CustomerService {
     if (isUpdated) {
       return { message: 'The customer is successfully updated.' };
     } else {
-      return { error: 'customer not found' };
+      throw new Error('Customer not found');
     }
   }
   async remove(customer_key: string): Promise<object> {
@@ -44,7 +44,7 @@ export class CustomerService {
     if (isDeleted.length > 0) {
       return { message: 'customer successfully deleted' };
     } else {
-      return { error: 'customer not found' };
+      throw new Error('Customer not found');
     }
   }
 
@@ -60,7 +60,7 @@ export class CustomerService {
     if ((await isExist).length > 0 && customerName !== '.') {
       return isExist;
     } else {
-      return { error: 'customer not found' };
+      throw new Error('Customer not found');
     }
   }
 }

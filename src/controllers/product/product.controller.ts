@@ -14,6 +14,8 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Res,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ResultList } from 'nest-arango';
 import {
@@ -47,7 +49,11 @@ export class ProductController {
     summary: 'ساخت محصول',
   })
   async createProduct(@Body() product: ProductEntity) {
-    return await this.productService.create(product);
+    try {
+      return await this.productService.create(product);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
   @UseGuards(AuthGuard)
   @Post('upLoadProductImage')
@@ -107,7 +113,11 @@ export class ProductController {
     summary: 'دریافت تمام محصولات',
   })
   async findAll(): Promise<ResultList<ProductEntity>> {
-    return await this.productService.findAll();
+    const products = await this.productService.findAll();
+    if (products.totalCount == 0) {
+      throw new HttpException('Product not found', HttpStatus.NO_CONTENT);
+    }
+    return products;
   }
 
   @UseGuards(AuthGuard)
@@ -117,7 +127,11 @@ export class ProductController {
     requestBody: { description: 'string', content: null, required: true },
   })
   async updateProduct(@Body() product: ProductEntity): Promise<object> {
-    return await this.productService.updateProduct(product);
+    try {
+      return await this.productService.updateProduct(product);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -128,7 +142,11 @@ export class ProductController {
   async removeProduct(
     @Param('product_id') product_id: string,
   ): Promise<object> {
-    return await this.productService.removeProduct(product_id);
+    try {
+      return await this.productService.removeProduct(product_id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -141,9 +159,15 @@ export class ProductController {
     const productFilters = new ProductFilter(filtersObject);
     const errors = await validate(productFilters);
     if (errors.length > 0) {
-      return { error: errors };
+      throw new HttpException(errors[0].constraints, HttpStatus.BAD_REQUEST);
     } else {
-      return await this.productService.multiFilter(filtersObject);
+      const filteredProducts =
+        await this.productService.multiFilter(filtersObject);
+      if (filteredProducts.length > 0) {
+        return filteredProducts;
+      } else {
+        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      }
     }
   }
 
@@ -153,7 +177,11 @@ export class ProductController {
     summary: 'یافتن یک محصول با ایدی',
   })
   async findById(@Param('productId') productId: string) {
-    return await this.productService.findById(productId);
+    try {
+      return await this.productService.findById(productId);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
   @UseGuards(AuthGuard)
   @Get('findByName')
@@ -161,6 +189,10 @@ export class ProductController {
     summary: 'یافتن یک محصول با نام ان',
   })
   async findByProductName(@Query('productName') productName: string) {
-    return this.productService.findByProductName(productName);
+    try {
+      return this.productService.findByProductName(productName);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 }
