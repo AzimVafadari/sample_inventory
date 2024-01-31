@@ -12,6 +12,7 @@ export class ReportService {
   ) {}
 
   async create(report: ReportEntity): Promise<object> {
+    report.date = new Date();
     await this.reportRepository.save(report);
     return { result: 'the report is created' };
   }

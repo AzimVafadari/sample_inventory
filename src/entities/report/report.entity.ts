@@ -4,6 +4,7 @@ import {
   ArrayMaxSize,
   IsArray,
   IsDateString,
+  IsOptional,
   IsString,
   Length,
 } from 'class-validator';
@@ -19,17 +20,14 @@ export class ReportEntity extends ArangoDocument {
   title: string;
 
   @ApiProperty({
-    description: 'توضیحات گزارش',
-    example: 'این گزارش ...',
+    description: 'محتوای گزارش',
+    example: [''],
   })
   @IsArray()
   @ArrayMaxSize(10)
   content: string[];
 
-  @ApiProperty({
-    description: 'تاریخ گزارش',
-    example: new Date(),
-  })
+  @IsOptional()
   @IsDateString()
   date: Date;
 }

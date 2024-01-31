@@ -4,7 +4,6 @@ import {
   Contains,
   IsDateString,
   IsEnum,
-  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
@@ -47,7 +46,6 @@ export class BuyOrderEntity extends ArangoDocument {
     description: 'وضعیت سفارش',
     example: 'pending',
   })
-  @IsString()
   @IsEnum(status)
   status: string;
 
@@ -55,16 +53,16 @@ export class BuyOrderEntity extends ArangoDocument {
     description: 'مقدار خرید',
     example: 500,
   })
-  @IsNumber()
   @IsPositive()
   amount: number;
+
   @ApiProperty({
     description: 'مقیاس خرید',
-    example: 'کیلوگرم',
+    example: 'kg',
   })
-  @IsString()
   @IsEnum(scale)
   scale: string;
+
   @IsOptional()
   @IsDateString()
   create_date: Date;

@@ -4,7 +4,7 @@ import {
   Contains,
   IsDateString,
   IsEnum,
-  IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   Length,
@@ -32,8 +32,8 @@ export class SaleOrderEntity extends ArangoDocument {
   product_id: string;
 
   @ApiProperty({
-    description: 'ایدی تامین کننده',
-    example: '1',
+    description: 'ایدی مصرف کننده',
+    example: 'Customers/34750',
   })
   @IsString()
   @Length(10, 25)
@@ -44,7 +44,6 @@ export class SaleOrderEntity extends ArangoDocument {
     description: 'وضعیت سفاارش',
     example: 'pending',
   })
-  @IsString()
   @IsEnum(status)
   status: string;
 
@@ -52,22 +51,17 @@ export class SaleOrderEntity extends ArangoDocument {
     description: 'مقدار فروش',
     example: 500,
   })
-  @IsNumber()
   @IsPositive()
   amount: number;
 
   @ApiProperty({
     description: 'مقیاس فروش',
-    example: 'کیلوگرم',
+    example: 'kg',
   })
-  @IsString()
   @IsEnum(scale)
   scale: string;
 
-  @ApiProperty({
-    description: 'تاریخ ایجاد سفارش فروش',
-    example: new Date(),
-  })
+  @IsOptional()
   @IsDateString()
   create_date: Date;
 }
