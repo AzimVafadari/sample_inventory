@@ -129,14 +129,14 @@ export class CategoryController {
     return await this.categoryService.update(_id, category);
   }
   @UseGuards(AuthGuard)
-  @Delete(':categoryId')
+  @Delete(':categoryKey')
   @ApiOperation({
     summary: 'حذف دسته بندی',
   })
   async removeCategory(
-    @Param('categoryId') categoryId: string,
+    @Param('categoryKey') categoryKey: string,
   ): Promise<object> {
-    return await this.categoryService.remove(categoryId);
+    return await this.categoryService.remove(categoryKey);
   }
   @UseGuards(AuthGuard)
   @Get(':key')
