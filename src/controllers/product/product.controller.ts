@@ -52,6 +52,9 @@ export class ProductController {
   @UseGuards(AuthGuard)
   @Post('upLoadProductImage')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiOperation({
+    summary: 'بارگذاری تصویر محصول',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -83,6 +86,9 @@ export class ProductController {
     return await imageId;
   }
   @Get('downLoadProductImage')
+  @ApiOperation({
+    summary: 'دریافت تصویر محصول',
+  })
   @UseGuards(AuthGuard)
   async getImage(@Query('imageId') imageId: string, @Res() res: Response) {
     const folderPath: string = './images/products/';

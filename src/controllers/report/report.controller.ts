@@ -32,12 +32,12 @@ export class ReportController {
     return await this.reportService.create(report);
   }
   @UseGuards(AuthGuard)
-  @Delete(':report_id')
+  @Delete(':key')
   @ApiOperation({
     summary: 'حذف گزارش',
   })
-  async removeReport(@Param('report_id') report_id: string) {
-    return await this.reportService.remove(report_id);
+  async removeReport(@Param('key') key: string) {
+    return await this.reportService.remove(key);
   }
   @UseGuards(AuthGuard)
   @Get()

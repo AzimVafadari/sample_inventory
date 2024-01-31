@@ -56,12 +56,12 @@ export class SupplierController {
 
   //This method remove the supplier if it does exist and returns an object
   @UseGuards(AuthGuard)
-  @Delete(':supplier_id')
+  @Delete(':supplier_key')
   @ApiOperation({
     summary: 'حذف تامین کننده به وسیله آیدی آن',
   })
-  async deleteSupplier(@Param('supplier_id') supplier_id: string) {
-    return await this.supplierService.remove(supplier_id);
+  async deleteSupplier(@Param('supplier_key') supplier_key: string) {
+    return await this.supplierService.remove(supplier_key);
   }
 
   @Get('supplierName')

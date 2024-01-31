@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository, ArangoRepository } from 'nest-arango';
 import { CategoryEntity } from '../../entities/category/category.entity';
 import { MyDatabase } from '../../database/database';
@@ -48,7 +48,7 @@ export class CategoryService {
     if ((await isExist).length > 0 && categoryName !== '.') {
       return isExist;
     } else {
-      return { error: 'category not found' };
+      throw new NotFoundException('Category not found');
     }
   }
 
@@ -64,21 +64,21 @@ export class CategoryService {
     if (isUpdated) {
       return { message: 'The category is successfully updated.' };
     } else {
-      return { error: 'category not found' };
+      throw new NotFoundException('Category not found');
     }
   }
 
-  async remove(categoryId: string): Promise<object> {
+  async remove(categoryKey: string): Promise<object> {
     //Find category
     const cursor = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._id == ${categoryId}
+    FILTER cat._key == ${categoryKey}
     RETURN cat
     `);
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._id == ${categoryId}
+    FILTER cat._key == ${categoryKey}
     REMOVE cat IN Categories
     RETURN OLD
     `);
@@ -99,7 +99,7 @@ export class CategoryService {
       `);
       return { message: 'category and its products successfully deleted' };
     } else {
-      return { error: 'category not found' };
+      throw new NotFoundException('Category not found');
     }
   }
 }
