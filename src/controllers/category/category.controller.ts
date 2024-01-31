@@ -14,6 +14,9 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -107,7 +110,11 @@ export class CategoryController {
     summary: 'دریافت تمام دسته بندی ها',
   })
   async findAllCategory() {
-    return await this.categoryService.findAll();
+    const categories = await this.categoryService.findAll();
+    if (categories.totalCount == 0) {
+      throw new HttpException('Category not found', HttpStatus.NO_CONTENT);
+    }
+    return categories;
   }
   @UseGuards(AuthGuard)
   @Get('/categoryName')
@@ -115,7 +122,13 @@ export class CategoryController {
     summary: 'دریافت دسته بندی با نام ',
   })
   async findCategoriesByName(@Query('categoryName') categoryName: string) {
-    return await this.categoryService.findOne(categoryName);
+    try {
+      return await this.categoryService.findOne(categoryName);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+      }
+    }
   }
   @UseGuards(AuthGuard)
   @Put()
@@ -126,7 +139,13 @@ export class CategoryController {
     @Body() category: CategoryEntity,
     @Query('_id') _id: string,
   ) {
-    return await this.categoryService.update(_id, category);
+    try {
+      return await this.categoryService.update(_id, category);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+      }
+    }
   }
   @UseGuards(AuthGuard)
   @Delete(':key')
@@ -134,7 +153,13 @@ export class CategoryController {
     summary: 'حذف دسته بندی',
   })
   async removeCategory(@Param('key') key: string): Promise<object> {
-    return await this.categoryService.remove(key);
+    try {
+      return await this.categoryService.remove(key);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+      }
+    }
   }
   @UseGuards(AuthGuard)
   @Get(':key')
@@ -142,10 +167,16 @@ export class CategoryController {
     summary: 'دریافت دسته بندی با کلید',
   })
   async findByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(
-      key,
-      'Categories',
-      'category does not exist',
-    );
+    try {
+      return await MyDatabase.findByKey(
+        key,
+        'Categories',
+        'Category not found',
+      );
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+      }
+    }
   }
 }

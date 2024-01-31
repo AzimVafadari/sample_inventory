@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository, ArangoRepository } from 'nest-arango';
 import { CategoryEntity } from '../../entities/category/category.entity';
 import { MyDatabase } from '../../database/database';
@@ -48,7 +48,7 @@ export class CategoryService {
     if ((await isExist).length > 0 && categoryName !== '.') {
       return isExist;
     } else {
-      return { error: 'category not found' };
+      throw new NotFoundException('Category not found');
     }
   }
 
@@ -64,7 +64,7 @@ export class CategoryService {
     if (isUpdated) {
       return { message: 'The category is successfully updated.' };
     } else {
-      return { error: 'category not found' };
+      throw new NotFoundException('Category not found');
     }
   }
 
@@ -99,7 +99,7 @@ export class CategoryService {
       `);
       return { message: 'category and its products successfully deleted' };
     } else {
-      return { error: 'category not found' };
+      throw new NotFoundException('Category not found');
     }
   }
 }

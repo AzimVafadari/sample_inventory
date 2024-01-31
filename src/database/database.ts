@@ -1,4 +1,5 @@
 import { aql, Database } from 'arangojs';
+import { NotFoundException } from '@nestjs/common';
 
 export class MyDatabase {
   private static db = new Database({
@@ -57,7 +58,7 @@ export class MyDatabase {
       .collection(collectionName)
       .lookupByKeys([key]);
     if (document.length !== 0) return document;
-    else return { error: error_message };
+    else throw new NotFoundException(error_message);
   }
 
   // static async isExist(key: string, collectionName: string) {
