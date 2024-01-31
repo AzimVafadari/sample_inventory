@@ -36,11 +36,11 @@ export class SupplierService {
     }
   }
 
-  async remove(supplierId: string): Promise<object> {
+  async remove(supplier_key: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR sup IN Suppliers
-    FILTER sup._id == ${supplierId}
+    FILTER sup._key == ${supplier_key}
     REMOVE sup IN Suppliers
     RETURN OLD
     `);

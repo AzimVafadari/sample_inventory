@@ -16,10 +16,10 @@ export class ReportService {
     return { result: 'the report is created' };
   }
 
-  async remove(report_id: string): Promise<object> {
+  async remove(report_key: string): Promise<object> {
     const deletedDocument = await MyDatabase.getDb().query(aql`
       FOR report IN Reports
-      FILTER report._id == ${report_id}
+      FILTER report._key == ${report_key}
       REMOVE report IN Reports
       RETURN OLD
       `);

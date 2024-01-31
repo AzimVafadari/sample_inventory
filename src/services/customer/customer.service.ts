@@ -32,11 +32,11 @@ export class CustomerService {
       return { error: 'customer not found' };
     }
   }
-  async remove(customerId: string): Promise<object> {
+  async remove(customer_key: string): Promise<object> {
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cus IN Customers
-    FILTER cus._id == ${customerId}
+    FILTER cus._key == ${customer_key}
     REMOVE cus IN Customers
     RETURN OLD
     `);

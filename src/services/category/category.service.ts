@@ -68,17 +68,17 @@ export class CategoryService {
     }
   }
 
-  async remove(categoryId: string): Promise<object> {
+  async remove(categoryKey: string): Promise<object> {
     //Find category
     const cursor = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._id == ${categoryId}
+    FILTER cat._key == ${categoryKey}
     RETURN cat
     `);
     //This query is better that be updated later...
     const deletedDocument = await MyDatabase.getDb().query(aql`
     FOR cat IN Categories
-    FILTER cat._id == ${categoryId}
+    FILTER cat._key == ${categoryKey}
     REMOVE cat IN Categories
     RETURN OLD
     `);
