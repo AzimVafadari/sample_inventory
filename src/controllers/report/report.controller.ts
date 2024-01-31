@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -37,7 +39,11 @@ export class ReportController {
     summary: 'حذف گزارش',
   })
   async removeReport(@Param('key') key: string) {
-    return await this.reportService.remove(key);
+    try {
+      return await this.reportService.remove(key);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
   @UseGuards(AuthGuard)
   @Get()
@@ -45,7 +51,11 @@ export class ReportController {
     summary: 'یافتن همه گزارشات',
   })
   async getAllReports() {
-    return await this.reportService.findAll();
+    const reports = await this.reportService.findAll();
+    if (reports.totalCount == 0) {
+      throw new HttpException('Report not found', HttpStatus.NO_CONTENT);
+    }
+    return reports;
   }
   @UseGuards(AuthGuard)
   @Get('find/Date')
@@ -64,14 +74,25 @@ export class ReportController {
     @Query('startdate') startdate: string,
     @Query('enddate') enddate: string,
   ) {
-    return await this.reportService.findBasedOnDate(startdate, enddate);
+    const reports: ReportEntity[] = await this.reportService.findBasedOnDate(
+      startdate,
+      enddate,
+    );
+    if (reports.length == 0) {
+      throw new HttpException('Report not found', HttpStatus.NO_CONTENT);
+    }
+    return reports;
   }
   @UseGuards(AuthGuard)
-  @Get('":key')
+  @Get(':key')
   @ApiOperation({
     summary: 'یافتن گزارشات بر اساس کلید',
   })
   async findByKey(@Param('key') key: string) {
-    return await MyDatabase.findByKey(key, 'Reports', 'error doesnt exist');
+    try {
+      return await MyDatabase.findByKey(key, 'Reports', 'error doesnt exist');
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
   }
 }

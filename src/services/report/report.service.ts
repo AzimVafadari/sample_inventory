@@ -28,7 +28,7 @@ export class ReportService {
     if ((await Deleted).length > 0) {
       return Deleted;
     } else {
-      return { error: 'report doesnt exist' };
+      throw new Error('Report not found');
     }
   }
 
@@ -36,7 +36,7 @@ export class ReportService {
     return await this.reportRepository.findAll();
   }
 
-  async findBasedOnDate(startDate: string, endDate: string): Promise<object> {
+  async findBasedOnDate(startDate: string, endDate: string) {
     const cursor = await MyDatabase.getDb().query(aql`
       LET startdate = DATE_TIMESTAMP(${startDate})
       LET enddate = DATE_TIMESTAMP(${endDate})
@@ -45,11 +45,6 @@ export class ReportService {
       FILTER DATE_DIFF(report.date, enddate, "d") >= 0
       RETURN report
       `);
-    const reports = cursor.all();
-    if ((await reports).length > 0) {
-      return reports;
-    } else {
-      return { error: 'no report found' };
-    }
+    return cursor.all();
   }
 }
