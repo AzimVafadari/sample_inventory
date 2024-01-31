@@ -68,6 +68,12 @@ export class ProductService {
       if (!isSupplierExist) {
         throw new Error('The supplier doesnt exist');
       } else {
+        const categoryIsexist = await MyDatabase.categoryIsExist(
+          updatedProduct.category_id,
+        );
+        if (!categoryIsexist) {
+          throw new Error('category doesnt exist');
+        }
         const newAndOldProduct = await MyDatabase.getDb().query(aql`
           FOR product IN Products
           FILTER product.product_id == ${updatedProduct.product_id}
