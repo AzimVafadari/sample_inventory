@@ -97,7 +97,7 @@ export class CategoryService {
        FILTER LIKE(category.path_to_root, CONCAT(${category.path_to_root}, '%'))
        REMOVE category IN Categories
       `);
-      return { message: 'category and its products successfully deleted' };
+      return { message: 'category successfully deleted' };
     } else {
       throw new NotFoundException();
     }
