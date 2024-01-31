@@ -178,9 +178,7 @@ export class CategoryController {
         'Category not found',
       );
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
-      }
+      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     }
   }
 }
