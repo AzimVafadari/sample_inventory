@@ -1,4 +1,5 @@
 - [Give it a star ⭐](#give-it-a-star-)
+- # Give it a star ⭐
 
 <p align="center">
   a sample inventory with nest js and arangodb database with cooperation of <a href="https://github.com/amirhossein6666" target="blank">https://github.com/amirhossein6666</a>
