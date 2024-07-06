@@ -28,7 +28,6 @@
 
 - # Give it a star ⭐
 - Loving it? Show your support by giving this project a star!
-  
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
